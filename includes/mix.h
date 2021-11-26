@@ -1,0 +1,26 @@
+#ifndef INAST_MIX
+#define INAST_MIX
+#include "types.h"
+#include "players.h"
+
+typedef struct Miximax
+{
+	s16 player;
+	s16 slot;
+	s16 aura;
+	s16 move1;
+	s16 move2;
+	s16 move3;
+} Miximax;
+
+Miximax* g_MiximaxTable;
+
+int ChkMiximaxGK(int player);
+Miximax* GetMiximaxData(int player, int slot);
+Miximax* GetMiximaxData(int player);
+int GetMiximaxPlyID(int player, int slot);
+int GetMiximaxWazaKeeper(int player);
+
+
+
+#endif
