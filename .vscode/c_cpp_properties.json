@@ -1,6 +1,6 @@
 {
   "env": {
-    "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/includes"],
+    "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/includes", "${workspaceFolder}/includes/Kamek"],
     "myCompilerPath": "/usr/local/bin/gcc-7"
   },
   "configurations": [

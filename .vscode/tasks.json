@@ -9,6 +9,10 @@
                 "-g",
                 "${file}",
                 "-o",
+				"-i",
+				"${workspaceFolder}/includes",
+				"-i",
+				"${workspaceFolder}/includes/Kamek",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
             "options": {

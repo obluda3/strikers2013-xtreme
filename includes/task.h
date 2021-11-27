@@ -5,9 +5,9 @@
 
 typedef struct TaskHolder
 {
-  void* function;
-  u32 ptrArgument;
-  u32 field_8;
+	void* function;
+	u32 ptrArgument;
+	u32 field_8;
 } TaskHolder;
 
 class cTask

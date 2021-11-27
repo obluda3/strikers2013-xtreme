@@ -1,12 +1,30 @@
 #ifndef TITLE
 #define TITLE
 #include <spritestudio.h>
-
+#include <task.h>
 namespace TTL
 {
 	typedef struct mpMap
 	{ 
-		
+		u32 _0;
+		u32 _4;
+		u32 _8;
+		u32 _C;
+		u8 _10;
+		u32 _14;
+		u32 _18;
+		u32 _1C;
+		u32 _20;
+		u32 _24;
+		u32 _28;
+		u32 _2C;
+		u32 _30;
+		u32 _34;
+		u32 _38;
+		u32 _3C;
+		u32 _40;
+		CSprStudio *SpriteStudio;
+		cTask *Tasks;
 	} mpMap;
 
 	static mpMap* mpMapTemp;

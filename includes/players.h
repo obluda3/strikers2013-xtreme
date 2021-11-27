@@ -76,5 +76,6 @@ typedef struct PLAYER_DEF
 	u16 rMiximaxPlaId;
 } PLAYER_DEF;
 
+int GetPLYIDToListID(int id, int unk);
 
 #endif
