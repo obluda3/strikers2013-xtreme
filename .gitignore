@@ -3,3 +3,9 @@
 /km
 /license.dat
 build/test.o
+build/main.o
+build/titlescreen.o
+loader/kamekLoader.o
+loader/main_kamek.dol
+loader/main.dol
+loader/megane.o

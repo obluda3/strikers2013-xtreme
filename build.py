@@ -45,8 +45,8 @@ for root, dirs, files in os.walk("source"):
 
             asm_tasks.append((source_path, build_path))
 
-if len(tasks) < 1:
-    err("No C++ files to compile!")
+if len(tasks) < 1 and len(asm_tasks) < 1:
+    err("No C++/asm files to compile!")
 
 
 # Process all compile tasks
