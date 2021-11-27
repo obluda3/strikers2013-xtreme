@@ -1,6 +1,6 @@
 #include "kamek.h"
 // Swap Shinsuke with Endou
-kmWrite32(0x8050F474, 2);
+kmWrite32(0x8050F474, 1);
 
 // Changes a2 in SetTeamDefToBody if it's the second player (Endou)
 // And changes the team from Raimon GO to Raimon
