@@ -4,7 +4,7 @@
 #include "types.h"
 #include "enums.h"
 
-struct PLAYER_DEF
+typedef struct PLAYER_DEF
 {
 	PlayerIds id;
 	u32 rMatchIndex;
@@ -74,7 +74,7 @@ struct PLAYER_DEF
 	u32 kakusei;
 	u16 kakuseiIndex;
 	u16 rMiximaxPlaId;
-};
+} PLAYER_DEF;
 
 
 #endif

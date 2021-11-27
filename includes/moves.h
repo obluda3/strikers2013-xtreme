@@ -3,7 +3,7 @@
 #include "enums.h"
 #include "types.h"
 
-struct waza_info
+typedef struct waza_info
 {
 	u16 tier;
 	u16 basePower;
@@ -57,6 +57,6 @@ struct waza_info
 	u16 powerUpIndicator;
 	u16 invocationAnimTime;
 	u16 _8A;
-};
+} WAZA_INFO;
 
 #endif

@@ -17,8 +17,8 @@ if not os.path.exists("cw/mwcceppc.exe"):
 if not os.path.exists("km/Kamek.exe"):
     err("Kamek linker not found.")
 
-command = "cw\mwcceppc.exe " + "-I- -i ./includes/ -Cpp_exceptions off -enum int -Os -use_lmw_stmw on -fp hard -rostr -sdata 0 -sdata2 0 -c -o "
-asm_cmd = "cw\mwasmeppc.exe "  + "-I- -i ./includes/ -c -o "
+command = "cw\mwcceppc.exe " + "-I- -i ./includes/ -i ./includes/Kamek/ -Cpp_exceptions off -enum int -Os -use_lmw_stmw on -fp hard -rostr -sdata 0 -sdata2 0 -c -o "
+asm_cmd = "cw\mwasmeppc.exe "  + "-I- -i ./includes/ -i ./includes/Kamek/ -c -o "
 
 # Clean the entire build folder first if it exists
 if os.path.exists("build"):

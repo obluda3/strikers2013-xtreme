@@ -1,4 +1,4 @@
-#include <Kamek\kamek.h>
+#include <kamek.h>
 
 struct DVDHandle
 {
