@@ -20,6 +20,4 @@ int GetMiximaxPlyID(int player, int slot);
 int IsMiximaxPlayer(int player, int slot);
 int GetMiximaxWazaKeeper(int player);
 
-
-
 #endif
