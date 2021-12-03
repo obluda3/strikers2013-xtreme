@@ -72,3 +72,4 @@ kmBranchDefCpp(0x800bed14, NULL, Miximax*, int playerId, int slot)
 	}
 	return 0;
 }
+
