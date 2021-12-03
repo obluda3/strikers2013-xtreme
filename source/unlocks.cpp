@@ -22,10 +22,12 @@ kmCallDefCpp(0x800C1D9C, void, PLAYER_DEF* player_def, SavePlayerData* player_da
 	{
 		KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(player_def->id, P_12490ASUTA);
 		if (kizunaData->value >= 50) {
-			player_data->Flag |= 0x10u;
-			dword_8051D640[*dword_8051EB40 + 1345] = 5; // text entry of the miximax unlock
-			u32 tmp = *dword_8051D640;
-			*dword_8051EB40 = tmp + 1; // no idea what that is
+			player_data->Flag |= MIXIMAX_LEVEL_ONE;
+			dword_8051D640[*dword_8051EB40 + 1345] = 17; // text entry of the miximax unlock
+
+			// no idea what that is
+			u32 tmp = *dword_8051D640;	
+			*dword_8051EB40 = tmp + 1; 
 		}
 	}
 }

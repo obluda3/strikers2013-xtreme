@@ -8,6 +8,12 @@ typedef struct KizunaData
 	u16 _8;
 } KizunaData;
 
+enum FlagPlayer
+{
+	MIXIMAX_LEVEL_ONE = 0x10;
+	MIXIMAX_LEVEL_TWO = 0x20;
+}
+
 typedef struct SavePlayerData
 {
 	s32 Flag;
