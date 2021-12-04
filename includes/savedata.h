@@ -10,9 +10,16 @@ typedef struct KizunaData
 
 enum FlagPlayer
 {
-	MIXIMAX_LEVEL_ONE = 0x10;
-	MIXIMAX_LEVEL_TWO = 0x20;
-}
+	MIXIMAX_LEVEL_ONE = 0x10,
+	MIXIMAX_LEVEL_TWO = 0x20,
+};
+
+enum UnlockFlag
+{
+	UNLOCKED,
+	LOCKED,
+	RECRUITED
+};
 
 typedef struct SavePlayerData
 {
@@ -73,6 +80,8 @@ typedef struct SavePlayerData
 } SavePlayerData;
 
 int Savedata_GetSavedata_Emblem(int slot);
+bool Savedata_ChkPlayerFlag(long player, long flagType);
+bool Savedata_SetPlayerFlag(long player, long flagType, bool unk);
 char* Savedata_GetSavedata_TeamName(int slot);
 char* Savedata_GetSavedata_UserName(int slot);
 int Savedata_GetSavedata_FaceIcon(int slot);

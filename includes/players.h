@@ -4,6 +4,37 @@
 #include "types.h"
 #include "enums.h"
 
+enum Position
+{
+	GK = 0x0,
+	DF = 0x23,
+	MF = 0x24,
+	FW = 0x25,
+};
+enum TacticalAction
+{
+	Feint = 0x14,
+	Roll = 0x15,
+	Short = 0x16,
+	Jump = 0x17,
+	White_Sprint = 0x18,
+	Red_Sprint = 0x19,
+	Loop = 0x1A,
+};
+enum Gender
+{
+	Male = 0x0,
+	Female = 0x1,
+};
+enum Bodytype
+{
+	Man = 0x0,
+	Large = 0x1,
+	Chibi = 0x2,
+	Muscle = 0x3,
+	Girl1 = 0x4,
+	Girl2 = 0x5,
+};
 typedef struct PLAYER_DEF
 {
 	PlayerIds id;
@@ -76,6 +107,6 @@ typedef struct PLAYER_DEF
 	u16 rMiximaxPlaId;
 } PLAYER_DEF;
 
-int GetPLYIDToListID(int id, int unk);
+
 
 #endif

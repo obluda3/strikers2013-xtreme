@@ -1,7 +1,7 @@
 #include <mix.h>
 #include <kamek.h>
 #include <enums.h>
-#include <players.h>
+#include <team.h>
 
 Miximax g_MiximaxTable[] = 
 {

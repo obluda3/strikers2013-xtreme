@@ -2,7 +2,22 @@
 #define INAST_MOVES
 #include "enums.h"
 #include "types.h"
-
+enum Tier
+{
+	Lv1 = 0x0,
+	Lv2 = 0x1,
+	Lv3 = 0x2,
+	SP = 0x3,
+};
+enum Status
+{
+	Normal = 0x0,
+	Long = 0x1,
+	ShootBlock = 0x2,
+	Chain = 0x3,
+	Punch1 = 0x4,
+	Punch2 = 0x5,
+};
 typedef struct waza_info
 {
 	u16 tier;

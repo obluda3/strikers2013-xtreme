@@ -10,54 +10,6 @@ enum Element
 	Earth = 0x3,
 	Void = 0x4,
 };
-enum Tier
-{
-	Lv1 = 0x0,
-	Lv2 = 0x1,
-	Lv3 = 0x2,
-	SP = 0x3,
-};
-enum Status
-{
-	Normal = 0x0,
-	Long = 0x1,
-	ShootBlock = 0x2,
-	Chain = 0x3,
-	Punch1 = 0x4,
-	Punch2 = 0x5,
-};
-enum Position
-{
-	GK = 0x0,
-	DF = 0x23,
-	MF = 0x24,
-	FW = 0x25,
-};
-enum TacticalAction
-{
-	Feint = 0x14,
-	Roll = 0x15,
-	Short = 0x16,
-	Jump = 0x17,
-	White_Sprint = 0x18,
-	Red_Sprint = 0x19,
-	Loop = 0x1A,
-};
-enum Gender
-{
-	Male = 0x0,
-	Female = 0x1,
-	Unk = 0x2,
-};
-enum Bodytype
-{
-	Man = 0x0,
-	Large = 0x1,
-	Chibi = 0x2,
-	Muscle = 0x3,
-	Girl1 = 0x4,
-	Girl2 = 0x5,
-};
 enum PlayerIds
 {
 	P_ANYONE = 0xFFFFFFFF,
