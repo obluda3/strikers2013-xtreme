@@ -1,5 +1,5 @@
 # From https://github.com/shibbo/Syati
-
+import datetime
 import os
 import glob
 import shutil
@@ -10,7 +10,10 @@ def err(message: str):
     print(f"Error: {message}")
     sys.exit(1)
 
-print("Building Strikers 2013 Xtreme")
+def log(message: str):
+	    print("[{}] {}".format(datetime.datetime.now(), message))
+
+log("Building Strikers 2013 Xtreme")
 
 if not os.path.exists("cw/mwcceppc.exe"):
     err("CodeWarrior compiler not found.")
@@ -53,7 +56,7 @@ if len(tasks) < 1 and len(asm_tasks) < 1:
 for task in tasks:
     source_path, build_path = task
 
-    print(f"Compiling {source_path}...")
+    log(f"Compiling {source_path}...")
 
     if subprocess.call(f"{command} {build_path} {source_path}", shell=True) != 0:
         err("Compiler error.")
@@ -61,13 +64,13 @@ for task in tasks:
 for a_task in asm_tasks:
     source_path, build_path = a_task
 
-    print(f"Assembling {source_path}...")
+    log(f"Assembling {source_path}...")
 
     if subprocess.call(f"{asm_cmd} {build_path} {source_path}", shell=True) != 0:
         err("Assembler error.")
 
 # Link all object files and create the CustomCode binary
-print("Linking...")
+log("Linking...")
 
 object_files = " ".join([task[1] for task in tasks])
 asm_obj_files = " ".join([a_task[1] for a_task in asm_tasks])
@@ -81,4 +84,4 @@ if subprocess.call(kamek_cmd, shell=True) != 0:
 for f in glob.glob("*.d"):
     os.remove(f)
 
-print("Done!")
+log("Done!")
