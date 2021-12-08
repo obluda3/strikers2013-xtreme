@@ -3,6 +3,7 @@
 /km
 /build
 /license.dat
+/.vscode
 build.bat
 loader/kamekLoader.o
 loader/main_kamek.dol
