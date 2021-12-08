@@ -68,9 +68,11 @@ inline void handlePopup(int id, int* clubroomMenuScout, int uglyTrick){
 kmWrite32(0x801f2124,0x7FE3FB78); // mr r3, r31
 kmCallDefAsm(0x801F212C)
 {
+	nofralloc
 	lwz r3, 0xDD0(r31)
 	lwz r31, 12(r1)
 	neg r0, r3
+	blr
 }
 kmCallDefCpp(0x801F2128, void, int* clubroomMenuScout)
 {
