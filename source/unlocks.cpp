@@ -1,7 +1,7 @@
 #include <kamek.h>
-#include "team.h"
-#include "savedata.h"
-#include "shd_debug.h"
+#include <matchplayer.h>
+#include <savedata.h>
+#include <shd_debug.h>
 
 u32* dword_8051D640 = (u32*)0x8051D640;
 u32* dword_8051EB40 = (u32*)0x8051EB40;
