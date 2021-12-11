@@ -60,7 +60,7 @@ kmBranchDefAsm(0x800DAE48, 0x800dae4c)
 		mr r4, r17
 		li r5, sizeof(PLAYER_DEF)
 		bl memcpy	
-	player_entry_team:
+	get_playerdef:
 		li r4, 0
 		function_call:
 			mr r3, r20
@@ -89,12 +89,12 @@ kmBranchDefAsm(0x800DE884, 0x800DE888)
 		beq- end
 	swap_facemdl:
 		li r4, 0
-		function_call:
+		get_playerdef:
 			mr r3, r21
 			bl GetPLYIDToPlayerEntryTeam // shitty hack, i don't know which team 
 			cmpwi r3, 0 // it is but we don't care about that, I just call it two times
 			li r4, 1
-			beq function_call // if it didn't work the first time, it'll work the second time
+			beq get_playerdef // if it didn't work the first time, it'll work the second time!
 		lwz r3, 0x60(r3)
 	end:
 		blr
