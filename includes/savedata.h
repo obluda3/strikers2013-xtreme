@@ -21,7 +21,7 @@ enum UnlockFlag
 	RECRUITED
 };
 
-typedef struct SavePlayerData
+typedef struct SavePlayerParam
 {
 	s32 Flag;
 	s32 Unknown;
@@ -77,7 +77,7 @@ typedef struct SavePlayerData
 	u8 _39;
 	u8 _3A;
 	u8 _3B;
-} SavePlayerData;
+} SavePlayerParam;
 
 int Savedata_GetSavedata_Emblem(int slot);
 bool Savedata_ChkPlayerFlag(long player, long flagType);
@@ -86,5 +86,5 @@ char* Savedata_GetSavedata_TeamName(int slot);
 char* Savedata_GetSavedata_UserName(int slot);
 int Savedata_GetSavedata_FaceIcon(int slot);
 KizunaData* Savedata_getPlayeData_KizunaData(int player1, int player2);
-SavePlayerData* Savedata_getPlayerData(int player);
+SavePlayerParam* Savedata_getPlayerData(int player);
 #endif
