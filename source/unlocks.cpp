@@ -16,7 +16,7 @@ kmCallDefAsm(0x800C1D98) // ugly hacks but that will basically branch back to th
 }
 
 // handles the miximax unlocks
-kmCallDefCpp(0x800C1D9C, void, PLAYER_DEF* player_def, SavePlayerData* player_data)
+kmCallDefCpp(0x800C1D9C, void, PLAYER_DEF* player_def, SavePlayerParam* player_data)
 {
 	if(player_def->id == P_12492FURAN)
 	{
