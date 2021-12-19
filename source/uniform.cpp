@@ -2,9 +2,6 @@
 #include <kamek.h>
 #define UNIFORM_COUNT sizeof(UniformDataTbl) / sizeof(UniformData)
 
-// WARNING: Since I'm lazy and I don't want to rewrite some functions
-// If you add a new uniform to the table, it would require you to
-// change the last two kmWrite32's accordingly
 namespace MENU_TP_DATA 
 {
 	UniformData UniformDataTbl[] = 
