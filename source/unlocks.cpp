@@ -15,19 +15,22 @@ kmCallDefAsm(0x800C1D98) // ugly hacks but that will basically branch back to th
 	blr  		              
 }
 
-// handles the miximax unlocks
+// handles the miximax unlock
 kmCallDefCpp(0x800C1D9C, void, PLAYER_DEF* player_def, SavePlayerParam* player_data)
 {
 	if(player_def->id == P_12492FURAN)
 	{
-		KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(player_def->id, P_12490ASUTA);
-		if (kizunaData->value >= 50) {
-			player_data->Flag |= MIXIMAX_LEVEL_ONE;
-			dword_8051D640[*dword_8051EB40 + 1345] = 17; // text entry of the miximax unlock
+		SavePlayerParam* playerParam = Savedata_getPlayerData(P_12492FURAN);
+		if(playerParam->Flag & MIXIMAX_LEVEL_ONE != MIXIMAX_LEVEL_ONE)
+		{
+			KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(player_def->id, P_12490ASUTA);
+			if (kizunaData->value >= 50) {
+				player_data->Flag |= MIXIMAX_LEVEL_ONE;
+				dword_8051D640[*dword_8051EB40 + 1345] = 17; // text entry of the miximax unlock
 
-			// no idea what that is
-			u32 tmp = *dword_8051D640;	
-			*dword_8051EB40 = tmp + 1; 
+				// no idea what that is
+				u32 tmp = *dword_8051D640;	
+				*dword_8051EB40 = tmp + 1; 
 		}
 	}
 }
@@ -35,6 +38,7 @@ kmCallDefCpp(0x800C1D9C, void, PLAYER_DEF* player_def, SavePlayerParam* player_d
 kmCallDefAsm(0x800C1DA0)
 {
 	// last part of our series of shitty hacks: restoring the original instructions
+	nofralloc
 	addi r22, r22, 0x148 // PLAYER_DEF* r22 += 1;
 	addi r21, r21, 1 // i += 1
 	cmpwi r21, 0x10 // if i < 16 (size of a team)
