@@ -8,7 +8,7 @@ u32* dword_8051EB40 = (u32*)0x8051EB40;
 
 /// MIXIMAXES : ///
 /// Not proud of that one, i should figure out what these dwords are ///
-kmCallDefAsm(0x800C1D98) // ugly hacks but that will basically branch back to the second piece of code (in C++ => big brain moments)
+kmCallDefAsm(0x800C1D98) 
 {                                     // we move the registers that we'll need and set them up as arguments
     mr r3, r22 						  // mainly : r22 -> player_def
 	mr r4, r23                        // r23 -> player_data (save)
