@@ -3,13 +3,10 @@
 #include <matchplayer.h>
 #include <base\c_stdlib.h>
 
-/// WARNING :
-/// Breaks the miximax transformation animation atm
-
 typedef struct ArmedInfo
 {
-	u32 source;
-	u32 armedId;
+	u16 source;
+	u16 armedId;
 } ArmedInfo;
 
 ArmedInfo ArmedTable[] = 
