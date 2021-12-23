@@ -13,6 +13,10 @@ def err(message: str):
 def log(message: str):
 	    print("[{}] {}".format(datetime.datetime.now(), message))
 
+debug = False
+if(len(sys.argv) > 1):
+	debug = True
+
 log("Building Strikers 2013 Xtreme")
 
 if not os.path.exists("cw/mwcceppc.exe"):
@@ -20,7 +24,11 @@ if not os.path.exists("cw/mwcceppc.exe"):
 if not os.path.exists("km/Kamek.exe"):
     err("Kamek linker not found.")
 
-command = "cw\mwcceppc.exe " + "-I- -i ./includes/ -i ./includes/Kamek/ -Cpp_exceptions off -enum int -Os -use_lmw_stmw on -fp hard -rostr -sdata 0 -sdata2 0 -c -o "
+command = ""
+if debug:
+	command = "cw\mwcceppc.exe " + "-I- -i ./includes/ -i ./includes/Kamek/ -Cpp_exceptions off -enum int -Os -use_lmw_stmw on -fp hard -rostr -sdata 0 -sdata2 0 -d DEBUG -c -o "
+else:
+	command = "cw\mwcceppc.exe " + "-I- -i ./includes/ -i ./includes/Kamek/ -Cpp_exceptions off -enum int -Os -use_lmw_stmw on -fp hard -rostr -sdata 0 -sdata2 0 -c -o "
 asm_cmd = "cw\mwasmeppc.exe "  + "-I- -i ./includes/ -i ./includes/Kamek/ -c -o "
 
 # Clean the entire build folder first if it exists
