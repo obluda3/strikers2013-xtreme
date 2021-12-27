@@ -1,5 +1,6 @@
 #ifndef SND
 #define SND
+#include "types.h"
 
 void SNDInit();
 void SNDSetDefVolume();
@@ -33,9 +34,8 @@ void SNDBgmFadeOut(s32 unk1, s32 unk2);
 void SNDUnloadSEGrp();
 void SNDSeSysOK(int unk);
 void SNDSeSysOK2();
+void SNDSeSysCANCEL(int unk);
+void SNDSeSysBAD(int unk);
 // TODO: add the other functions
-
-
-
 
 #endif
