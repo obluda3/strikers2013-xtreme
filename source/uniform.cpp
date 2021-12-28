@@ -65,7 +65,6 @@ namespace MENU_TP_DATA
 	kmBranchDefCpp(0x802862f4, NULL, int, int uniform)
 	{
 		int count = sizeof(UniformDataTbl) / sizeof(UniformData);
-		UniformData* uniformData;
 		for(int i = 0; i < count; i++)
 		{
 			if (UniformDataTbl[i].Uniform == uniform)
@@ -77,7 +76,6 @@ namespace MENU_TP_DATA
 	kmBranchDefCpp(0x80286218, NULL, int, int uniform)
 	{
 		int count = sizeof(UniformDataTbl) / sizeof(UniformData);
-		UniformData* uniformData;
 		for(int i = 0; i < count; i++)
 		{
 			if (UniformDataTbl[i].Uniform == uniform)
