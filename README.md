@@ -4,8 +4,8 @@ This repository contains all of the code used in the Inazuma Eleven GO Strikers 
 It uses a modified version of [Kamek](https://github.com/Treeki/Kamek) and [Syati](https://github.com/shibbo/Syati/) to be able to compile custom code and link to existing functions in the game.
 
 # Requirements
-- [CodeWarrior Special Edition](http://web.archive.org/web/20160602205749/http://www.nxp.com/products/software-and-tools/software-development-tools/codewarrior-development-tools/downloads/special-edition-software:CW_SPECIALEDITIONS)
-- [Kamek](https://github.com/Treeki/Kamek)
+- [CodeWarrior Special Edition](http://web.archive.org/web/20160602205749/http://www.nxp.com/products/software-and-tools/software-development-tools/codewarrior-development-tools/downloads/special-edition-software:CW_SPECIALEDITIONS). After installing it, you need `license.dat` from the installation root, and the DLL and EXE files inside `PowerPC_EABI_Tools/Command_Line_Tools`. You need to store them in a `cw` folder.
+- [Kamek](https://github.com/Treeki/Kamek). After compiling it, store it in a `km` folder.
 - Python 3.7
 
 # Usage
