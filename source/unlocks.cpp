@@ -3,43 +3,43 @@
 #include <savedata.h>
 #include <shd_debug.h>
 
-u32* dword_8051D640 = (u32*)0x8051D640;
+u32** dword_8051D640 = (u32**)0x8051D640;
 u32* dword_8051EB40 = (u32*)0x8051EB40;
 
 /// MIXIMAXES : ///
 /// Not proud of that one, i should figure out what these dwords are ///
 kmCallDefAsm(0x800C1D98) 
 {                                     // we move the registers that we'll need and set them up as arguments
-    mr r3, r22 						  // mainly : r22 -> player_def
+    mr r3, r22					  // mainly : r22 -> player_def
 	mr r4, r23                        // r23 -> player_data (save)
 	blr  		              
 }
 
-// handles the miximax unlock
-kmCallDefCpp(0x800C1D9C, void, PLAYER_DEF* player_def, SavePlayerParam* player_data)
+void unlockSecretMiximaxes(PLAYER_DEF* player_def, SavePlayerParam* player_data)
 {
-	if(player_def->id == P_12492FURAN)
+	u32 id = player_def->id;
+	bool hasMiximax = (player_data->Flag & MIXIMAX_LEVEL_ONE) == MIXIMAX_LEVEL_ONE;
+	if ((id == P_12492FURAN || id == P_12330SARU) && !hasMiximax)
 	{
-		SavePlayerParam* playerParam = Savedata_getPlayerData(P_12492FURAN);
-		if(playerParam->Flag & MIXIMAX_LEVEL_ONE != MIXIMAX_LEVEL_ONE)
+		u32 otherPlayer = player_def->id == P_12330SARU ? P_12011FUEI : P_12490ASUTA;
+		KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(id, otherPlayer);
+		if (kizunaData->value >= 50)
 		{
-			KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(player_def->id, P_12490ASUTA);
-			if (kizunaData->value >= 50)
-			{
-				player_data->Flag |= MIXIMAX_LEVEL_ONE;
-				dword_8051D640[*dword_8051EB40 + 1345] = 17; // text entry of the miximax unlock
-
-				// no idea what that is
-				u32 tmp = *dword_8051D640;	
-				*dword_8051EB40 = tmp + 1; 
-			}
+			player_data->Flag |= MIXIMAX_LEVEL_ONE;
+			(*dword_8051D640)[*dword_8051EB40 + 1345] = id == P_12330SARU ? 18 : 17;
+			u32 tmp = *dword_8051EB40;
+			*dword_8051EB40 = tmp + 1;
 		}
 	}
 }
 
+kmCall(0x800C1D9C, unlockSecretMiximaxes);
+
+
+
 kmCallDefAsm(0x800C1DA0)
 {
-	// last part of our series of shitty hacks: restoring the original instructions
+	// restoring the original instructions
 	nofralloc
 	addi r22, r22, 0x148 // PLAYER_DEF* r22 += 1;
 	addi r21, r21, 1 // i += 1
@@ -47,11 +47,7 @@ kmCallDefAsm(0x800C1DA0)
 	blr
 }
 
-
-/// Secret players
-/// Extremely ugly since i haven't RE'd the class yet
-/// So I'm abusing macro directive: Very Bad Code™ 
-inline void handlePopup(int id, int* clubroomMenuScout, int uglyTrick){ 
+inline void handlePopup(int id, int* clubroomMenuScout, int uglyTrick) { 
 	asm 
 	{
 		mr r0, r3
@@ -80,7 +76,8 @@ kmCallDefAsm(0x801F212C)
 	neg r0, r3
 	blr
 }
-kmCallDefCpp(0x801F2128, void, int* clubroomMenuScout)
+
+void unlockSecretPlayers(int* clubroomMenuScout)
 {
 	if(!Savedata_ChkPlayerFlag(P_11717ISHIDO, UNLOCKED) && Savedata_ChkPlayerFlag(P_0010GOUENJI, RECRUITED) && Savedata_ChkPlayerFlag(P_0010GOUENJI_IJ, RECRUITED)
 	&& Savedata_ChkPlayerFlag(P_10308KUROSAKI, RECRUITED) && Savedata_ChkPlayerFlag(P_10321SENGUJI, RECRUITED))
@@ -143,3 +140,4 @@ kmCallDefCpp(0x801F2128, void, int* clubroomMenuScout)
 
 	}
 }
+kmCall(0x801F2128, unlockSecretPlayers);
