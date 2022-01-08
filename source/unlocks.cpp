@@ -3,7 +3,7 @@
 #include <savedata.h>
 #include <shd_debug.h>
 
-u32** dword_8051D640 = (u32**)0x8051D640;
+u32* dword_8051D640 = (u32*)0x8051D640;
 u32* dword_8051EB40 = (u32*)0x8051EB40;
 
 /// MIXIMAXES : ///
@@ -21,14 +21,16 @@ void unlockSecretMiximaxes(PLAYER_DEF* player_def, SavePlayerParam* player_data)
 	bool hasMiximax = (player_data->Flag & MIXIMAX_LEVEL_ONE) == MIXIMAX_LEVEL_ONE;
 	if ((id == P_12492FURAN || id == P_12330SARU) && !hasMiximax)
 	{
-		u32 otherPlayer = player_def->id == P_12330SARU ? P_12011FUEI : P_12490ASUTA;
+		u32 otherPlayer = id == P_12330SARU ? P_12011FUEI : P_12490ASUTA;
 		KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(id, otherPlayer);
 		if (kizunaData->value >= 50)
 		{
 			player_data->Flag |= MIXIMAX_LEVEL_ONE;
-			(*dword_8051D640)[*dword_8051EB40 + 1345] = id == P_12330SARU ? 18 : 17;
-			u32 tmp = *dword_8051EB40;
-			*dword_8051EB40 = tmp + 1;
+			dword_8051D640[*dword_8051EB40 + 1345] = id == P_12330SARU ? 18 : 17; // text entry of the miximax unlock
+
+			// no idea what that is
+			u32 tmp = *dword_8051D640;	
+			*dword_8051EB40 = tmp + 1; 
 		}
 	}
 }
