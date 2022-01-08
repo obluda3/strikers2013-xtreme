@@ -1,5 +1,5 @@
 #include <kamek.h>
-
+/*
 int GetXAdvance(u16 character, u32 scale);
 
 kmBranchDefAsm(0x80034148, 0x80034170) {
@@ -10,6 +10,16 @@ kmBranchDefAsm(0x80034148, 0x80034170) {
 	mr r0, r3
 	blr
 }
+kmBranchDefAsm(0x800342CC, 0x800342D0) {
+	nofralloc
+	mr r4, r31
+	bl GetXAdvance
+	mr r12, r3
+	addi r6, r1, 12
+	blr
+}
+
+kmWrite32(0x8003433C, 0x40C20008);
 
 int GetXAdvance(u16 character, u32 scale) {
 	int xAdValue;
@@ -28,4 +38,4 @@ int GetXAdvance(u16 character, u32 scale) {
 			break;
 	}
 	return xAdValue * scale / 1000 / 2;
-}
+}*/

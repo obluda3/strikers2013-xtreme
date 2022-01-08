@@ -4,11 +4,11 @@
 
 typedef struct 
 {
-	u16 player;
-	u16 move;
+	s16 player;
+	s16 move;
 } BanMove;
 
-static const BanMove BanList[] = { 
+static BanMove BanList[] = { 
 	{ P_12803TEMMA, W_PEGASUS_BREAK },
 	{ P_12813TEMMA, W_PEGASUS_BREAK },
 	{ P_12803TEMMA, W_OU_NO_TSURUGI },
@@ -29,21 +29,14 @@ bool IsLocked(u32 move, u32 player)
 	}
 	if (WAZIsMiximax(move))
 	{
-		if (!IsMiximaxPlayer(player)) return true;
+		if (!IsMiximaxPlayer(player, 0)) return true;
 	}
 	return false;
 }
 
 kmBranchDefAsm(0x800F8D44, 0x800F8D48)
 {
-	bl WAZIsMiximax
-	cmpwi r3, 0
-	beq end
-	check_mixi_player:
-		mr r3, r22
-		li r4, 0
-		bl IsMiximaxPlayer
-		xori r3, r3, 1
-	end:
-		blr
+	mr r4, r22
+	bl IsLocked
+	blr
 }
