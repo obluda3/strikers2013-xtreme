@@ -10,3 +10,4 @@ loader/kamekLoader.o
 loader/main_kamek.dol
 loader/main.dol
 loader/megane.o
+source/text.cpp
