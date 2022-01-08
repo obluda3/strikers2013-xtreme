@@ -17,7 +17,7 @@ int ChkMiximaxGK(int player);
 Miximax* GetMiximaxData(int player, int slot);
 Miximax* GetMiximaxData(int player);
 int GetMiximaxPlyID(int player, int slot);
-int IsMiximaxPlayer(int player, int slot);
+int IsMiximaxPlayer(int player, int* unk);
 int GetMiximaxWazaKeeper(int player);
 
 #endif

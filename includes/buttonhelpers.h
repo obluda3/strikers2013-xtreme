@@ -1,3 +1,6 @@
+#ifndef BUTTONS
+#define BUTTONS
+
 #include "types.h"
 
 bool IsButtonPushed_OK(int unk);
@@ -8,3 +11,4 @@ bool IsButtonPushed_Status(int unk);
 bool IsButtonPushed_Ready(int unk);
 bool IsButtonPushed_MTrance(int unk);
 
+#endif

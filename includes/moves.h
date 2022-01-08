@@ -74,4 +74,9 @@ typedef struct waza_info
 	u16 _8A;
 } WAZA_INFO;
 
+bool WAZIsMiximax(int id);
+bool WAZIsKeshinArmed(int id);
+bool WAZIsKeshinGroup(int id);
+
+
 #endif
