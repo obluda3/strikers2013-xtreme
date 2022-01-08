@@ -87,7 +87,9 @@ kmBranchDefAsm(0x800DE884, 0x800DE888)
 		cmpwi r21, P_10290AMEMIYA
 		beq- end
 		cmpwi r31, W_MIXIMAX_TRANSFORMATION
-		beq end
+		beq- end
+		cmpwi r31, W_TAIKOKU_OUKA_TRANSFORMATION
+		beq- end
 	swap_facemdl:
 		li r4, 0
 		get_playerdef:
