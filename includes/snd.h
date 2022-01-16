@@ -36,6 +36,7 @@ void SNDSeSysOK(int unk);
 void SNDSeSysOK2();
 void SNDSeSysCANCEL(int unk);
 void SNDSeSysBAD(int unk);
+int wiiSndGetNameToID(const char* name);
 // TODO: add the other functions
 
 #endif
