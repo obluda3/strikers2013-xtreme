@@ -27,7 +27,7 @@ void unlockSecretMiximaxes(PLAYER_DEF* player_def, SavePlayerParam* player_data)
 }
 /// MIXIMAXES : ///
 /// Not proud of that one, i should figure out what these dwords are
-kmBranchDefAsm(0x800C1D98) 
+kmBranchDefAsm(0x800C1D98, 0x800c1da4) 
 {      
 	nofralloc
     mr r3, r22					      // r22 -> player_def
@@ -38,9 +38,6 @@ kmBranchDefAsm(0x800C1D98)
 	cmpwi r21, 0x10 // if i < 16 (size of a team)
 	blr	              
 }
-
-kmWrite32(0x800c1d9c, 0x60000000)
-kmWrite32(0x800c1da0, 0x60000000)
 
 inline void handlePopup(int id, int* clubroomMenuScout, int uglyTrick) { 
 	asm 
