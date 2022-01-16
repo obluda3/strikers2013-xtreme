@@ -6,15 +6,6 @@
 u32* dword_8051D640 = (u32*)0x8051D640;
 u32* dword_8051EB40 = (u32*)0x8051EB40;
 
-/// MIXIMAXES : ///
-/// Not proud of that one, i should figure out what these dwords are ///
-kmCallDefAsm(0x800C1D98) 
-{                                     // we move the registers that we'll need and set them up as arguments
-    mr r3, r22					  // mainly : r22 -> player_def
-	mr r4, r23                        // r23 -> player_data (save)
-	blr  		              
-}
-
 void unlockSecretMiximaxes(PLAYER_DEF* player_def, SavePlayerParam* player_data)
 {
 	u32 id = player_def->id;
@@ -34,20 +25,22 @@ void unlockSecretMiximaxes(PLAYER_DEF* player_def, SavePlayerParam* player_data)
 		}
 	}
 }
-
-kmCall(0x800C1D9C, unlockSecretMiximaxes);
-
-
-
-kmCallDefAsm(0x800C1DA0)
-{
-	// restoring the original instructions
+/// MIXIMAXES : ///
+/// Not proud of that one, i should figure out what these dwords are
+kmBranchDefAsm(0x800C1D98) 
+{      
 	nofralloc
+    mr r3, r22					      // r22 -> player_def
+	mr r4, r23                        // r23 -> player_data (save)
+	bl unlockSecretMiximaxes
 	addi r22, r22, 0x148 // PLAYER_DEF* r22 += 1;
 	addi r21, r21, 1 // i += 1
 	cmpwi r21, 0x10 // if i < 16 (size of a team)
-	blr
+	blr	              
 }
+
+kmWrite32(0x800c1d9c, 0x60000000)
+kmWrite32(0x800c1da0, 0x60000000)
 
 inline void handlePopup(int id, int* clubroomMenuScout, int uglyTrick) { 
 	asm 
@@ -68,17 +61,6 @@ inline void handlePopup(int id, int* clubroomMenuScout, int uglyTrick) {
 		end:
 	} 
 }
-
-kmWrite32(0x801f2124,0x7FE3FB78); // mr r3, r31
-kmCallDefAsm(0x801F212C)
-{
-	nofralloc
-	lwz r3, 0xDD0(r31)
-	lwz r31, 12(r1)
-	neg r0, r3
-	blr
-}
-
 void unlockSecretPlayers(int* clubroomMenuScout)
 {
 	if(!Savedata_ChkPlayerFlag(P_11717ISHIDO, UNLOCKED) && Savedata_ChkPlayerFlag(P_0010GOUENJI, RECRUITED) && Savedata_ChkPlayerFlag(P_0010GOUENJI_IJ, RECRUITED)
@@ -142,4 +124,16 @@ void unlockSecretPlayers(int* clubroomMenuScout)
 
 	}
 }
-kmCall(0x801F2128, unlockSecretPlayers);
+
+kmCallDefAsm(0x801F2124)
+{
+	nofralloc
+	mr r3, r31
+	bl unlockSecretPlayers
+	lwz r3, 0xDD0(r31)
+	lwz r31, 12(r1)
+	neg r0, r3
+	blr
+}
+kmWrite32(0x801f2128, 0x60000000);
+kmWrite32(0x801f212c, 0x60000000);
