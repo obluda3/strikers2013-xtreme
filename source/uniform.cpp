@@ -98,7 +98,6 @@ namespace MENU_TP_DATA
 
 	// Makes it so added uniforms are unlocked by default
 	kmWrite32(0x8004311C, 0x38600001);
-	// Change this if you want to add a new uniform
 	kmWrite32(0x801E0B1C, 0x2c1b0000 + UNIFORM_COUNT); // cmpwi r27, UNIFORM_COUNT
 	kmWrite32(0x8026B0E4, 0x2C1C0000 + UNIFORM_COUNT); // cmpwi r28, UNIFORM_COUNT
 
