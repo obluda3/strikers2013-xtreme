@@ -36,6 +36,8 @@ void SNDSeSysOK(int unk);
 void SNDSeSysOK2();
 void SNDSeSysCANCEL(int unk);
 void SNDSeSysBAD(int unk);
+void shdBgmLoad(s32 unk, s32 id, s32 isMusicOn, s32 unk2);
+void shdBgmStop(s32 unk);
 int wiiSndGetNameToID(const char* name);
 // TODO: add the other functions
 

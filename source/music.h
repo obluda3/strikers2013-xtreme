@@ -1,4 +1,11 @@
+#include <types.h>
+
 int getSndId(const char* defaultBgm);
+int updateCurrentBgm(int argToStatus);
+void drawBgmName();
+void SNDBgmPlay_Direct(int id);
+
+u16* IsMusicOn = (u16*)0x80904212;
 
 const char* bgmNames[] = { 
 	"BGM_TGS_BATTLE01",
