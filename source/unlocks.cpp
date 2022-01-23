@@ -1,7 +1,6 @@
 #include <kamek.h>
 #include <matchplayer.h>
 #include <savedata.h>
-#include <shd_debug.h>
 
 u32* dword_8051D640 = (u32*)0x8051D640;
 u32* dword_8051EB40 = (u32*)0x8051EB40;
@@ -20,13 +19,11 @@ void unlockSecretMiximaxes(PLAYER_DEF* player_def, SavePlayerParam* player_data)
 			dword_8051D640[*dword_8051EB40 + 1345] = id == P_12330SARU ? 18 : 17; // text entry of the miximax unlock
 
 			// no idea what that is
-			u32 tmp = *dword_8051D640;	
-			*dword_8051EB40 = tmp + 1; 
+			*dword_8051EB40 += 1;
 		}
 	}
 }
 /// MIXIMAXES : ///
-/// Not proud of that one, i should figure out what these dwords are
 kmBranchDefAsm(0x800C1D98, 0x800c1da4) 
 {      
 	nofralloc
@@ -58,79 +55,71 @@ inline void handlePopup(int id, int* clubroomMenuScout, int uglyTrick) {
 		end:
 	} 
 }
+
+typedef struct 
+{
+	u16 Recruited;
+	u16 Requirements[5];
+	u16 kizuna1;
+	u16 kizuna2;
+	u16 kizunaValue;
+} UnlockData;
+
+UnlockData Unlocks[] = { 
+	{ P_11717ISHIDO, { P_0010GOUENJI, P_0010GOUENJI_IJ, P_10308KUROSAKI, P_10321SENGUJI }, 0, 0, 0 },
+	{ P_11760AFURO, { P_0190AFURO, P_0190AFURO_WORLD, P_10229KISHIBE, P_10230SOSUKE, P_10233YOSHIHIKO }, 0, 0, 0 },
+	{ P_12013FUEI, { P_12011FUEI, P_10008MATSUKAZE_TNM }, 0, 0, 0 },
+	{ P_12803TEMMA, { P_10008MATSUKAZE_TNM, P_10370SHU }, P_10008MATSUKAZE_TNM, P_10370SHU, 75 },
+	{ P_12815ZANAKU, {P_12150ZANAKU }, 0, 0, 0},
+	{ P_12802TSURUGI, { P_10008MATSUKAZE_TNM, P_12012YUICHI }, P_10010TSURUGI, P_12012YUICHI, 75 },
+	{ P_12813TEMMA, { P_12189REI, P_12330SARU }, 0, 0, 0}
+};
+u16 ChronoStorm[] = { P_12804SHINDO, P_12805KIRINO, P_12806AMEMIYA, P_12807SHINSUKE, P_12808TOBU, P_12809FUEI, P_12810NISHIKI, P_12811TSURUGI, P_12812KINAKO, P_12816SZANAKU, };
+
 void unlockSecretPlayers(int* clubroomMenuScout)
 {
-	if(!Savedata_ChkPlayerFlag(P_11717ISHIDO, UNLOCKED) && Savedata_ChkPlayerFlag(P_0010GOUENJI, RECRUITED) && Savedata_ChkPlayerFlag(P_0010GOUENJI_IJ, RECRUITED)
-	&& Savedata_ChkPlayerFlag(P_10308KUROSAKI, RECRUITED) && Savedata_ChkPlayerFlag(P_10321SENGUJI, RECRUITED))
+	#define UNLOCK_COUNT sizeof(Unlocks) / sizeof(UnlockData)
+	for (int i = 0; i < UNLOCK_COUNT; i++)
 	{
-		handlePopup(P_11717ISHIDO, clubroomMenuScout, 0);
-		Savedata_SetPlayerFlag(P_11717ISHIDO, UNLOCKED, 1);
-	}
-	if(!Savedata_ChkPlayerFlag(P_11760AFURO, UNLOCKED) && Savedata_ChkPlayerFlag(P_0190AFURO, RECRUITED) && Savedata_ChkPlayerFlag(P_0190AFURO_WORLD, RECRUITED) 
-	&& Savedata_ChkPlayerFlag(P_10229KISHIBE, RECRUITED) && Savedata_ChkPlayerFlag(P_10230SOSUKE, RECRUITED) && Savedata_ChkPlayerFlag(P_10233YOSHIHIKO, RECRUITED))
-	{
-		handlePopup(P_11760AFURO, clubroomMenuScout, 0);
-		Savedata_SetPlayerFlag(P_11760AFURO, UNLOCKED, 1);
-	}
-	if(!Savedata_ChkPlayerFlag(P_12013FUEI, UNLOCKED) && Savedata_ChkPlayerFlag(P_12011FUEI, RECRUITED) && Savedata_ChkPlayerFlag(P_10008MATSUKAZE_TNM, RECRUITED))
-	{
-		handlePopup(P_12013FUEI, clubroomMenuScout, 0);
-		Savedata_SetPlayerFlag(P_12013FUEI, UNLOCKED, 1);
-	}
-	if(!Savedata_ChkPlayerFlag(P_12803TEMMA, UNLOCKED) && Savedata_ChkPlayerFlag(P_10008MATSUKAZE_TNM, RECRUITED) && Savedata_ChkPlayerFlag(P_10370SHU, RECRUITED))
-	{
-		KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(P_12803TEMMA, P_10370SHU);
-		if(kizunaData->value > 75)
+		UnlockData* unlockData = &Unlocks[i];
+		s32 recruitedPlayer = unlockData->Recruited;
+		if (!Savedata_ChkPlayerFlag(recruitedPlayer, UNLOCKED))
 		{
-			handlePopup(P_12803TEMMA, clubroomMenuScout, 0);
-			Savedata_SetPlayerFlag(P_12803TEMMA, UNLOCKED, 1);
-		}
-	}
-	if(!Savedata_ChkPlayerFlag(P_12815ZANAKU, UNLOCKED) && Savedata_ChkPlayerFlag(P_12150ZANAKU, RECRUITED))
-	{
-		handlePopup(P_12815ZANAKU, clubroomMenuScout, 0);
-		Savedata_SetPlayerFlag(P_12815ZANAKU, UNLOCKED, 1);
-	}
-	if(!Savedata_ChkPlayerFlag(P_12802TSURUGI, UNLOCKED) && Savedata_ChkPlayerFlag(P_10008MATSUKAZE_TNM, RECRUITED) && Savedata_ChkPlayerFlag(P_12012YUICHI, RECRUITED))
-	{
-		KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(P_10010TSURUGI, P_12012YUICHI);
-		if (kizunaData->value > 75)
-		{
-			handlePopup(P_12802TSURUGI, clubroomMenuScout, 0);
-			Savedata_SetPlayerFlag(P_12802TSURUGI, UNLOCKED, 1);
-		}
-	}
-	if(!Savedata_ChkPlayerFlag(P_12804SHINDO, UNLOCKED) && !Savedata_ChkPlayerFlag(P_12805KIRINO, UNLOCKED) && !Savedata_ChkPlayerFlag(P_12806AMEMIYA, UNLOCKED) && 
-	!Savedata_ChkPlayerFlag(P_12807SHINSUKE, UNLOCKED) && !Savedata_ChkPlayerFlag(P_12808TOBU, UNLOCKED) && !Savedata_ChkPlayerFlag(P_12809FUEI, UNLOCKED) && 
-	!Savedata_ChkPlayerFlag(P_12810NISHIKI, UNLOCKED) && !Savedata_ChkPlayerFlag(P_12811TSURUGI, UNLOCKED) && !Savedata_ChkPlayerFlag(P_12812KINAKO, UNLOCKED) && 
-	!Savedata_ChkPlayerFlag(P_12813TEMMA, UNLOCKED) && !Savedata_ChkPlayerFlag(P_12816SZANAKU, UNLOCKED) && Savedata_ChkPlayerFlag(P_12330SARU, RECRUITED) && 
-	Savedata_ChkPlayerFlag(P_12189REI, RECRUITED))
-	{
-		handlePopup(P_12813TEMMA, clubroomMenuScout, 0);
-		Savedata_SetPlayerFlag(P_12804SHINDO, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12805KIRINO, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12806AMEMIYA, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12807SHINSUKE, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12808TOBU, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12809FUEI, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12810NISHIKI, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12811TSURUGI, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12812KINAKO, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12813TEMMA, UNLOCKED, 1);
-		Savedata_SetPlayerFlag(P_12816SZANAKU, UNLOCKED, 1);
+			for (int j = 0; j < 5; j++)
+			{
+				s32 player = unlockData->Requirements[j];
 
+				if (!player) 
+				{
+					s32 kizunaPlayer1 = unlockData->kizuna1;
+					s32 kizunaPlayer2 = unlockData->kizuna2;
+					s32 kizunaValue = unlockData->kizunaValue;
+					if (kizunaPlayer1)
+					{
+						if (Savedata_getPlayeData_KizunaData(kizunaPlayer1, kizunaPlayer2)->value < kizunaValue) break;
+					}
+
+					if (recruitedPlayer == P_12813TEMMA) 
+					{
+						for (int k = 0; k < 10; k++) Savedata_SetPlayerFlag(ChronoStorm[k], UNLOCKED, 1);
+					}
+
+					handlePopup(player, clubroomMenuScout, 0);
+					Savedata_SetPlayerFlag(recruitedPlayer, UNLOCKED, 1);
+					break;
+				}
+				else if(!Savedata_ChkPlayerFlag(player, RECRUITED)) break;
+			}
+				
+		}
 	}
 }
 
-kmCallDefAsm(0x801F2124)
+kmBranchDefAsm(0x801F2124, 0x801F2128)
 {
 	nofralloc
 	mr r3, r31
 	bl unlockSecretPlayers
 	lwz r3, 0xDD0(r31)
-	lwz r31, 12(r1)
-	neg r0, r3
 	blr
 }
-kmWrite32(0x801f2128, 0x60000000);
-kmWrite32(0x801f212c, 0x60000000);
