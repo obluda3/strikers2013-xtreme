@@ -59,7 +59,7 @@ inline void handlePopup(int id, int* clubroomMenuScout, int uglyTrick) {
 typedef struct 
 {
 	u16 Recruited;
-	u16 Requirements[5];
+	u16 Requirements[8];
 	u16 kizuna1;
 	u16 kizuna2;
 	u16 kizunaValue;
@@ -74,6 +74,7 @@ UnlockData Unlocks[] = {
 	{ P_12802TSURUGI, { P_10008MATSUKAZE_TNM, P_12012YUICHI }, P_10010TSURUGI, P_12012YUICHI, 75 },
 	{ P_12813TEMMA, { P_12189REI, P_12330SARU }, 0, 0, 0}
 };
+
 u16 ChronoStorm[] = { P_12804SHINDO, P_12805KIRINO, P_12806AMEMIYA, P_12807SHINSUKE, P_12808TOBU, P_12809FUEI, P_12810NISHIKI, P_12811TSURUGI, P_12812KINAKO, P_12816SZANAKU, };
 
 void unlockSecretPlayers(int* clubroomMenuScout)
