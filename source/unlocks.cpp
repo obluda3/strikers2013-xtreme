@@ -86,7 +86,7 @@ void unlockSecretPlayers(int* clubroomMenuScout)
 		s32 recruitedPlayer = unlockData->Recruited;
 		if (!Savedata_ChkPlayerFlag(recruitedPlayer, UNLOCKED))
 		{
-			for (int j = 0; j < 5; j++)
+			for (int j = 0; j < 8; j++)
 			{
 				s32 player = unlockData->Requirements[j];
 
