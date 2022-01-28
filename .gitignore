@@ -1,6 +1,4 @@
 /CustomCode.bin
-/cw
-/km
 /build
 /license.dat
 /.vscode
@@ -11,3 +9,18 @@ loader/main_kamek.dol
 loader/main.dol
 loader/megane.o
 source/text.cpp
+cw/CLT_EABI_PPC_Tools_Notes.txt
+cw/CLT_Usage_Notes.txt
+cw/license.dat
+cw/lmgr8c.dll
+cw/lmgr11.dll
+cw/mwasmeppc.exe
+cw/mwasmeppc.txt
+cw/mwcceppc.txt
+cw/mwcceppc.exe
+cw/mwldeppc.exe
+cw/mwldeppc.txt
+km/Kamek.exe
+km/Kamek.pdb
+km/km.zip
+km/Kamek.exe.config
