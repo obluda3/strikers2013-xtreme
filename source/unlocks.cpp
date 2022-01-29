@@ -5,13 +5,15 @@
 u32* dword_8051D640 = (u32*)0x8051D640;
 u32* dword_8051EB40 = (u32*)0x8051EB40;
 
-void unlockSecretMiximaxes(PLAYER_DEF* player_def, SavePlayerParam* player_data)
+SavePlayerParam* unlockSecretMiximaxes(register PLAYER_DEF* player_def)
 {
-	u32 id = player_def->id;
+	asm("mr player_def, r22");
+	s32 id = player_def->id;
+	SavePlayerParam* player_data = Savedata_getPlayerData(id);
 	bool hasMiximax = (player_data->Flag & MIXIMAX_LEVEL_ONE) == MIXIMAX_LEVEL_ONE;
 	if ((id == P_12492FURAN || id == P_12330SARU) && !hasMiximax)
 	{
-		u32 otherPlayer = id == P_12330SARU ? P_12011FUEI : P_12490ASUTA;
+		s32 otherPlayer = id == P_12330SARU ? P_12011FUEI : P_12490ASUTA;
 		KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(id, otherPlayer);
 		if (kizunaData->value >= 50)
 		{
@@ -22,18 +24,7 @@ void unlockSecretMiximaxes(PLAYER_DEF* player_def, SavePlayerParam* player_data)
 			*dword_8051EB40 += 1;
 		}
 	}
-}
-/// MIXIMAXES : ///
-kmBranchDefAsm(0x800C1D98, 0x800c1da4) 
-{      
-	nofralloc
-    mr r3, r22					      // r22 -> player_def
-	mr r4, r23                        // r23 -> player_data (save)
-	bl unlockSecretMiximaxes
-	addi r22, r22, 0x148 // PLAYER_DEF* r22 += 1;
-	addi r21, r21, 1 // i += 1
-	cmpwi r21, 0x10 // if i < 16 (size of a team)
-	blr	              
+	return player_data;
 }
 
 inline void handlePopup(int id, int* clubroomMenuScout, int uglyTrick) { 
@@ -66,7 +57,7 @@ typedef struct
 } UnlockData;
 
 UnlockData Unlocks[] = { 
-	{ P_11717ISHIDO, { P_0010GOUENJI, P_0010GOUENJI_IJ, P_10308KUROSAKI, P_10321SENGUJI }, 0, 0, 0 },
+	{ P_11717ISHIDO, { P_0010GOUENJI, P_0010GOUENJI_2nd, P_0010GOUENJI_IJ, P_10308KUROSAKI, P_10321SENGUJI, P_10441KIBAYAMA }, 0, 0, 0 },
 	{ P_11760AFURO, { P_0190AFURO, P_0190AFURO_WORLD, P_10229KISHIBE, P_10230SOSUKE, P_10233YOSHIHIKO }, 0, 0, 0 },
 	{ P_12013FUEI, { P_12011FUEI, P_10008MATSUKAZE_TNM }, 0, 0, 0 },
 	{ P_12803TEMMA, { P_10008MATSUKAZE_TNM, P_10370SHU }, P_10008MATSUKAZE_TNM, P_10370SHU, 75 },
@@ -77,9 +68,10 @@ UnlockData Unlocks[] = {
 
 u16 ChronoStorm[] = { P_12804SHINDO, P_12805KIRINO, P_12806AMEMIYA, P_12807SHINSUKE, P_12808TOBU, P_12809FUEI, P_12810NISHIKI, P_12811TSURUGI, P_12812KINAKO, P_12816SZANAKU, };
 
-void unlockSecretPlayers(int* clubroomMenuScout)
+int unlockSecretPlayers(register int* clubroomMenuScout)
 {
 	#define UNLOCK_COUNT sizeof(Unlocks) / sizeof(UnlockData)
+	
 	for (int i = 0; i < UNLOCK_COUNT; i++)
 	{
 		UnlockData* unlockData = &Unlocks[i];
@@ -88,9 +80,9 @@ void unlockSecretPlayers(int* clubroomMenuScout)
 		{
 			for (int j = 0; j < 8; j++)
 			{
-				s32 player = unlockData->Requirements[j];
+				s32 playerToRecruit = unlockData->Requirements[j];
 
-				if (!player) 
+				if (!playerToRecruit) 
 				{
 					s32 kizunaPlayer1 = unlockData->kizuna1;
 					s32 kizunaPlayer2 = unlockData->kizuna2;
@@ -105,22 +97,17 @@ void unlockSecretPlayers(int* clubroomMenuScout)
 						for (int k = 0; k < 10; k++) Savedata_SetPlayerFlag(ChronoStorm[k], UNLOCKED, 1);
 					}
 
-					handlePopup(player, clubroomMenuScout, 0);
+					handlePopup(recruitedPlayer, clubroomMenuScout, 0);
 					Savedata_SetPlayerFlag(recruitedPlayer, UNLOCKED, 1);
 					break;
 				}
-				else if(!Savedata_ChkPlayerFlag(player, RECRUITED)) break;
+				else if(!Savedata_ChkPlayerFlag(playerToRecruit, RECRUITED)) break;
 			}
 				
 		}
 	}
+	return 0x36; // default inst
 }
 
-kmBranchDefAsm(0x801F2124, 0x801F2128)
-{
-	nofralloc
-	mr r3, r31
-	bl unlockSecretPlayers
-	lwz r3, 0xDD0(r31)
-	blr
-}
+kmCall(0x800C1960, unlockSecretMiximaxes);
+kmCall(0x801F1D28, unlockSecretPlayers);

@@ -103,8 +103,7 @@ kmBranchDefAsm(0x800DE884, 0x800DE888)
 		blr
 }
 
-// GetArmedPlyID
-kmBranchDefCpp(0x800BEB94, NULL, u32, u32 player)
+int newGetArmedPlyId(u32 player)
 {
 	const int size = sizeof(ArmedTable) / sizeof(ArmedInfo);
 	for(int i = 0; i < size; i++)
@@ -116,3 +115,5 @@ kmBranchDefCpp(0x800BEB94, NULL, u32, u32 player)
 	}
 	return 0;
 }
+
+kmBranch(0x800beb94, newGetArmedPlyId);

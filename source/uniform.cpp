@@ -60,9 +60,8 @@ namespace MENU_TP_DATA
 		{ P_11717ISHIDO, E_ISHIDO, E_FIFTH_SECTOR, 0x440, 0x1 },
 		{ P_11780SAN, E_SAN, E_SAN, 0x441, 0x1 },
 	};
-	
-	// IsUniformNoPositionFromTeam(int uniform)
-	kmBranchDefCpp(0x802862f4, NULL, int, int uniform)
+
+	bool newIsUniformNoPositionFromTeam(int uniform)
 	{
 		int count = sizeof(UniformDataTbl) / sizeof(UniformData);
 		for(int i = 0; i < count; i++)
@@ -72,8 +71,8 @@ namespace MENU_TP_DATA
 		}
 		return 0;
 	}
-	// IsUniformNoHomeAwayFromTeam(int uniform)
-	kmBranchDefCpp(0x80286218, NULL, int, int uniform)
+
+	bool newIsUniformNoHomeAwayFromTeam(int uniform)
 	{
 		int count = sizeof(UniformDataTbl) / sizeof(UniformData);
 		for(int i = 0; i < count; i++)
@@ -83,8 +82,8 @@ namespace MENU_TP_DATA
 		}
 		return 0;
 	}
-	// UniformData* GetUniformData()
-	kmBranchDefCpp(0x802861d0, NULL, UniformData*, int index)
+
+	UniformData* newGetUniformData(int index)
 	{
 		if(index < 0 || index >= (sizeof(UniformDataTbl) / sizeof(UniformData)))
 		{
@@ -95,6 +94,9 @@ namespace MENU_TP_DATA
 			return &UniformDataTbl[index];
 		}
 	}
+	kmBranch(0x80286218, newIsUniformNoHomeAwayFromTeam);
+	kmBranch(0x802861d0, newGetUniformData);
+	kmBranch(0x802862f4, newIsUniformNoHomeAwayFromTeam);
 
 	// Makes it so added uniforms are unlocked by default
 	kmWrite32(0x8004311C, 0x38600001);

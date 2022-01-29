@@ -25,40 +25,7 @@ Miximax g_MiximaxTable[] =
 	{ 0xFFFF, 0, 0, 0, 0, 0 },
 };
 
-// IsMiximaxPlayer(int, int*)
-kmBranchDefCpp(0x800BEBE4, NULL, int, int player, int* unk)
-{
-	Miximax* mixiData = g_MiximaxTable;
-	for (Miximax* mixiData = g_MiximaxTable; mixiData->player > 0; mixiData++)
-	{
-		if (mixiData->aura == player)
-		{
-			if(unk)
-				*unk = mixiData->player;
-			return 1;
-		}
-	}
-	return 0;
-}
-
-// GetMiximaxData(int)
-kmBranchDefCpp(0x800BECC4, NULL, Miximax*, int tableIdx)
-{
-	if (tableIdx > 0)
-	{
-		int realIndex = 0;
-		for (Miximax* mixiData = g_MiximaxTable; mixiData->player > 0; mixiData++)
-		{
-			if (realIndex == tableIdx)
-				return &g_MiximaxTable[realIndex];
-			realIndex++;
-		}
-	}
-	return 0;
-}
-
-// GetMiximaxData(int, int)
-kmBranchDefCpp(0x800bed14, NULL, Miximax*, int playerId, int slot)
+Miximax* newGetMiximaxData(int playerId, int slot)
 {
 	int listId = GetPLYIDToListID(playerId, 0);
 	for (Miximax* mixiData = g_MiximaxTable; mixiData->player > 0; ++mixiData)
@@ -74,3 +41,36 @@ kmBranchDefCpp(0x800bed14, NULL, Miximax*, int playerId, int slot)
 	return 0;
 }
 
+bool newIsMiximaxPlayer(int player, int* unk)
+{
+	Miximax* mixiData = g_MiximaxTable;
+	for (Miximax* mixiData = g_MiximaxTable; mixiData->player > 0; mixiData++)
+	{
+		if (mixiData->aura == player)
+		{
+			if(unk)
+				*unk = mixiData->player;
+			return 1;
+		}
+	}
+	return 0;
+}
+
+Miximax* newGetMiximaxData2(int tableIdx)
+{
+	if (tableIdx > 0)
+	{
+		int realIndex = 0;
+		for (Miximax* mixiData = g_MiximaxTable; mixiData->player > 0; mixiData++)
+		{
+			if (realIndex == tableIdx)
+				return &g_MiximaxTable[realIndex];
+			realIndex++;
+		}
+	}
+	return 0;
+}
+
+kmBranch(0x800bed14, newGetMiximaxData);
+kmBranch(0x800BEBE4, newIsMiximaxPlayer);
+kmBranch(0x800BECC4, newGetMiximaxData2);

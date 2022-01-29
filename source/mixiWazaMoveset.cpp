@@ -20,8 +20,9 @@ static BanMove BanList[] = {
 	{ -1, -1 }
 };
 
-bool IsLocked(u32 move, u32 player)
+bool IsLocked(u32 move, register u32 player)
 {
+	asm("mr player, r22");
 	for (BanMove* ban = BanList; ban->player != -1; ban++)
 	{
 		if (ban->player == player && ban->move == move)
@@ -34,9 +35,4 @@ bool IsLocked(u32 move, u32 player)
 	return false;
 }
 
-kmBranchDefAsm(0x800F8D44, 0x800F8D48)
-{
-	mr r4, r22
-	bl IsLocked
-	blr
-}
+kmCall(0x800F8D44, IsLocked);
