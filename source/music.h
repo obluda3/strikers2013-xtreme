@@ -4,6 +4,8 @@ int getSndId(const char* defaultBgm);
 int updateCurrentBgm(int argToStatus);
 void drawBgmName();
 void SNDBgmPlay_Direct(int id);
+void onlineDrawHook(CSprStudio* spriteStudio);
+void resetMusic();
 
 u16* IsMusicOn = (u16*)0x80904212;
 
