@@ -2,50 +2,6 @@
 #define SPR_STUDIO
 
 #include "types.h"
-
-
-
-
-typedef struct CSprStudio
-{
-	u32 _0;
-	u16 texSlots[64];
-	u16 fileLabels[64];
-	u16 m_textureMax;
-	char _106;
-	unkStruct *pUnkStruct;
-	ssaComponent *m_pSsaComponent;
-	u32 _110;
-	u16 m_curFrameMaybe;
-	u16 m_ssaCount;
-	u16 _118;
-	u16 _11A;
-	u32 _11C;
-	u32 _120;
-	u32 _124;
-	u32 _128;
-	u32 _12C;
-	u32 _130;
-	u32 _134;
-	u32 _138;
-	u32 _13C;
-	u32 _140;
-	u32 _144;
-	u32 _148;
-	u32 _14C;
-	u32 _150;
-	u32 _154;
-	u32 _158;
-	u32 _15C;
-	u32 _160;
-	u32 _164;
-	u32 _168;
-	u32 _16C;
-	u32 _170;
-	u32 _174;
-	u32 _178;
-} CSprStudio;
-
 struct unkStruct
 {
 	u32 _0;
@@ -94,7 +50,54 @@ struct ssaComponent
 	u16 _74;
 };
 
-namespace WATAM_UTILITY {
+class CSprStudio
+{
+	public:
+		void Draw();
+	//todo
+	private:
+		u32 _0;
+		u16 texSlots[64];
+		u16 fileLabels[64];
+		u16 m_textureMax;
+		char _106;
+		unkStruct *pUnkStruct;
+		ssaComponent *m_pSsaComponent;
+		u32 _110;
+		u16 m_curFrameMaybe;
+		u16 m_ssaCount;
+		u16 _118;
+		u16 _11A;
+		u32 _11C;
+		u32 _120;
+		u32 _124;
+		u32 _128;
+		u32 _12C;
+		u32 _130;
+		u32 _134;
+		u32 _138;
+		u32 _13C;
+		u32 _140;
+		u32 _144;
+		u32 _148;
+		u32 _14C;
+		u32 _150;
+		u32 _154;
+		u32 _158;
+		u32 _15C;
+		u32 _160;
+		u32 _164;
+		u32 _168;
+		u32 _16C;
+		u32 _170;
+		u32 _174;
+		u32 _178;	
+};
+
+
+
+namespace WATAM_UTILITY 
+{
 	class CSetCallback
 	{
 	private:
@@ -102,7 +105,7 @@ namespace WATAM_UTILITY {
 	public:
 		virtual int CallbackFunction(int a1, int a2, int a3, int a4, int a5, int a6) = 0;
 		virtual ~CSetCallback() = 0; 
-	}
+	};
 }
 
 #endif

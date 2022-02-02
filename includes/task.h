@@ -12,12 +12,17 @@ typedef struct TaskHolder
 
 class cTask
 {
-private:
+public:
 	TaskHolder *stack;
-	u32 _4;
-	u32 _8;
-	u32 remainingTasks;
-	u32 taskCount;
+	void Create(int size);
+	void Push(void* function, void* arg);
+	void Pop(bool unused);
+	void Update(); 
+private:
+	u32 m_elapsedTime;
+	u32 m_callCount;
+	u32 m_remainingTasks;
+	u32 m_taskCount;
 };
 
 #endif
