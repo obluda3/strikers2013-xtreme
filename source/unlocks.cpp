@@ -106,6 +106,7 @@ int unlockSecretPlayers(register int* clubroomMenuScout)
 				
 		}
 	}
+	asm("li r4, 0");
 	return 0x36; // default inst
 }
 
