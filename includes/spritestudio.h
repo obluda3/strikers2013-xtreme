@@ -54,6 +54,9 @@ class CSprStudio
 {
 	public:
 		void Draw();
+		void Exec(int a1, int a2);
+		void UpdateFrame(long a1, long a2);
+		void EndSsa(long a1);
 	//todo
 	private:
 		u32 _0;

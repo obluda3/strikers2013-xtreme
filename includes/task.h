@@ -10,12 +10,12 @@ typedef struct TaskHolder
 	u32 field_8;
 } TaskHolder;
 
-class cTask
+class cTASK
 {
 public:
 	TaskHolder *stack;
 	void Create(int size);
-	void Push(void* function, void* arg);
+	void Push(void (*function)(int, void*), void* arg);
 	void Pop(bool unused);
 	void Update(); 
 private:

@@ -24,7 +24,7 @@ namespace TTL
 		u32 _3C;
 		u32 _40;
 		CSprStudio *SpriteStudio;
-		cTask *Tasks;
+		cTASK *Tasks;
 	} mpMap;
 
 	static mpMap* mpMapTemp;

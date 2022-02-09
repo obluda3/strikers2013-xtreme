@@ -32,6 +32,7 @@ void SNDBgmPlayCaravan(s32 unk);
 void SNDBgmStop(s32 unk);
 void SNDBgmFadeOut(s32 unk1, s32 unk2);
 void SNDUnloadSEGrp();
+void SNDSePlay(int unk1, int unk2, int unk3);
 void SNDSeSysOK(int unk);
 void SNDSeSysOK2();
 void SNDSeSysCANCEL(int unk);
