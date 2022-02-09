@@ -147,6 +147,7 @@ void SettingPassLoop(int state, void* arg)
 			menu->tasks->Push(MusicLoop, arg);
 			HelpBar_SetTextID(532);
 		}
+		menu->nameWindow->exec();
 		menu->nameWindow->draw();
 		popup->draw();
 	}
