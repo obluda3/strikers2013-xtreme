@@ -1,11 +1,11 @@
 #ifndef SHD_TASKS
 #define SHD_TASKS
-
+typedef void (*task_t)(int, void*);
 #include "types.h"
 
 typedef struct TaskHolder
 {
-	void* function;
+	task_t function;
 	u32 ptrArgument;
 	u32 field_8;
 } TaskHolder;

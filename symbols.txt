@@ -22378,6 +22378,7 @@ gSScb__9OPPOSTASK=0x8050D85C
 @LOCAL@func_Main__FPvi@anmno=0x8050D8B8
 @LOCAL@drawFace__18stFaceSelectWindowFiii@flashcnt=0x8050D8C0
 @LOCAL@draw__14stStatusWindowFv@flashcnt@16=0x8050D8D0
+gpMenuBG_Work=0x8050D8D8
 mpMenuKzWork__12MENU_KZ_TASK=0x8050D8F8
 @LOCAL@render_prim__Q216MENU_SELECT_ITEM19MenuSelectItem_WORKFv@mainloop_cnt=0x8050D940
 @LOCAL@render_prim__Q216MENU_SELECT_ITEM19MenuSelectItem_WORKFv@multi_cnt@0=0x8050D944
