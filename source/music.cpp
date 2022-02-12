@@ -2,6 +2,7 @@
 #include <snd.h>
 #include <buttonhelpers.h>
 #include <savedata.h>
+#include <dvd.h>
 #include <text.h>
 #include <shd_debug.h>
 #include <utilitysato.h>
@@ -18,8 +19,8 @@ static char s_HelpbarText_Wifi_b[] = { 0x23, 0x62, 0x38, 0x33, 0x23, 0x3d, 0x82,
 static char s_HelpbarText_Sett[] = { 0x23, 0x62, 0x38, 0x34, 0x23, 0x3d, 0x82, 0xe0, 0x82, 0xc7, 0x82, 0xe9, 0x20, 0x23, 0x49, 0x31, 0x23, 0x62, 0x38, 0x36, 0x23, 0x3d, 0x50, 0x72, 0x65, 0x76, 0x69, 0x6f, 0x75, 0x73, 0x20, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x20, 0x23, 0x62, 0x38, 0x35, 0x23, 0x3d, 0x4e, 0x65, 0x78, 0x74, 0x20, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x00 };
 static char ***s_MainTexts = (char***)0x805131C0;
 u16* IsMusicOn = (u16*)0x80904212;
-
-const char* bgmNames[] = { 
+static char** bgmNames = (char**) 0;
+char* defaultBgmNames[] = { 
 	"BGM_TGS_BATTLE01",
 	"BGM_TGS_BATTLE02",
 	"BGM_TGS_BATTLE03",
@@ -127,10 +128,24 @@ const char* bgmNames[] = {
 	"BGM_M34_FRAN1_MASTER",
 	"BGM_M36_FRAN2_MASTER",
 };
+
 static int s_CurrentBgm = 0;
 static bool s_OneTimeChange = false;
+static void* playlistBuffer = 0;
+static int bgmMax = sizeof(bgmNames) / sizeof(bgmNames[0]);
 
-const int bgmMax = sizeof(bgmNames) / sizeof(bgmNames[0]);
+
+void parsePlaylistFile(u8* data, int size)
+{
+	u32 baseAddress = (u32)data - 4;
+	for (int i = 0; i < size; i++)
+	{
+		u32 pointer = *((u32 *)data);
+		u32 fixedPointer = pointer + baseAddress;
+		*((u32 *)data) = fixedPointer;
+		data += 4;
+	}
+}
 
 int getSndId(const char* defaultBgm) 
 {
@@ -139,16 +154,64 @@ int getSndId(const char* defaultBgm)
 	return wiiSndGetNameToID(defaultBgm);
 }
 
+void initBgmPlayer()
+{
+	char** mainTexts = *s_MainTexts;
+	mainTexts[858] = s_HelpbarText_SP;
+	mainTexts[530] = s_HelpbarText_Wifi_a;
+	mainTexts[531] = s_HelpbarText_Wifi_b;
+	mainTexts[532] = s_HelpbarText_Sett;
+
+	char* path = "Playlist.bin";
+	cprintf("Loading custom musics in: '%s'...\n", path);
+
+	void* buffer = 0;
+	int entrynum = DVDConvertPathToEntrynum(path);
+	if (entrynum < 0)
+		cprintf("Could not find '%s' \n", path);
+	else 
+	{
+		DVDHandle handle;
+		if (!DVDFastOpen(entrynum, &handle)) 
+			cprintf("ERROR: Failed to open file!\n");
+		else
+		{
+			cprintf("DVD file located: addr=%p, size=%d\n", handle.address, handle.length);
+
+			u32 length = handle.length, roundedLength = (handle.length + 0x1F) & ~0x1F;
+			buffer = MEMAlloc(roundedLength, 32, 3, 31);
+			if (!buffer)
+				cprintf("ERROR: Out of file memory");
+			else
+			{
+				DVDReadPrio(&handle, buffer, roundedLength, 0, 2);
+				DVDClose(&handle);
+			}
+		}
+	}
+
+	if (!buffer)
+	{
+		bgmNames = defaultBgmNames;
+		bgmMax = sizeof(defaultBgmNames) / sizeof(defaultBgmNames[0]);
+	}
+	else
+	{
+		int size = *((int *)buffer);
+		bgmMax = size;
+		bgmNames = (char **)((u8*)buffer + 4);
+
+		parsePlaylistFile(((u8 *)buffer + 4), size);
+	}
+	playlistBuffer = buffer;
+	s_OneTimeChange = true;
+}
+
 int updateCurrentBgm(int argBak) 
 {
-	if(!s_OneTimeChange) // changes the helpbar text
+	if (!s_OneTimeChange) // changes the helpbar text
 	{
-		char** mainTexts = *s_MainTexts;
-		mainTexts[858] = s_HelpbarText_SP;
-		mainTexts[530] = s_HelpbarText_Wifi_a;
-		mainTexts[531] = s_HelpbarText_Wifi_b;
-		mainTexts[532] = s_HelpbarText_Sett;
-		s_OneTimeChange = true;
+		initBgmPlayer();
 	}
 
 	int currentBgm = s_CurrentBgm;
@@ -170,10 +233,7 @@ int updateCurrentBgm(int argBak)
 
 	s_CurrentBgm = currentBgm;
 	if (changed)
-	{
-		// if (s_CurrentBgm)
-		//	cprintf("New music: %s\n", bgmNames[s_CurrentBgm - 1]);
-		
+	{		
 		int id = getSndId("BGM_M12_TENMAS2_MASTER_01"); 
 		SNDBgmPlay_Direct(id);
 		SNDSeSysOK(-1);
@@ -247,6 +307,8 @@ void onlineDrawHook(CSprStudio* spriteStudio)
 void resetMusic()
 {
 	s_CurrentBgm = 0;
+	s_OneTimeChange = false;
+	MEMFree(playlistBuffer);
 }
 
 

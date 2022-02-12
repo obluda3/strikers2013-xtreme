@@ -1,4 +1,3 @@
-#if DEBUG
 #ifndef SHD_DEB
 #define SHD_DEB
 
@@ -8,5 +7,4 @@ int eprintf(char* format, ...);
 void sys_err_prt(char* format, ...);
 int cprintf(char *format, ...);
 
-#endif
 #endif

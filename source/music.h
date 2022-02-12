@@ -8,3 +8,5 @@ void drawBgmName(int isSettingMode);
 void SNDBgmPlay_Direct(int id);
 void onlineDrawHook(CSprStudio* spriteStudio);
 void resetMusic();
+void initBgmPlayer();
+void parsePlaylistFile(u8* data, int size);

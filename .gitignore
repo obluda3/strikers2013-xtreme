@@ -2,6 +2,10 @@
 /build
 /license.dat
 /.vscode
+/.vs
+/PlaylistMaker/.vs
+/PlaylistMaker/PlaylistMaker/bin
+/PlaylistMaker/PlaylistMaker/obj
 build.bat
 build_deb.bat
 loader/kamekLoader.o
