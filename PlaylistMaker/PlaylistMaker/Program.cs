@@ -19,7 +19,9 @@ namespace PlaylistMaker
             }
             else path = args[0];
 
-            var bgmNames = File.ReadAllLines(path);
+            var bgmNames = File.ReadAllLines(path).ToList();
+            var openingFirst = bgmNames.IndexOf("###OPENINGS###");
+            if (openingFirst >= 0) bgmNames.RemoveAt(openingFirst);
             var bgmData = bgmNames.Select(x => StringToCString(x));
 
             var directory = Path.GetDirectoryName(path);
@@ -27,15 +29,18 @@ namespace PlaylistMaker
 
             using (var bw = new BeBinaryWriter(output))
             {
-                bw.Write(bgmNames.Length);
-                for (var i = 0; i < bgmNames.Length; i++) bw.Write(0);
+                var magic = new byte[] { 0x50, 0x4c, 0x56, 0x31 };
+                bw.Write(magic);
+                bw.Write(bgmNames.Count);
+                bw.Write(openingFirst);
+                for (var i = 0; i < bgmNames.Count; i++) bw.Write(0);
 
                 List<int> pointers = new();
                 bgmData.ToList().ForEach(x => 
                 {   pointers.Add((int)bw.BaseStream.Position);
                     bw.Write(x);
                 });
-                bw.BaseStream.Position = 4;
+                bw.BaseStream.Position = 12;
                 pointers.ForEach(x => bw.Write(x));
             }
             Console.WriteLine("Done.");
