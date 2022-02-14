@@ -4,9 +4,11 @@
 #include <savedata.h>
 #include <dvd.h>
 #include <text.h>
+#include <random.h>
 #include <shd_debug.h>
 #include <utilitysato.h>
 #include "music.h"
+#include "jukeboxMenu.h"
 
 
 // #b84#=もどる #b83#=けってい #b87#=ルールせってい #b88#=そうさ #b85#I1#=Previous track #b86#=Next track 
@@ -16,9 +18,11 @@ static char s_HelpbarText_SP[] = { 0x23, 0x62, 0x38, 0x34, 0x23, 0x3d, 0x82, 0xe
 static char s_HelpbarText_Wifi_a[] = { 0x23, 0x62, 0x38, 0x34, 0x23, 0x3d, 0x82, 0xe0, 0x82, 0xc7, 0x82, 0xe9, 0x20, 0x23, 0x62, 0x38, 0x33, 0x23, 0x3d, 0x82, 0xaf, 0x82, 0xc1, 0x82, 0xc4, 0x82, 0xa2, 0x20, 0x23, 0x62, 0x38, 0x33, 0x23, 0x3d, 0x82, 0xaf, 0x82, 0xc1, 0x82, 0xc4, 0x82, 0xa2, 0x20, 0x23, 0x62, 0x38, 0x37, 0x23, 0x3d, 0x83, 0x8b, 0x81, 0x5b, 0x83, 0x8b, 0x82, 0xb9, 0x82, 0xc1, 0x82, 0xc4, 0x82, 0xa2, 0x20, 0x23, 0x62, 0x38, 0x38, 0x23, 0x3d, 0x82, 0xbb, 0x82, 0xa4, 0x82, 0xb3, 0x20, 0x23, 0x49, 0x31, 0x23, 0x62, 0x38, 0x36, 0x23, 0x3d, 0x50, 0x72, 0x65, 0x76, 0x69, 0x6f, 0x75, 0x73, 0x20, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x20, 0x23, 0x62, 0x38, 0x35, 0x23, 0x3d, 0x4e, 0x65, 0x78, 0x74, 0x20, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x00 };
 // #b83#=けってい #I1#b85#=Next track #b86#=Previous track
 static char s_HelpbarText_Wifi_b[] = { 0x23, 0x62, 0x38, 0x33, 0x23, 0x3d, 0x82, 0xaf, 0x82, 0xc1, 0x82, 0xc4, 0x82, 0xa2, 0x20, 0x23, 0x62, 0x38, 0x33, 0x23, 0x3d, 0x82, 0xaf, 0x82, 0xc1, 0x82, 0xc4, 0x82, 0xa2, 0x20, 0x23, 0x62, 0x38, 0x37, 0x23, 0x3d, 0x83, 0x8b, 0x81, 0x5b, 0x83, 0x8b, 0x82, 0xb9, 0x82, 0xc1, 0x82, 0xc4, 0x82, 0xa2, 0x20, 0x23, 0x62, 0x38, 0x38, 0x23, 0x3d, 0x82, 0xbb, 0x82, 0xa4, 0x82, 0xb3, 0x20, 0x23, 0x49, 0x31, 0x23, 0x62, 0x38, 0x36, 0x23, 0x3d, 0x50, 0x72, 0x65, 0x76, 0x69, 0x6f, 0x75, 0x73, 0x20, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x20, 0x23, 0x62, 0x38, 0x35, 0x23, 0x3d, 0x4e, 0x65, 0x78, 0x74, 0x20, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x00 };
-static char s_HelpbarText_Sett[] = { 0x23, 0x62, 0x38, 0x34, 0x23, 0x3d, 0x82, 0xe0, 0x82, 0xc7, 0x82, 0xe9, 0x20, 0x23, 0x49, 0x31, 0x23, 0x62, 0x38, 0x36, 0x23, 0x3d, 0x50, 0x72, 0x65, 0x76, 0x69, 0x6f, 0x75, 0x73, 0x20, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x20, 0x23, 0x62, 0x38, 0x35, 0x23, 0x3d, 0x4e, 0x65, 0x78, 0x74, 0x20, 0x74, 0x72, 0x61, 0x63, 0x6b, 0x00 };
+static char* s_HelpbarText_Sett = "#I1#b84#=Back #b86#=Previous track #b85#=Next track";
+
 static char ***s_MainTexts = (char***)0x805131C0;
 u16* IsMusicOn = (u16*)0x80904212;
+int g_CurrentBgm = 0;
 static char** bgmNames = (char**) 0;
 char* defaultBgmNames[] = { 
 	"BGM_TGS_BATTLE01",
@@ -129,16 +133,26 @@ char* defaultBgmNames[] = {
 	"BGM_M36_FRAN2_MASTER",
 };
 
-static int s_CurrentBgm = 0;
-static bool s_OneTimeChange = false;
 static void* playlistBuffer = 0;
-static int bgmMax = sizeof(bgmNames) / sizeof(bgmNames[0]);
+static int bgmMax = 0;
+static int openingFirst = 0;
+static bool firstExec = true;
 
-
-void parsePlaylistFile(u8* data, int size)
+struct PlaylistHeader
 {
-	u32 baseAddress = (u32)data - 4;
-	for (int i = 0; i < size; i++)
+	u32 magic;
+	u32 size;
+	s32 openingFirst; 
+};
+void parsePlaylistFile(u8* data)
+{
+	PlaylistHeader* header = (PlaylistHeader*) data;
+	bgmMax = header->size;
+	bgmNames = (char**)&header[1];
+	openingFirst = header->openingFirst;
+	u32 baseAddress = (u32)data;
+	data += sizeof(PlaylistHeader);
+	for (int i = 0; i < bgmMax; i++)
 	{
 		u32 pointer = *((u32 *)data);
 		u32 fixedPointer = pointer + baseAddress;
@@ -149,8 +163,31 @@ void parsePlaylistFile(u8* data, int size)
 
 int getSndId(const char* defaultBgm) 
 {
-	if (s_CurrentBgm)
-		return wiiSndGetNameToID(bgmNames[s_CurrentBgm - 1]);
+	if (g_CurrentBgm) {
+		if (firstExec) {
+			firstExec = false;
+			return wiiSndGetNameToID(bgmNames[g_CurrentBgm - 1]);
+		}
+		switch (g_Jukebox.mode)
+		{
+			case MUSIC_LOOP:
+				return wiiSndGetNameToID(bgmNames[g_CurrentBgm - 1]);
+			case MUSIC_SEQUENTIAL:
+			{
+				int maxBgm = openingFirst == -1 ? bgmMax : g_Jukebox.allowOpenings ? bgmMax : openingFirst - 1;
+				int currentBgm = g_CurrentBgm + 1;
+				if (currentBgm < 0) currentBgm = bgmMax;
+				if (currentBgm > maxBgm) currentBgm = 1;
+				return wiiSndGetNameToID(bgmNames[g_CurrentBgm - 1]);
+			}
+			case MUSIC_RANDOM:
+			{
+				int max = openingFirst == -1 ? bgmMax : g_Jukebox.allowOpenings ? bgmMax : openingFirst - 1;
+				int index = shdRndi(1, max);
+				return wiiSndGetNameToID(bgmNames[index - 1]);
+			}
+		}
+	}
 	return wiiSndGetNameToID(defaultBgm);
 }
 
@@ -161,7 +198,6 @@ void initBgmPlayer()
 	mainTexts[530] = s_HelpbarText_Wifi_a;
 	mainTexts[531] = s_HelpbarText_Wifi_b;
 	mainTexts[532] = s_HelpbarText_Sett;
-
 	char* path = "Playlist.bin";
 	cprintf("Loading custom musics in: '%s'...\n", path);
 
@@ -197,41 +233,39 @@ void initBgmPlayer()
 	}
 	else
 	{
-		int size = *((int *)buffer);
-		bgmMax = size;
-		bgmNames = (char **)((u8*)buffer + 4);
-
-		parsePlaylistFile(((u8 *)buffer + 4), size);
+		parsePlaylistFile((u8 *)buffer);
 	}
 	playlistBuffer = buffer;
-	s_OneTimeChange = true;
 }
 
 int updateCurrentBgm(int argBak) 
 {
-	if (!s_OneTimeChange) // changes the helpbar text
+	if (!playlistBuffer) // changes the helpbar text
 	{
 		initBgmPlayer();
 	}
+	if (!firstExec)
+		firstExec = true;
 
-	int currentBgm = s_CurrentBgm;
+	int currentBgm = g_CurrentBgm;
 	bool changed = false;
 
-	if (IsButtonPushed_Ready(0)) // +
+	if (UtilitySato::isPad(0, UtilitySato::PAD_PLUS, UtilitySato::HELD)) // +
 	{
 		currentBgm++;
 		changed = true;
 	}
-	else if (UtilitySato::isPad(0, 0x1000, UtilitySato::PAD_STATE1)) // -
+	else if (UtilitySato::isPad(0, UtilitySato::PAD_MINUS, UtilitySato::HELD)) // -
 	{
 		currentBgm--;
 		changed = true;
 	}
 	
+	int maxBgm = openingFirst == -1 ? bgmMax : g_Jukebox.allowOpenings ? bgmMax : openingFirst - 1;
 	if (currentBgm < 0) currentBgm = bgmMax;
-	if (currentBgm > bgmMax) currentBgm = 0;
+	if (currentBgm > maxBgm) currentBgm = 0;
 
-	s_CurrentBgm = currentBgm;
+	g_CurrentBgm = currentBgm;
 	if (changed)
 	{		
 		int id = getSndId("BGM_M12_TENMAS2_MASTER_01"); 
@@ -241,26 +275,11 @@ int updateCurrentBgm(int argBak)
 	return IsButtonPushed_OK(argBak); // default inst
 }
 
-s16 rainbowColors[] = { 
-	8700,
-	8840,
-	8880,
-	8480,
-	8271,
-	8174,
-	8276,
-	8137,
-	8317,
-	8617,
-	8716,
-};
 
-static int s_frameCount = 0;
-#define FRAME_PER_COLOR 7
-void drawBgmName(int isSettingMode)
+void drawBgmName()
 {
 	char message[50];
-	int currentBgm = s_CurrentBgm;
+	int currentBgm = g_CurrentBgm;
 
 	if (currentBgm > 0)
 		sprintf(message, "#j#I1Music Track %03d", currentBgm);
@@ -272,22 +291,7 @@ void drawBgmName(int isSettingMode)
 	{
 		strcpy(message, "#j#I1Random track");
 	}
-	if (isSettingMode == SETTING_MODE_CONST) {
-		char extendedMessage[100];
-		int clrIndex = s_frameCount / FRAME_PER_COLOR;
-
-		sprintf(extendedMessage, "#c%04d", rainbowColors[clrIndex]);
-		strcat(extendedMessage, message);
-
-		disp_zen(extendedMessage, 200, 220, 100);
-		s_frameCount++;
-		if (s_frameCount >= FRAME_PER_COLOR * (sizeof(rainbowColors) / sizeof(u16)))
-		{
-			s_frameCount = 0;
-		}
-	}
-	else
-		disp_zen(message, 20, 20, 65);
+	disp_zen(message, 20, 20, 65);
 }
 
 void SNDBgmPlay_Direct(int id)
@@ -301,14 +305,12 @@ void SNDBgmPlay_Direct(int id)
 void onlineDrawHook(CSprStudio* spriteStudio)
 {
 	spriteStudio->Draw();
-	drawBgmName(0);
+	drawBgmName();
 }
 
 void resetMusic()
 {
-	s_CurrentBgm = 0;
-	s_OneTimeChange = false;
-	MEMFree(playlistBuffer);
+	g_CurrentBgm = 0;
 }
 
 

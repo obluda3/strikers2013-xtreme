@@ -35,6 +35,7 @@ void SNDUnloadSEGrp();
 void SNDSePlay(int unk1, int unk2, int unk3);
 void SNDSeSysOK(int unk);
 void SNDSeSysOK2();
+void SNDSeSysCLICK(int unk);
 void SNDSeSysCANCEL(int unk);
 void SNDSeSysBAD(int unk);
 void shdBgmLoad(s32 unk, s32 id, s32 isMusicOn, s32 unk2);

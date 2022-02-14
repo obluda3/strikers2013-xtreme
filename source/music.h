@@ -2,9 +2,10 @@
 #include <menu_setting.h>
 #define SETTING_MODE_CONST 0x71279610
 
+extern int g_CurrentBgm;
 int getSndId(const char* defaultBgm);
 int updateCurrentBgm(int argToStatus);
-void drawBgmName(int isSettingMode);
+void drawBgmName();
 void SNDBgmPlay_Direct(int id);
 void onlineDrawHook(CSprStudio* spriteStudio);
 void resetMusic();

@@ -3,6 +3,8 @@
 
 #include <types.h>
 #include <spritestudio.h>
+#include <file.h>
+#include <textures.h>
 
 namespace WATAM_UTILITY {
 	class CSSComponent {

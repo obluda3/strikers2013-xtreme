@@ -5,7 +5,17 @@
 
 namespace UtilitySato 
 {
-	enum PADSTATE { PAD_STATE0, PAD_STATE1, PAD_STATE2 };
+	enum PADSTATE { PAD_STATE0, PRESSED, HELD };
+
+	enum BUTTONS 
+	{
+		PAD_PLUS = 0x2000,
+		PAD_MINUS = 0x1000,
+		PAD_UP = 0x800,
+		PAD_DOWN = 0x400,
+		PAD_LEFT = 0x100,
+		PAD_RIGHT = 0x200
+	};
 	bool isManager(u32 id);
 	bool isKantoku(u32 id);
 	void setFrameRate(bool is60);

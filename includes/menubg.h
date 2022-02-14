@@ -1,6 +1,7 @@
 #ifndef MENUBG
 #define MENUBG
 #include <types.h>
+#include <cssmenu.h>
 #include <spritestudio.h>
 
 struct MenuBG {

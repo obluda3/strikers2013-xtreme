@@ -2,6 +2,10 @@
 #define MENUSETTING
 
 #include <types.h>
+#include <buttonhelpers.h>
+#include <text.h>
+#include <helpbar.h>
+#include <utilitysato.h>
 #include <cssmenu.h>
 #include <task.h>
 #include <popup.h>
