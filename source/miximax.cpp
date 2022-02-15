@@ -2,6 +2,7 @@
 #include <kamek.h>
 #include <enums.h>
 #include <matchplayer.h>
+#include <utilitysato.h>
 
 Miximax g_MiximaxTable[] = 
 {
@@ -69,6 +70,28 @@ Miximax* newGetMiximaxData2(int tableIdx)
 		}
 	}
 	return 0;
+}
+
+
+PLAYER_DEF* GetAddressBase(int a1) {
+	return UtilitySato::getPlayerDefAddrBase(a1);
+}
+
+kmCallDefAsm(0x800BF048)
+{
+	nofralloc
+	bl GetAddressBase
+	lwz r0, 0x3C(r3)
+	stw r0, 0x3C(r30) // transfer bodytype
+}
+kmBranchDefAsm(0x800BF098, 0x800BF09C)
+{
+	nofralloc
+	mr r0, r3
+	mr r3, r30
+	mr r30, r0
+	cmpwi r3, 0
+	blr
 }
 
 kmBranch(0x800bed14, newGetMiximaxData);

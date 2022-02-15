@@ -2,6 +2,7 @@
 #define UTILITY_SATO
 #include "types.h"
 #include <spritestudio.h>
+#include <players.h>
 
 namespace UtilitySato 
 {
@@ -28,6 +29,7 @@ namespace UtilitySato
 	int getScreenWide34OffSet();
 	int getScreenWide43AutoOffSet();
 	int isPad(s32 id, s32 mask, PADSTATE state);
+	PLAYER_DEF* getPlayerDefAddrBase(int player);
 
 	class CSpriteStudioCtrl
 	{
