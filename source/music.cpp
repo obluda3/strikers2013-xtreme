@@ -262,7 +262,7 @@ int updateCurrentBgm(int argBak)
 	}
 	
 	int maxBgm = openingFirst == -1 ? bgmMax : g_Jukebox.allowOpenings ? bgmMax : openingFirst - 1;
-	if (currentBgm < 0) currentBgm = bgmMax;
+	if (currentBgm < 0) currentBgm = maxBgm;
 	if (currentBgm > maxBgm) currentBgm = 0;
 
 	g_CurrentBgm = currentBgm;
