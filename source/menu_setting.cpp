@@ -141,9 +141,13 @@ void JukeboxSetting::MusicLoop(int state, void* arg)
 void JukeboxSetting::Exec()
 {
 	u8 pos = m_pos;
-	if (UtilitySato::isPad(0, UtilitySato::PAD_DOWN, UtilitySato::HELD)) 
+	bool isPadUp = UtilitySato::isPad(0, UtilitySato::PAD_UP, UtilitySato::HELD);
+	bool isPadDown = UtilitySato::isPad(0, UtilitySato::PAD_DOWN, UtilitySato::HELD);
+	bool isPadLeft = UtilitySato::isPad(0, UtilitySato::PAD_LEFT, UtilitySato::HELD);
+	bool isPadRight = UtilitySato::isPad(0, UtilitySato::PAD_RIGHT, UtilitySato::HELD);
+	if (isPadDown)
 		pos++;
-	else if (UtilitySato::isPad(0, UtilitySato::PAD_UP, UtilitySato::HELD))
+	else if (isPadUp)
 		pos--;
 	if (pos > 1)
 		pos = 0;
@@ -153,8 +157,7 @@ void JukeboxSetting::Exec()
 		m_pos = pos;
 		SNDSeSysCLICK(-1);
 	}
-	bool isPadLeft = UtilitySato::isPad(0, UtilitySato::PAD_LEFT, UtilitySato::HELD);
-	bool isPadRight = UtilitySato::isPad(0, UtilitySato::PAD_RIGHT, UtilitySato::HELD);
+	
 	if (pos)
 	{
 		s32 curMode = mode;
@@ -183,8 +186,15 @@ void JukeboxSetting::Exec()
 			SNDSeSysCLICK(-1);
 		}
 	}
+
+	/*
+	if (isPadDown) m_yOff++;
+	if (isPadUp) m_yOff--;
+	if (isPadLeft) m_xOff--;
+	if (isPadRight) m_xOff++;
+	*/
 }
-#define FRAME_PER_COLOR 7
+
 void JukeboxSetting::DrawMenu()
 {
 	char extendedMessage[100];
@@ -193,28 +203,20 @@ void JukeboxSetting::DrawMenu()
 	int currentBgm = g_CurrentBgm;
 
 	if (currentBgm > 0)
-		sprintf(message, "#j#I1Music Track %03d", currentBgm);
+		sprintf(message, "#P10#j#I1Music Track %03d", currentBgm);
 	else if (currentBgm == 0)
 	{
-		strcpy(message, "#j#I1Default track");
+		strcpy(message, "#P10#j#I1Default track");
 	}
-	
-	sprintf(extendedMessage, "#c%04d", rainbowColors[clrIndex]);
-	strcat(extendedMessage, message);
 
-	disp_zen(extendedMessage, 200, 220, 100);
-	m_curFrame++;
-	if (m_curFrame >= FRAME_PER_COLOR * (sizeof(rainbowColors) / sizeof(u16)))
-	{
-		m_curFrame = 0;
-	}
+	disp_zen(message, 255, 170, 100);
 
 	// Draw setting options
-	disp_zen("#I1Opening songs", 150, 300, 90);
-	disp_zen("#I1After music ends", 150, 330, 90);
-	s32 y = 300;
-	if (m_pos) y = 330;
-	disp_zen("#j#=->", 100, y, 90);
+	disp_zen("#I1Theme songs", 205, 250, 90);
+	disp_zen("#I1After music ends", 205, 280, 90);
+	s32 y = 250;
+	if (m_pos) y = 280;
+	disp_zen("#j#=->", 155, y, 90);
 	char* messageMode;
 	switch (mode)
 	{
@@ -222,18 +224,28 @@ void JukeboxSetting::DrawMenu()
 			messageMode = "#I1#=< Loop >";
 			break;
 		case MUSIC_RANDOM:
-			messageMode = "#I1#=< Next ( random ) >";
+			messageMode = "#I1#=< Play next ( random ) >";
 			break;
 		case MUSIC_SEQUENTIAL:
-			messageMode = "#I1#=< Next >";
+			messageMode = "#I1#=< Play next >";
 			break;
 	}
-	disp_zen(messageMode, 500, 330, 90);
+	disp_zen(messageMode, 555, 280, 90);
 
 	char* messageOpening;
 	if (allowOpenings) messageOpening = "#I1#=< Enabled >";
 	else messageOpening = "#I1#=< Disabled >";
-	disp_zen(messageOpening, 500, 300, 90);
+	disp_zen(messageOpening, 555, 250, 90);
+
+	/*
+	char xoff[50];
+	sprintf(xoff, "X off: #j#=%d", m_xOff);
+	disp_zen(xoff, 10, 10, 70);
+	
+	char yoff[50];
+	sprintf(yoff, "Y off: #j#=%d", m_yOff);
+	disp_zen(yoff, 10, 60, 70);
+	*/
 }
 
 void SettingPassLoop(int state, void* arg) 

@@ -29,6 +29,8 @@ class JukeboxSetting
 		void Exec();
 	private:
 		u8 m_pos;
+		// s32 m_xOff;
+		// s32 m_yOff;
 		u16 m_curFrame; 
 };
 
