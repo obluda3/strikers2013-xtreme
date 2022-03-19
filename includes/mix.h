@@ -3,15 +3,15 @@
 #include "types.h"
 #include "players.h"
 
-typedef struct Miximax
+struct Miximax
 {
-	s16 player;
-	s16 slot;
-	s16 aura;
-	s16 move1;
-	s16 move2;
-	s16 move3;
-} Miximax;
+    s16 player;
+    s16 slot;
+    s16 aura;
+    s16 move1;
+    s16 move2;
+    s16 move3;
+};
 
 int ChkMiximaxGK(int player);
 Miximax* GetMiximaxData(int player, int slot);
