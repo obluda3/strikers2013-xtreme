@@ -24,10 +24,12 @@ if not os.path.exists("cw/mwcceppc.exe"):
 if not os.path.exists("km/Kamek.exe"):
     err("Kamek linker not found.")
 
-command = "cw\mwcceppc.exe " + "-I- -i ./includes/ -i ./includes/Kamek/ -i ./source/ -Cpp_exceptions off -enum int -Os -use_lmw_stmw on -fp hard -rostr -sdata 0 -sdata2 0 "
+command = ""
 if debug:
-	command += "-d DEBUG "
-command += "-c -o "
+	command = "cw\mwcceppc.exe " + "-I- -i ./includes/ -i ./includes/Kamek/ -i ./source/ -Cpp_exceptions off -enum int -Os -use_lmw_stmw on -fp hard -rostr -sdata 0 -sdata2 0 -d DEBUG -c -o "
+else:
+	command = "cw\mwcceppc.exe " + "-I- -i ./includes/ -i ./includes/Kamek/ -i ./source/ -Cpp_exceptions off -enum int -Os -use_lmw_stmw on -fp hard -rostr -sdata 0 -sdata2 0 -c -o "
+asm_cmd = "cw\mwasmeppc.exe "  + "-I- -i ./includes/ -i ./includes/Kamek/ -c -o "
 
 # Clean the entire build folder first if it exists
 if os.path.exists("build"):
@@ -46,6 +48,13 @@ for root, dirs, files in os.walk("source"):
             os.makedirs(os.path.dirname(build_path), exist_ok=True)
 
             tasks.append((source_path, build_path))
+        elif file.endswith(".S"):
+            source_path = os.path.join(root, file)
+            build_path = source_path.replace("source", "build").replace(".S", ".o")
+
+            os.makedirs(os.path.dirname(build_path), exist_ok=True)
+
+            asm_tasks.append((source_path, build_path))
 
 if len(tasks) < 1 and len(asm_tasks) < 1:
     err("No C++/asm files to compile!")
@@ -60,12 +69,20 @@ for task in tasks:
     if subprocess.call(f"{command} {build_path} {source_path}", shell=True) != 0:
         err("Compiler error.")
 
+for a_task in asm_tasks:
+    source_path, build_path = a_task
+    log(f"Assembling {source_path}...")
+
+    if subprocess.call(f"{asm_cmd} {build_path} {source_path}", shell=True) != 0:
+        err("Assembler error.")
+
 # Link all object files and create the CustomCode binary
 log("Linking...")
 
 object_files = " ".join([task[1] for task in tasks])
+asm_obj_files = " ".join([a_task[1] for a_task in asm_tasks])
 
-kamek_cmd = f"km\Kamek.exe {object_files} -externals=symbols.txt -output-kamek=CustomCode.bin"
+kamek_cmd = f"km\Kamek.exe {object_files} {asm_obj_files} -externals=symbols.txt -output-kamek=CustomCode.bin"
 
 if subprocess.call(kamek_cmd, shell=True) != 0:
     err("Linking failed.")
