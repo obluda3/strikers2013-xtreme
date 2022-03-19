@@ -134,25 +134,28 @@ char* defaultBgmNames[] = {
 };
 
 static void* playlistBuffer = 0;
-static int bgmMax = 0;
-static int openingFirst = 0;
 static bool firstExec = true;
 
+struct PlaylistInfo
+{
+	u32 size;
+	s32 openingFirst;
+};
 struct PlaylistHeader
 {
 	u32 magic;
-	u32 size;
-	s32 openingFirst; 
+	PlaylistInfo info;
 };
+
+static PlaylistInfo playlistInfo;
 void parsePlaylistFile(u8* data)
 {
 	PlaylistHeader* header = (PlaylistHeader*) data;
-	bgmMax = header->size;
 	bgmNames = (char**)&header[1];
-	openingFirst = header->openingFirst;
+	playlistInfo = header->info;
 	u32 baseAddress = (u32)data;
 	data += sizeof(PlaylistHeader);
-	for (int i = 0; i < bgmMax; i++)
+	for (int i = 0; i < header->info.size; i++)
 	{
 		u32 pointer = *((u32 *)data);
 		u32 fixedPointer = pointer + baseAddress;
@@ -163,11 +166,15 @@ void parsePlaylistFile(u8* data)
 
 int getSndId(const char* defaultBgm) 
 {
-	if (g_CurrentBgm) {
-		if (firstExec) {
+	if (g_CurrentBgm) 
+	{
+		if (firstExec) 
+		{
 			firstExec = false;
 			return wiiSndGetNameToID(bgmNames[g_CurrentBgm - 1]);
 		}
+		s32 openingFirst = playlistInfo.openingFirst;
+		u32 bgmMax = playlistInfo.size;
 		switch (g_Jukebox.mode)
 		{
 			case MUSIC_LOOP:
@@ -229,7 +236,7 @@ void initBgmPlayer()
 	if (!buffer)
 	{
 		bgmNames = defaultBgmNames;
-		bgmMax = sizeof(defaultBgmNames) / sizeof(defaultBgmNames[0]);
+		playlistInfo.size = sizeof(defaultBgmNames) / sizeof(defaultBgmNames[0]);
 	}
 	else
 	{
@@ -260,8 +267,9 @@ int updateCurrentBgm(int argBak)
 		currentBgm--;
 		changed = true;
 	}
-	
-	int maxBgm = openingFirst == -1 ? bgmMax : g_Jukebox.allowOpenings ? bgmMax : openingFirst - 1;
+	s32 openingFirst = playlistInfo.openingFirst;
+	u32 bgmMax = playlistInfo.size;
+	int maxBgm = openingFirst == -1 ? bgmMax : g_Jukebox.allowOpenings ? bgmMax : openingFirst;
 	if (currentBgm < 0) currentBgm = maxBgm;
 	if (currentBgm > maxBgm) currentBgm = 0;
 

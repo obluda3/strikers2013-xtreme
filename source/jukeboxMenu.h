@@ -25,6 +25,7 @@ class JukeboxSetting
 		void DrawMenu();
 		JukeboxMode mode;
 		s8 allowOpenings;
+		s8 passAccepted;
 		static void MusicLoop(int state, void* arg);
 		void Exec();
 	private:

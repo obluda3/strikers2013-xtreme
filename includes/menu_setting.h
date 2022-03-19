@@ -7,6 +7,7 @@
 #include <helpbar.h>
 #include <utilitysato.h>
 #include <cssmenu.h>
+#include <snd.h>
 #include <task.h>
 #include <popup.h>
 #include <namewindow.h>
