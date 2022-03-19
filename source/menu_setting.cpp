@@ -20,7 +20,7 @@ void SettingLoop(int state, void* arg)
         if (menu->nameWindow->exec()) 
         { 
             tasks->Pop(0);
-            const char pass[] = { 0x82, 0x50, 0x82, 0x4f, 0x82, 0x4f, 0x81, 0x7c, 0x81, 0x93, 0x81, 0x49, 0x81, 0x49, 0x81, 0x49, 0x0 };
+            const char pass[] = "２００８０８２２";
             if (menu->nameWindow->getResult()) 
             {
                 int index = -1;
@@ -78,9 +78,9 @@ void SettingLoop(int state, void* arg)
                     g_Jukebox.passAccepted = true;
                     updateCurrentBgm(0);
                     SNDSePlay(238, 128, 128);
-                    menu->popup->set_itemtext(0, "#I1Congratulations!");
-                    menu->popup->set_itemtext(1, "#I1The secret password has been entered.");
-                    menu->popup->set_itemtext(2, "#I1You can now access the #P10#=music player#C#I1#=!");
+                    menu->popup->set_itemtext(0, "おめでとうございます。");
+                    menu->popup->set_itemtext(1, "ひみつのパスワードが入力されました。");
+                    menu->popup->set_itemtext(2, "これでXtremeの設定にアクセスできるようになりました!");
                     menu->nameWindow->setWindowAnm(1);
                     tasks->Push(SettingPassLoop, menu);
                 }
