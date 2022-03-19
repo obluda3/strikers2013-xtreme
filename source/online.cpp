@@ -22,3 +22,5 @@ kmBranchDefAsm(0x8025B234, 0x8025B23C)
 
 //kmWrite32(0x802566f8, 0x70a6ffff); // andi r6, r5, 0xFFFF
 kmWrite32(0x8025670C, 0x54C0043E); // basically a nop
+kmWrite32(0x802566C8, 0x38A00001);
+kmWrite32(0x8025668C, 0x38a00001);
