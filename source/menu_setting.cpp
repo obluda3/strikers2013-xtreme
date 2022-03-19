@@ -199,9 +199,7 @@ void JukeboxSetting::DrawMenu()
 {
 	char extendedMessage[100];
 	char message[50];
-	int clrIndex = m_curFrame / FRAME_PER_COLOR;
-	int currentBgm = g_CurrentBgm;
-
+	s32 currentBgm = g_CurrentBgm;
 	if (currentBgm > 0)
 		sprintf(message, "#P10#j#I1Music Track %03d", currentBgm);
 	else if (currentBgm == 0)
@@ -236,16 +234,6 @@ void JukeboxSetting::DrawMenu()
 	if (allowOpenings) messageOpening = "#I1#=< Enabled >";
 	else messageOpening = "#I1#=< Disabled >";
 	disp_zen(messageOpening, 555, 250, 90);
-
-	/*
-	char xoff[50];
-	sprintf(xoff, "X off: #j#=%d", m_xOff);
-	disp_zen(xoff, 10, 10, 70);
-	
-	char yoff[50];
-	sprintf(yoff, "Y off: #j#=%d", m_yOff);
-	disp_zen(yoff, 10, 60, 70);
-	*/
 }
 
 void SettingPassLoop(int state, void* arg) 
