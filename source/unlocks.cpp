@@ -3,25 +3,34 @@
 #include <savedata.h>
 
 u32* dword_8051D640 = (u32*)0x8051D640;
-u32* dword_8051EB40 = (u32*)0x8051EB40;
+u32* MixiAnnCount = (u32*)0x8051EB40;
 
 SavePlayerParam* unlockSecretMiximaxes(register PLAYER_DEF* player_def)
 {
     asm("mr player_def, r22");
-    s32 id = player_def->id;
+    int id = player_def->id;
     SavePlayerParam* player_data = Savedata_getPlayerData(id);
     bool hasMiximax = (player_data->Flag & MIXIMAX_LEVEL_ONE) == MIXIMAX_LEVEL_ONE;
     if ((id == P_12492FURAN || id == P_12330SARU) && !hasMiximax)
     {
-        s32 otherPlayer = id == P_12330SARU ? P_12011FUEI : P_12490ASUTA;
+        int otherPlayer = -1;
+        int textEntry = -1;
+        if (id == P_12330SARU)
+        { 
+            otherPlayer = P_12011FUEI;
+            textEntry = 18;
+        }
+        else if (id == P_12492FURAN)
+        {
+            otherPlayer = P_12490ASUTA;
+            textEntry = 17;
+        }
         KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(id, otherPlayer);
         if (kizunaData->value >= 50)
         {
             player_data->Flag |= MIXIMAX_LEVEL_ONE;
-            dword_8051D640[*dword_8051EB40 + 1345] = id == P_12330SARU ? 18 : 17; // text entry of the miximax unlock
-
-            // no idea what that is
-            *dword_8051EB40 += 1;
+            dword_8051D640[*MixiAnnCount + 1345] = textEntry;
+            *MixiAnnCount += 1;
         }
     }
     return player_data;
