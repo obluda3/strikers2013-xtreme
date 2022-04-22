@@ -54,11 +54,6 @@ namespace MENU_TP_DATA
         { P_3008HUYUKA, E_HUYUKA_B, E_RAIMON, 0x1000, 6 },
         { P_10036AOI, E_AOI_B, E_RAIMON_GO, 0x1000, 6 },
         { P_10037AKANE, E_AKANE_B, E_RAIMON_GO, 0x1000, 6 },
-        { P_11701ENDO, E_ENDOU_TRAINER, E_RAIMON_GO, 0x434, 1 },
-        { P_11729KIDOU, E_KIDOU_TRAINER, E_TEIKOKU_GAKUEN_GO, 0x435, 1 },
-        { P_11760AFURO, E_AFURO_TRAINER, E_KIDOKAWA_SEISHUU, 0x43F, 1 },
-        { P_11717ISHIDO, E_ISHIDO, E_FIFTH_SECTOR, 0x440, 0x1 },
-        { P_11780SAN, E_SAN, E_SAN, 0x441, 0x1 },
     };
 
     bool newIsUniformNoPositionFromTeam(int uniform)
