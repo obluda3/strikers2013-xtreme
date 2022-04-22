@@ -1,10 +1,10 @@
-#include "jukeboxMenu.h"
-#include "menu_setting.h"
+#include "xtreme_settings.h"
+#include <menu_setting.h>
 #include <kamek.h>
 #include "music.h"
 
-JukeboxSetting g_Jukebox;
-void JukeboxSetting::MusicLoop(int state, void* arg)
+XtremeSettings g_Jukebox;
+void XtremeSettings::MusicLoop(int state, void* arg)
 {
     MENU_SETTING::CMenuSetting* menu = (MENU_SETTING::CMenuSetting *) arg;
     if (state == 2) 
@@ -25,7 +25,7 @@ void JukeboxSetting::MusicLoop(int state, void* arg)
     }
 }
 
-void JukeboxSetting::Exec()
+void XtremeSettings::Exec()
 {
     u8 pos = m_pos;
     bool isPadUp = UtilitySato::isPad(0, UtilitySato::PAD_UP, UtilitySato::HELD);
@@ -46,21 +46,6 @@ void JukeboxSetting::Exec()
         SNDSeSysCLICK(-1);
     }
     
-    if (pos)
-    {
-        s32 curMode = mode;
-        if (isPadLeft) curMode--;
-        else if (isPadRight) curMode++;
-
-        if (curMode < 0) curMode = MUSIC_RANDOM;
-        else if (curMode > MUSIC_RANDOM) curMode = 0;
-
-        if(curMode != mode) 
-        {
-            mode = (JukeboxMode) curMode;
-            SNDSeSysCLICK(-1);
-        }
-    }
     else
     {
         s8 openings = allowOpenings;
@@ -85,7 +70,7 @@ void JukeboxSetting::Exec()
     */
 }
 
-void JukeboxSetting::DrawMenu()
+void XtremeSettings::DrawMenu()
 {
     char extendedMessage[100];
     char message[50];
@@ -99,24 +84,10 @@ void JukeboxSetting::DrawMenu()
 
     // Draw setting options
     disp_zen("#I1Theme songs", 205, 250, 90);
-    disp_zen("#I1After music ends", 205, 280, 90);
-    s32 y = 250;
-    if (m_pos) y = 280;
+    s32 y = 250 + 30 * m_pos;
     disp_zen("#j#=->", 155, y, 90);
-    char* messageMode;
-    switch (mode)
-    {
-        case MUSIC_LOOP:
-            messageMode = "#I1#=< Loop >";
-            break;
-        case MUSIC_RANDOM:
-            messageMode = "#I1#=< Play next ( random ) >";
-            break;
-        case MUSIC_SEQUENTIAL:
-            messageMode = "#I1#=< Play next >";
-            break;
-    }
-    disp_zen(messageMode, 555, 280, 90);
+    disp_zen("#I1Preferred Keyboard", 555, 280, 90);
+    disp_zen("A", 555, 280, 90);
 
     char* messageOpening;
     if (allowOpenings) messageOpening = "#I1#=< Enabled >";

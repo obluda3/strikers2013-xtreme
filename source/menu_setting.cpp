@@ -4,7 +4,7 @@
 #include <menubg.h>
 #include <kamek.h>
 #include <menu_setting.h>
-#include "jukeboxMenu.h"
+#include "xtreme_settings.h"
 
 void SettingLoop(int state, void* menu);
 void SettingPassLoop(int state, void* arg);
@@ -123,7 +123,7 @@ void SettingPassLoop(int state, void* arg)
         if (popup->exec(0))
         {
             menu->tasks->Pop(0);
-            menu->tasks->Push(JukeboxSetting::MusicLoop, arg);
+            menu->tasks->Push(XtremeSettings::MusicLoop, arg);
             /*
             s32 fileIdx = 30032;
             s32 allocatedTex = TEX_Alloc(fileIdx, 158, 422);

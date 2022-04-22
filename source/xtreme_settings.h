@@ -1,11 +1,5 @@
 #include <types.h>
 
-enum JukeboxMode 
-{
-    MUSIC_LOOP,
-    MUSIC_SEQUENTIAL,
-    MUSIC_RANDOM,
-};
 static s16 rainbowColors[] = 
 { 
     8700,
@@ -22,11 +16,10 @@ static s16 rainbowColors[] =
 };
 
 #define FRAME_PER_COLOR 7
-class JukeboxSetting 
+class XtremeSettings 
 {
     public:
         void DrawMenu();
-        JukeboxMode mode;
         s8 allowOpenings;
         s8 passAccepted;
         static void MusicLoop(int state, void* arg);
@@ -35,7 +28,6 @@ class JukeboxSetting
         u8 m_pos;
         // s32 m_xOff;
         // s32 m_yOff;
-        u16 m_curFrame; 
 };
 
-extern JukeboxSetting g_Jukebox;
+extern XtremeSettings g_Jukebox;
