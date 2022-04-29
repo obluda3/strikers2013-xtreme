@@ -19,7 +19,7 @@ static char ***s_MainTexts = (char***)0x805131C0;
 u16* IsMusicOn = (u16*)0x80904212;
 int g_CurrentBgm = 0;
 static char** BgmNames = (char**) 0;
-static char** DefaultBgmNames = (char**) 0x8051ECA0;
+static char*** DefaultBgmNames = (char***) 0x8051ECA0;
 static int* g_BgmStatus = (int*)0x8050d6d8;
 static void* playlistBuffer = 0;
 static bool FirstExec = true;
@@ -56,14 +56,14 @@ void PlayBgmField(int defaultBgm)
 {
     int bgmStatus = *g_BgmStatus;
     int currentBgm = g_CurrentBgm;
-
+    char** defaultBgmNames = *DefaultBgmNames;
     char* bgmName = BgmNames[currentBgm];
     if (!currentBgm) 
     {
         currentBgm = defaultBgm;
-        bgmName = DefaultBgmNames[currentBgm];
+        bgmName = defaultBgmNames[currentBgm];
     }
-    if (bgmStatus != currentBgm) 
+    if (bgmStatus != currentBgm ) 
     {
         *g_BgmStatus = currentBgm;
         int id = wiiSndGetNameToID(bgmName);
@@ -105,22 +105,12 @@ void initBgmPlayer()
             }
         }
     }
-
-    if (!buffer)
-    {
-        BgmNames = DefaultBgmNames;
-    }
-    else
-    {
-        parsePlaylistFile((u8 *)buffer);
-    }
+    parsePlaylistFile((u8 *)buffer);
     playlistBuffer = buffer;
 }
 
 int updateCurrentBgm(int argBak) 
 {
-    if (!playlistBuffer)
-        initBgmPlayer();
     if (!FirstExec)
         FirstExec = true;
 
@@ -140,7 +130,7 @@ int updateCurrentBgm(int argBak)
     
     s32 openingFirst = playlistInfo.openingFirst;
     u32 bgmMax = playlistInfo.size;
-    int maxBgm = openingFirst == -1 ? bgmMax : g_Jukebox.allowOpenings ? bgmMax : openingFirst;
+    int maxBgm = openingFirst == -1 ? bgmMax - 1 : g_Jukebox.allowOpenings ? bgmMax - 1 : openingFirst;
     if (currentBgm < 0) currentBgm = maxBgm;
     if (currentBgm > maxBgm) currentBgm = 0;
 
@@ -195,6 +185,7 @@ void resetMusic()
 
 kmWrite32(0x80047264, 0x7FE3FB78);
 kmCall(0x80047268, PlayBgmField);
+kmBranch(0x80046D94, initBgmPlayer);
 kmWrite32(0x8004726C, 0x4800005C);
 kmCall(0x8010DB88, updateCurrentBgm);
 kmCall(0x8025CE40, updateCurrentBgm);
