@@ -75,7 +75,10 @@ void SettingLoop(int state, void* arg)
                         SNDSePlay(238, 128, 128);
                         Savedata_SetPlayerFlag(plyId, 0, 1);
                         menu->textEntry = 317;
-                        menu->popup->set_itemtext(1, 7569 + index);
+                        if (plyId != P_11201WANDABA)
+                            menu->popup->set_itemtext(1, 7569 + index);
+                        else
+                            menu->popup->set_itemtext(1, "#I1#Y17#P11#=「#r10#=クラーク　ワンダバット」#C#I0#=を");
                         menu->popup->set_itemtext(2, 7568);
                     }
                     tasks->Push(MENU_SETTING::CMenuSetting::AlgoConfirmPassword, menu);
