@@ -37,6 +37,7 @@ const loaderFunctionsEx functions = {
 int loadMeganeBinary()
 {
 	loadKamekBinaryFromDisc(&functions.base, "Code/CustomCode.bin");
+	functions.base.OSReport("Writing game id...\n");
 	return 1;
 }
 kmCall(0x803313D0, loadMeganeBinary);

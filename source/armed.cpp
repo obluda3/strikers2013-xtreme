@@ -1,6 +1,6 @@
 #include <kamek.h>
 #include <players.h>
-#include <matchplayer.h>
+#include <match.h>
 #include <base\c_stdlib.h>
 
 typedef struct ArmedInfo
@@ -53,6 +53,8 @@ kmBranchDefAsm(0x800DAE48, 0x800dae4c)
         cmpwi r20, P_10290AMEMIYA
         beq epilogue
         cmpwi r25, W_MIXIMAX_TRANSFORMATION
+        beq epilogue
+        cmpwi r25, W_TAIKOKU_OUKA_TRANSFORMATION
         beq epilogue
     setup_memcpy:
         addi r3, r1, 0x318 // player_def sitting in the stack

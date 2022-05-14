@@ -59,8 +59,8 @@ struct PLAYER_DEF
     u32 matchFaceModel;
     u32 faceModel;
     u32 faceModel2;
-    u32 bodyModel;
-    u32 bodyModel2;
+    s32 bodyModel;
+    s32 bodyModel2;
     u32 _74;
     u32 portrait;
     u32 _7C;
@@ -92,7 +92,7 @@ struct PLAYER_DEF
     s16 price;
     u16 listPos;
     u32 otherListPos;
-    u32 someFlag;
+    int someFlag;
     u32 _11C;
     u32 _120;
     u32 _124;

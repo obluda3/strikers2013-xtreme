@@ -18,7 +18,7 @@ enum Status
     Punch1 = 0x4,
     Punch2 = 0x5,
 };
-struct waza_info
+struct WAZA_DEF
 {
     u16 tier;
     u16 basePower;
