@@ -109,6 +109,12 @@ void initBgmPlayer()
     playlistBuffer = buffer;
 }
 
+void SNDSePlay_Direct(int id, int volLeft, int volRight)
+{
+    if (id >= 0 && *((s16*)0x80904214))
+        shdSePlay(id, volLeft, volRight);
+}
+
 int updateCurrentBgm(int argBak) 
 {
     if (!FirstExec)

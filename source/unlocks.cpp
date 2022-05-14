@@ -1,5 +1,7 @@
 #include <kamek.h>
-#include <matchplayer.h>
+#include <match.h>
+#include <snd.h>
+#include "music.h"
 #include <savedata.h>
 
 u32* dword_8051D640 = (u32*)0x8051D640;
@@ -117,6 +119,14 @@ int unlockSecretPlayers(register int* clubroomMenuScout)
     }
     asm("li r4, 0");
     return 0x36; // default inst
+}
+
+//  fix audio bug
+
+kmBranchDefCpp(0x801F04F0, 0x801F04F4, void, int id, int volLeft, int volRight)
+{
+    int new_id = wiiSndGetNameToID("Jingle2");
+    SNDSePlay_Direct(new_id, volLeft, volRight);
 }
 
 kmCall(0x800C1960, unlockSecretMiximaxes);

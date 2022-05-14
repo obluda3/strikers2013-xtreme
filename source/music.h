@@ -6,6 +6,7 @@ extern int g_CurrentBgm;
 int updateCurrentBgm(int argToStatus);
 void drawBgmName();
 void SNDBgmPlay_Direct(int id);
+void SNDSePlay_Direct(int id, int volLeft, int volRight);
 void onlineDrawHook(CSprStudio* spriteStudio);
 void resetMusic();
 void initBgmPlayer();
