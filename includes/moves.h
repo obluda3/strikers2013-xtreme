@@ -24,8 +24,8 @@ struct WAZA_DEF
     u16 basePower;
     u16 maxPower;
     u16 tp;
-    Element element;
-    Status status;
+    u16 element;
+    u16 status;
     u16 radius;
     u16 _E;
     u16 _10;
