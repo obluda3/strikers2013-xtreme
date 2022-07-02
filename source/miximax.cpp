@@ -85,7 +85,6 @@ kmBranch(0x800bed14, newGetMiximaxData);
 kmBranch(0x800BEBE4, newIsMiximaxPlayer);
 kmBranch(0x800BECC4, newGetMiximaxData2);
 
-MatchSetting* match_setting = (MatchSetting*) 0x807ACF00;
 static int SaruBmdls[] = { -1, -1, -1, -1 };
 
 PLAYER_DEF* LoadNewBodymodel(PLAYER_DEF* plyDef, _PWORK* work, int bodymodel1, int bodymodel2)
@@ -93,11 +92,11 @@ PLAYER_DEF* LoadNewBodymodel(PLAYER_DEF* plyDef, _PWORK* work, int bodymodel1, i
     int team = work->team;
     SaruBmdls[team * 2] = bodymodel1;
     SaruBmdls[team * 2 + 1] = bodymodel2;
-    MatchSetting* settings = &match_setting[work->team];
+    char* settings = (char*)(0x807ACF00 + 0xC9C * team); // too lazy to figure the struct out sry
     _PWORK* gkPwork = get_gk_pw(work->team);
     bool isFieldPlayer = gkPwork->id != work->id;
-    TEAM_DEF* teamDef = getTeamDef(settings->settings._C, 0);
-    SetTeamDefToBody(plyDef, isFieldPlayer, settings->settings._F, teamDef);
+    TEAM_DEF* teamDef = getTeamDef(*(settings + 12), 0);
+    SetTeamDefToBody(plyDef, isFieldPlayer, *(settings + 15), teamDef);
     MDLRegist(plyDef->bodyModel);
     MDLRegist(plyDef->bodyModel2);
     return plyDef;
