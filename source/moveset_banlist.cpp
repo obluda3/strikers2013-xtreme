@@ -25,6 +25,9 @@ static BanMove BanList[] = {
 static BanMove WhiteList[] = 
 {
     { P_12813TEMMA, W_SAIKYOU_ELEVEN_HADOU, false },
+    { P_10249MAHORO, W_ILLUSION_BALL, false },
+    { P_12009DORIRU, W_ILLUSION_BALL, false },
+    { P_1092DOMON, W_KILLER_SLIDE, false },
     { -1, -1 }
 };
 
