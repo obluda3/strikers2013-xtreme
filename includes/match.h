@@ -117,21 +117,6 @@ struct _PWORK
     u32 field_FC;
 };
 
-union MatchSetting
-{
-    struct Settings
-    {
-        u32 _0;
-        u32 _4;
-        u32 _8;
-        u8 _C;
-        u8 _D;
-        u8 _E;
-        u8 _F;
-    } settings;
-    u8 unk[0x10d];
-};
-
 struct TEAM_DEF{};
 TEAM_DEF* getTeamDef(int a1, int a2);
 _PWORK* get_gk_pw(u8 team);
