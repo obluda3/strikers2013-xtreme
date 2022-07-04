@@ -20,8 +20,12 @@ class XtremeSettings
 {
     public:
         void DrawMenu();
+        static void Init();
+        void Save();
         s8 allowOpenings;
         s8 passAccepted;
+        s8 movePower;
+        s8 keyboardType;
         static void MusicLoop(int state, void* arg);
         void Exec();
     private:
