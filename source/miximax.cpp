@@ -17,7 +17,7 @@ Miximax g_MiximaxTable[] =
     { P_10016NISHIKI, 0, P_12810NISHIKI, W_MIXIMAX_TRANSFORMATION, W_KUROSHIO_RIDE, 0 },
     { P_10010TSURUGI, 0, P_12811TSURUGI, W_MIXIMAX_TRANSFORMATION, W_KIKU_ICHIMONJI, 0 },
     { P_12014KINAKO, 0, P_12812KINAKO, W_MIXIMAX_TRANSFORMATION, W_KIRA_KIRA_ILLUSION, 0 },
-    { P_10008MATSUKAZE, 0, P_12803TEMMA, W_MIXIMAX_TRANSFORMATION, W_BLACK_ASH_MIXI_MAX, 0 },
+    { P_10008MATSUKAZE, 0, P_12803TEMMA, W_MIXIMAX_TRANSFORMATION, W_BLACK_ASH_MIXI_MAX, W_WONDER_TRAP_ARMED },
     { P_10008MATSUKAZE, 1, P_12813TEMMA, W_MIXIMAX_TRANSFORMATION, W_OU_NO_TSURUGI, W_SAIKYOU_ELEVEN_HADOU },
     { P_12012YUICHI, 0, P_12802TSURUGI, W_MIXIMAX_TRANSFORMATION, W_DEATH_DROP_B, 0 },
     { P_12150ZANAKU, 0, P_12815ZANAKU, W_MIXIMAX_TRANSFORMATION, W_SHINKUUMA_MIXI_MAX, 0 },
@@ -129,7 +129,7 @@ void NewResetMiximaxPlayerDefB(_PWORK* pwork)
 
 bool IsMiximaxMove(int id)
 {
-    if (id == W_SPARK_EDGE_DRIBBLE_ARMED || id == W_MORTAL_SMASH)
+    if (id == W_SPARK_EDGE_DRIBBLE_ARMED || id == W_MORTAL_SMASH || id == W_WONDER_TRAP_ARMED)
         return true;
     WAZA_DEF* move = GetMoveDef(id);
     return (move->powerUpIndicator >> 2) & 1;
@@ -193,30 +193,7 @@ kmBranchDefAsm(0x800BF098, 0x800BF09C)
     blr
 }
 
-kmBranchDefAsm(0x800DBE84, 0x800DBE88)
-{
-    lwz r25, 0x124C(r6)
-    cmpwi r25, W_NORMAL_DRIBBLE_CHARGE
-    bne branch_back
-    shitty_hack:
-    li r0, 1
-    li r3, 78
-    cmpwi r0, 2
-    branch_back:
-    extsb. r0, r0
-    blr
-}
-
-// saikyou
-kmBranchDefAsm(0x800DDA8C, 0x800dda90)
-{
-    lha r0, 0x146(r31)
-    lwz r3, 0x0(r31)
-    cmpw r3, r0
-    addis r3, r30, 1
-}
-
-kmWrite32(0x800DDA90, 0x41820018);
+kmWrite32(0x800DDAA4, 0x60000000);
 kmWrite32(0x800dae38, 0x7E238B78);
 kmWrite32(0x800dae3C, 0x4BFFFFD0);
 
