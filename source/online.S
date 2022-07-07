@@ -21,6 +21,9 @@ kmBranch 0x8025B234, prevent_random_matchmaking
 // Overtime
 // kmWrite32 0x8025670C, 0x54C0043E
 
+// Timer
+kmWrite32 0x80144BC4, 0x38000063
+
 // Items
 kmWrite32 0x802566C8, 0x38A00001
 kmWrite32 0x8025668C, 0x38A00001
