@@ -25,6 +25,7 @@ static BanMove BanList[] = {
 static BanMove WhiteListMix[] = 
 {
     { P_12813TEMMA, W_SAIKYOU_ELEVEN_HADOU, false },
+    { P_12803TEMMA, W_WONDER_TRAP_ARMED, false },
     { -1, -1 }
 };
 
@@ -36,6 +37,7 @@ static BanMove WhiteListReg[] =
     { P_12011FUEI, W_SARGASSO, false },
     { P_12013FUEI, W_SARGASSO, false },
     { P_12809FUEI, W_SARGASSO, false },
+    { P_12803TEMMA, W_WONDER_TRAP_ARMED, false },
     { -1, -1 }
 };
 
