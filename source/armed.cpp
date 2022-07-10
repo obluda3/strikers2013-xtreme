@@ -52,6 +52,10 @@ kmBranchDefAsm(0x800DAE48, 0x800dae4c)
         beq epilogue
         cmpwi r20, P_10290AMEMIYA
         beq epilogue
+        cmpwi r20, P_10008MATSUKAZE_TNM
+        beq epilogue
+        cmpwi r20, P_10008MATSUKAZE
+        beq epilogue
         cmpwi r25, W_MIXIMAX_TRANSFORMATION
         beq epilogue
         cmpwi r25, W_TAIKOKU_OUKA_TRANSFORMATION
