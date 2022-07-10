@@ -52,13 +52,11 @@ kmBranchDefAsm(0x800DAE48, 0x800dae4c)
         beq epilogue
         cmpwi r20, P_10290AMEMIYA
         beq epilogue
-        cmpwi r20, P_10008MATSUKAZE_TNM
-        beq epilogue
-        cmpwi r20, P_10008MATSUKAZE
-        beq epilogue
         cmpwi r25, W_MIXIMAX_TRANSFORMATION
         beq epilogue
         cmpwi r25, W_TAIKOKU_OUKA_TRANSFORMATION
+        beq epilogue
+        cmpwi r25, W_WONDER_TRAP_ARMED
         beq epilogue
     setup_memcpy:
         addi r3, r1, 0x318 // player_def sitting in the stack
@@ -91,6 +89,8 @@ kmBranchDefAsm(0x800DE884, 0x800DE888)
         cmpwi r21, P_12492FURAN
         beq- end
         cmpwi r21, P_10290AMEMIYA
+        beq- end
+        cmpwi r31, W_WONDER_TRAP_ARMED
         beq- end
         cmpwi r31, W_MIXIMAX_TRANSFORMATION
         beq- end
