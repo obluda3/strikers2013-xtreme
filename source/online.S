@@ -1,23 +1,49 @@
 #include <kamek_asm.S>
 // Ranking URL
-kmWrite32 0x804a9ae0, 0
 
-prevent_random_matchmaking:
-    li r3, 0
-    kamek_bl 0x80022414 // IsButtonPushedOK
-    cmpwi r3, 1
-    bne end
-    cmpwi r31, 1
+url_list:
+.int 0x805064BA
+.int 0x8050689e
+.int 0x8050772e
+.int 0x8050774F
+.int 0x80507815
+.int 0x8050783A
+.int 0x8050C1FE
+.int 0
+
+new_url:
+.string "xtreme13.com"
+.align 4
+replace_urls:
+    stwu r1, -0x30(r1)
+    mflr r0
+    stw r0, 0x34(r1)
+    stmw r22, 8(r1)
+    lis r22, url_list@ha
+    addi r22, r22, url_list@l
+    lis r23, new_url@ha
+    addi r23, r23, new_url@l
+    loop:
+    lwz r3, 0(r22)
+    mr r4, r23
+    cmpwi r3, 0
     beq end
-    li r3, -1
-    kamek_bl 0x80048CE8 // SNDSeSysBad
-    li r3, 0
+    kamek_bl 0x802BC8A8
+    addi r22, r22, 4
+    b loop
     end:
-    kamek_b 0x8025B23C
+    lis r3, 0x2f00
+    lwz r22, -4(r22)
+    stw r3, 0xC(r22)
+    lmw r22, 8(r1)
+    lwz r0, 0x34(r1)
+    mtlr r0
+    addi r1, r1, 0x30
     blr
 
-kmBranch 0x8025B234, prevent_random_matchmaking
 
+
+kmBranch 0x80256E88, replace_urls
 // Overtime
 // kmWrite32 0x8025670C, 0x54C0043E
 
