@@ -153,12 +153,12 @@ void XtremeSettings::DrawMenu()
     disp_zen(message, 255, 170, 100);
 
     // Draw setting options
-    disp_zen("テーマソング", 205, 250, 90);
-    disp_zen("キーボード", 205, 280, 90);
-    disp_zen("威力数値", 205, 310, 90);
-    disp_zen(KeyboardType(keyboardType), 555, 280, 90);
-    disp_zen(FlagToEng(allowOpenings), 555, 250, 90);
-    disp_zen(FlagToEng(movePower), 555, 310, 90);
+    disp_zen("テーマソング", 225, 250, 90);
+    disp_zen("キーボード", 225, 280, 90);
+    disp_zen("威力数値", 225, 310, 90);
+    disp_zen(KeyboardType(keyboardType), 575, 280, 90);
+    disp_zen(FlagToEng(allowOpenings), 575, 250, 90);
+    disp_zen(FlagToEng(movePower), 575, 310, 90);
 
     s32 y = 250 + 30 * m_pos;
     disp_zen("#j#=->", 155, y, 90);
