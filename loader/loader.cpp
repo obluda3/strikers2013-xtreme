@@ -1,6 +1,6 @@
 #include "kamekLoader.h"
 
-int loadMeganeBinary();
+int loadKamekBinary();
 
 typedef void *(*MEMAlloc_t) (int size, int align, int a3, int a4);
 typedef void (*MEMFree_t) (void *buffer);
@@ -34,11 +34,11 @@ const loaderFunctionsEx functions = {
 	(MEMFree_t) 0x80022C70
 };
 
-int loadMeganeBinary()
+int loadKamekBinary()
 {
 	loadKamekBinaryFromDisc(&functions.base, "Code/CustomCode.bin");
 	functions.base.OSReport("Writing game id...\n");
 	return 1;
 }
-kmCall(0x803313D0, loadMeganeBinary);
+kmCall(0x803313D0, loadKamekBinary);
 
