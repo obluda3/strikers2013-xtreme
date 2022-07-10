@@ -141,13 +141,6 @@ void SettingPassLoop(int state, void* arg)
         {
             menu->tasks->Pop(0);
             menu->tasks->Push(XtremeSettings::MusicLoop, arg);
-            /*
-            s32 fileIdx = 30032;
-            s32 allocatedTex = TEX_Alloc(fileIdx, 158, 422);
-            TEXLoad(fileIdx, allocatedTex);
-            gpMenuBG_Work->textures[2] = allocatedTex;
-            gpMenuBG_Work->spriteStudio->SSA_set_textureIdx(3, allocatedTex, fileIdx);
-            */
             HelpBar_SetTextID(532);
         }
         menu->nameWindow->exec();
@@ -162,3 +155,7 @@ void SettingPassLoop(int state, void* arg)
 }
 
 kmBranch(0x8013f794, SettingLoop);
+
+// textures
+kmWrite32(0x804C9FD0, 30019);
+kmWrite32(0x8013ED34, 0x38600002);
