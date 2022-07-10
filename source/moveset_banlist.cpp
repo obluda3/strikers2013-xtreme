@@ -20,6 +20,7 @@ static BanMove BanList[] = {
     { P_12809FUEI, W_KODAI_NO_KIBA, false },
     { P_12013FUEI, W_SARGASSO, false },
     { P_12809FUEI, W_SARGASSO, false },
+    { P_12813TEMMA, W_WONDER_TRAP_ARMED, false },
     { P_12807SHINSUKE, W_KATTOBI_DEFENSE, false },
     { -1, -1 }
 };
