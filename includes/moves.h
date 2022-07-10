@@ -4,19 +4,19 @@
 #include "types.h"
 enum Tier
 {
-    Lv1 = 0x0,
-    Lv2 = 0x1,
-    Lv3 = 0x2,
-    SP = 0x3,
+    WZ_LV1 = 0x0,
+    WZ_LV2 = 0x1,
+    WZ_LV3 = 0x2,
+    WZ_SP = 0x3,
 };
 enum Status
 {
-    Normal = 0x0,
-    Long = 0x1,
-    ShootBlock = 0x2,
-    Chain = 0x3,
-    Punch1 = 0x4,
-    Punch2 = 0x5,
+    WZ_NORMAL = 0x0,
+    WZ_LONG = 0x1,
+    WZ_SHOOTBLOCK = 0x2,
+    WZ_CHAIN = 0x3,
+    WZ_PUNCH1 = 0x4,
+    WZ_PUNCH2 = 0x5,
 };
 struct WAZA_DEF
 {
