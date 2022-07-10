@@ -18,13 +18,9 @@ static BanMove BanList[] = {
     { P_12816SZANAKU, W_SHINKUUMA_MIXI_MAX, false },
     { P_12013FUEI, W_OUJA_NO_KIBA, false },
     { P_12809FUEI, W_KODAI_NO_KIBA, false },
-    { P_12330SARU, W_MORTAL_SMASH, true },
-    { P_10008MATSUKAZE, W_WONDER_TRAP_ARMED, true },
-    { P_10008MATSUKAZE_TNM, W_WONDER_TRAP_ARMED, true },
     { P_12013FUEI, W_SARGASSO, false },
     { P_12809FUEI, W_SARGASSO, false },
     { P_12807SHINSUKE, W_KATTOBI_DEFENSE, false },
-    { P_12813TEMMA, W_WONDER_TRAP_ARMED, false },
     { -1, -1 }
 };
 
@@ -32,6 +28,9 @@ static BanMove WhiteListMix[] =
 {
     { P_12813TEMMA, W_SAIKYOU_ELEVEN_HADOU, false },
     { P_12803TEMMA, W_WONDER_TRAP_ARMED, false },
+    { P_12330SARU, W_MORTAL_SMASH, true },
+    { P_10008MATSUKAZE, W_WONDER_TRAP_ARMED, true },
+    { P_10008MATSUKAZE_TNM, W_WONDER_TRAP_ARMED, true },
     { -1, -1 }
 };
 
