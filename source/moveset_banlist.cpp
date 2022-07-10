@@ -19,6 +19,9 @@ static BanMove BanList[] = {
     { P_12013FUEI, W_OUJA_NO_KIBA, false },
     { P_12809FUEI, W_KODAI_NO_KIBA, false },
     { P_12330SARU, W_MORTAL_SMASH, true },
+    { P_12013FUEI, W_SARGASSO, false },
+    { P_12809FUEI, W_SARGASSO, false },
+    { P_12807SHINSUKE, W_KATTOBI_DEFENSE, false },
     { -1, -1 }
 };
 
@@ -34,10 +37,6 @@ static BanMove WhiteListReg[] =
     { P_10249MAHORO, W_ILLUSION_BALL, false },
     { P_12009DORIRU, W_ILLUSION_BALL, false },
     { P_1092DOMON, W_KILLER_SLIDE, false },
-    { P_12011FUEI, W_SARGASSO, false },
-    { P_12013FUEI, W_SARGASSO, false },
-    { P_12809FUEI, W_SARGASSO, false },
-    { P_12803TEMMA, W_WONDER_TRAP_ARMED, false },
     { -1, -1 }
 };
 
@@ -64,7 +63,7 @@ bool IsLockedMiximax(u32 move, register u32 player, register u32 isMiximax)
     for (BanMove* ban = WhiteListMix; ban->player != -1; ban++)
     {
         if (ban->player == player && ban->move == move && (ban->needsMiximax == isMiximax == true))
-            return 1;
+            return 0;
     }
     if (WAZIsMiximax(move) && !IsMiximaxPlayer(player, 0)) return true;
     return false;
