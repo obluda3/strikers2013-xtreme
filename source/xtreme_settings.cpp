@@ -155,7 +155,7 @@ void XtremeSettings::DrawMenu()
     // Draw setting options
     disp_zen("テーマソング", 205, 250, 90);
     disp_zen("キーボード", 205, 280, 90);
-    disp_zen("必殺技の力", 205, 310, 90);
+    disp_zen("威力数値", 205, 310, 90);
     disp_zen(KeyboardType(keyboardType), 555, 280, 90);
     disp_zen(FlagToEng(allowOpenings), 555, 250, 90);
     disp_zen(FlagToEng(movePower), 555, 310, 90);
