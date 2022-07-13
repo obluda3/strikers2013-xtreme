@@ -54,6 +54,7 @@ namespace MENU_TP_DATA
         { P_3008HUYUKA, E_HUYUKA_B, E_RAIMON, 0x1000, 6 },
         { P_10036AOI, E_AOI_B, E_RAIMON_GO, 0x1000, 6 },
         { P_10037AKANE, E_AKANE_B, E_RAIMON_GO, 0x1000, 6 },
+        { P_11780SAN, E_SAN, E_DESTRUCTCHERS, 6451, 6 },
     };
 
     bool newIsUniformNoPositionFromTeam(int uniform)
