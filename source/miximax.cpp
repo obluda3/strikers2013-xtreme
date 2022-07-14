@@ -193,6 +193,20 @@ kmBranchDefAsm(0x800BF098, 0x800BF09C)
     blr
 }
 
+kmBranchDefAsm(0x800DBE84, 0x800DBE88)
+{
+    lwz r25, 0x124C(r6)
+    cmpwi r25, W_NORMAL_DRIBBLE_CHARGE
+    bne branch_back
+    shitty_hack:
+    li r0, 1
+    li r3, 78
+    cmpwi r0, 2
+    branch_back:
+    extsb. r0, r0
+    blr
+}
+
 kmWrite32(0x800DDAA4, 0x60000000);
 kmWrite32(0x800dae38, 0x7E238B78);
 kmWrite32(0x800dae3C, 0x4BFFFFD0);
