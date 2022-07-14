@@ -85,3 +85,35 @@ kmBranchDefAsm(0x800F8D38, 0x800F8D3C)
     cmpwi r0, 0
     blr
 }
+
+kmBranchDefAsm(0x800F8D74, 0x800F8D78)
+{
+    nofralloc
+    cmpwi r28, W_WONDER_TRAP_ARMED * 0x8C
+    beq end
+    li r0, W_MORTAL_SMASH
+    mulli r0, r0, 0x8C
+    cmpw r28, r0
+    beq end
+    cmpwi r24, 0
+    end:
+    blr
+}
+
+asm void MixedSpFix()
+{
+    nofralloc
+    cmpwi r8, W_SPARK_EDGE_DRIBBLE_ARMED
+    beq end
+    cmpwi r8, W_WONDER_TRAP_ARMED
+    beq end
+    cmpwi r8, W_MORTAL_SMASH
+    beq end
+    end:
+    blr
+}
+
+kmCall(0x800F9A34, MixedSpFix);
+kmCall(0x800F9A64, MixedSpFix);
+kmCall(0x800F9A98, MixedSpFix);
+kmCall(0x800F9AC8, MixedSpFix);
