@@ -29,6 +29,7 @@ void shdSysFileExist(const char* filename);
 void* MEMAlloc(unsigned long size, int align, int a3, int a4);
 void MEMFree(void* buf);
 void cprintf(char* format, ...);
+void bprintf(char* format, ...);
 void shdFileLoadBegin(int ftyp, int offset, int size, unsigned char* buffer);
 void wiiFileLoadBegin(int ftyp, int offset, int size, unsigned char* buffer);
 
@@ -42,7 +43,7 @@ struct BinHeader
 };
 
 BinHeader** flab_tbl = (BinHeader**)0x805255B8;
-
+char* archive_names[] = {"grp", "scn", "scn_sh", "ui", "dat"};
 char* fileLoadBegin(int ftyp, int offset, int size, unsigned char* buffer)
 {
 	BinHeader* archive = flab_tbl[ftyp];
@@ -53,21 +54,20 @@ char* fileLoadBegin(int ftyp, int offset, int size, unsigned char* buffer)
 	int index;
 	for (index = 1; index < 9999; index++)
 	{
-		int offsize = archive->mask[index];
+		unsigned int offsize = archive->mask[index];
 		offsize = ((offsize & 0xFF000000u) >> 24) | ((offsize & 0xFF0000u) >> 8) | ((offsize & 0xFF00u) << 8) | ((offsize & 0xFF) << 24);
 		int cur_offset = (offsize >> shiftfactor) * padfactor;
 		if (cur_offset == offset)
 			break;
 	}
 	
-	index += ftyp * 10000;
     index -= 1;
 	char path[256];
-	sprintf(path, "Modified/%d.bin", index);
+	sprintf(path, "Modified/%s/%d.bin", archive_names[ftyp], index);
 	int entrynum = DVDConvertPathToEntrynum(path);
-	
-	if (entrynum < 0) {
-        cprintf("File not found %s\n", path);
+	cprintf(" realpath=%s", path);
+	if (entrynum < 0) 
+    {
 		shdFileLoadBegin(ftyp, offset, size, buffer);
 		return (char*)buffer;
 	}
@@ -308,7 +308,6 @@ asm void patch_buffer_r24() {
     blr
 }
 kmCall(0x8002ED70, patch_buffer_r24);
-kmWrite32(0x8002EDAC, 0x60000000);
 
 asm void patch_buffer_r22() {
     nofralloc
@@ -322,8 +321,7 @@ asm void patch_buffer_r22() {
     mtlr r0
     blr
 }
-kmCall(0x8002EF90, patch_buffer_r24);
-kmWrite32(0x8002EFC8, 0x60000000);
+kmCall(0x8002EF90, patch_buffer_r22);
 
 asm void patch_buffer_r26() {
     nofralloc
@@ -340,7 +338,6 @@ asm void patch_buffer_r26() {
 kmCall(0x8002F868, patch_buffer_r26);
 kmCall(0x8002fbbc, patch_buffer_r26);
 kmCall(0x80030024, patch_buffer_r26);
-kmCall(0x80030478, patch_buffer_r26);
 kmCall(0x80030fd8, patch_buffer_r26);
 kmCall(0x80030c28, patch_buffer_r26);
 kmCall(0x8003084c, patch_buffer_r26);
