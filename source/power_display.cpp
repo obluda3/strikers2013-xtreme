@@ -2,6 +2,7 @@
 #include <enums.h>
 #include <text.h>
 #include "xtutils.h"
+#include "xtreme_settings.h"
 
 struct PowerInfo
 {
@@ -19,36 +20,39 @@ char* MoveType = (char*)0x807ACE54;
 
 void displayMovePower()
 {
-    char buffer[100];
-    buffer[0] = 0; // idk how to code
-    int moveType = *MoveType;
-    int isBlock = *IsBlockMove;
-    if (moveType == 1)
-        return;
-    if (moveType == 2 && !isBlock)
-        return;
-    if (isBlock && moveType != 3)
+    if (g_Jukebox.movePower) 
     {
-        if (!*IsInteractionWon)
-            sprintf(buffer, "#j#z120#=TOTAL %d", *ShootPower);
-        else return;
+        char buffer[100];
+        buffer[0] = 0; // idk how to code
+        int moveType = *MoveType;
+        int isBlock = *IsBlockMove;
+        if (moveType == 1)
+            return;
+        if (moveType == 2 && !isBlock)
+            return;
+        if (isBlock && moveType != 3)
+        {
+            if (!*IsInteractionWon)
+                sprintf(buffer, "#j#z120#=TOTAL %d", *ShootPower);
+            else return;
+        }
+        if (!moveType)
+        {
+            int randomBonus = info.randomBonus;
+            int distancePenalty = -info.distancePenalty;
+            int shootPower = *ShootPower;
+            int basePower = shootPower - distancePenalty - randomBonus;
+            sprintf(buffer, "#j#=BASE %d#n#oy5#=DIST %d#n#oy5#=RNG %d#n#oy7#z120#=TOTAL %d", basePower, distancePenalty, randomBonus, shootPower);
+        }
+        else if (moveType == 3)
+        {
+            int randomBonus = info.randomBonus;
+            int catchPower = info.catchPower;
+            int basePower = catchPower - randomBonus;
+            sprintf(buffer, "#j#=BASE %d#n#oy5#=RNG %d#n#oy7#z120#=TOTAL %d", basePower, randomBonus, catchPower);
+        }
+        disp_zen(buffer, 20, 30, 50);
     }
-    if (!moveType)
-    {
-        int randomBonus = info.randomBonus;
-        int distancePenalty = -info.distancePenalty;
-        int shootPower = *ShootPower;
-        int basePower = shootPower - distancePenalty - randomBonus;
-        sprintf(buffer, "#j#=BASE %d#n#oy5#=DIST %d#n#oy5#=RNG %d#n#oy7#z120#=TOTAL %d", basePower, distancePenalty, randomBonus, shootPower);
-    }
-    else if (moveType == 3)
-    {
-        int randomBonus = info.randomBonus;
-        int catchPower = info.catchPower;
-        int basePower = catchPower - randomBonus;
-        sprintf(buffer, "#j#=BASE %d#n#oy5#=RNG %d#n#oy7#z120#=TOTAL %d", basePower, randomBonus, catchPower);
-    }
-    disp_zen(buffer, 20, 30, 50);
 }
 
 kmBranchDefAsm(0x8009E730, 0x8009E734)
