@@ -41,6 +41,7 @@ static BanMove WhiteListReg[] =
     { P_12009DORIRU, W_ILLUSION_BALL, false },
     { P_1092DOMON, W_KILLER_SLIDE, false },
     { P_12803TEMMA, W_WONDER_TRAP, false },
+    { P_12009DORIRU, W_KILLER_SLIDE, false },
     { -1, -1 }
 };
 
