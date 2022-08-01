@@ -211,6 +211,11 @@ kmWrite32(0x800DDAA4, 0x60000000);
 kmWrite32(0x800dae38, 0x7E238B78);
 kmWrite32(0x800dae3C, 0x4BFFFFD0);
 
+kmWrite32(0x800DD750, 0x60000000);
+kmWrite32(0x800DD784, 0x60000000);
+kmWrite32(0x800DD79C, 0x60000000);
+kmWrite32(0x800DD7B0, 0x60000000);
+
 kmBranch(0x800BF698, ResetMiximax);
 kmBranch(0x800DA73C, IsMiximaxMove);
 kmBranch(0x800BF52C, NewResetMiximaxPlayerDefB);
