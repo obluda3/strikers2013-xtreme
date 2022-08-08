@@ -4,7 +4,7 @@
 #include <menubg.h>
 #include <kamek.h>
 #include <menu_setting.h>
-#include "xtreme_settings.h"
+#include "xtreme.h"
 
 void SettingLoop(int state, void* menu);
 void SettingPassLoop(int state, void* arg);
@@ -29,7 +29,7 @@ void SettingLoop(int state, void* arg)
 {
     MENU_SETTING::CMenuSetting* menu = (MENU_SETTING::CMenuSetting*)arg;
     cTASK* tasks = menu->tasks;
-    if (state == 2 && !g_Jukebox.passAccepted) 
+    if (state == 2 && !Settings.passAccepted) 
     {
         int helpStrId = menu->nameWindow->getHelpStrID();
         if (HelpBar_GetTextID() != helpStrId) HelpBar_SetTextID(helpStrId);
@@ -92,7 +92,7 @@ void SettingLoop(int state, void* arg)
                 }
                 else
                 {
-                    g_Jukebox.passAccepted = true;
+                    Settings.passAccepted = true;
                     updateCurrentBgm(0);
                     SNDSePlay(238, 128, 128);
                     menu->popup->set_itemtext(0, "おめでとうございます。");
@@ -119,7 +119,7 @@ void SettingLoop(int state, void* arg)
         menu->nameWindow->reset();
         menu->nameWindow->enableCollisionTest(true);
     }
-    else if (g_Jukebox.passAccepted) 
+    else if (Settings.passAccepted) 
     {
         updateCurrentBgm(0);
         if (IsButtonPushed_Cancel(0)) 

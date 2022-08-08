@@ -1,5 +1,5 @@
 #include <kamek.h>
-#include "xtreme_settings.h"
+#include "xtreme.h"
 #include "keyboard.h"
 
 u16** pKeybordTbl = (u16**)0x804C9DD0;

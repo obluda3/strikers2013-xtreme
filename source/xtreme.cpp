@@ -1,10 +1,10 @@
-#include "xtreme_settings.h"
+#include "xtreme.h"
 #include <menu_setting.h>
 #include <kamek.h>
 #include "music.h"
 #include "keyboard.h"
 
-XtremeSettings g_Jukebox;
+XtremeSettings Settings;
 u8* SaveFlag = (u8*)0x805F912E;
 
 void XtremeSettings::MusicLoop(int state, void* arg)
@@ -14,16 +14,16 @@ void XtremeSettings::MusicLoop(int state, void* arg)
     {
         updateCurrentBgm(0);
         
-        g_Jukebox.Exec();
-        g_Jukebox.DrawMenu();
+        Settings.Exec();
+        Settings.DrawMenu();
         
         if (IsButtonPushed_Cancel(0))
         {
-            g_Jukebox.Save();
+            Settings.Save();
             menu->tasks->Pop(0);
             menu->tasks->Push(MENU_SETTING::CMenuSetting::MenuSet0Loop, arg);
             menu->tasks->Push(MENU_SETTING::CMenuSetting::MenuSet4Out, arg);
-            g_Jukebox.passAccepted = false;
+            Settings.passAccepted = false;
             SNDSeSysCANCEL(-1);
         }
     }
@@ -32,10 +32,10 @@ void XtremeSettings::MusicLoop(int state, void* arg)
 void XtremeSettings::Init()
 {
     u8 flag = *SaveFlag;
-    g_Jukebox.allowOpenings = flag & 1;
-    g_Jukebox.movePower = flag & 2;
-    g_Jukebox.keyboardType = (flag >> 2) & 3;
-    SwitchKeyboardLayout(g_Jukebox.keyboardType);
+    Settings.allowOpenings = flag & 1;
+    Settings.movePower = flag & 2;
+    Settings.keyboardType = (flag >> 2) & 3;
+    SwitchKeyboardLayout(Settings.keyboardType);
 }
 
 void XtremeSettings::Save()

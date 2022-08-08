@@ -2,7 +2,7 @@
 #include <enums.h>
 #include <text.h>
 #include "xtutils.h"
-#include "xtreme_settings.h"
+#include "xtreme.h"
 
 struct PowerInfo
 {
@@ -20,7 +20,7 @@ char* MoveType = (char*)0x807ACE54;
 
 void displayMovePower()
 {
-    if (g_Jukebox.movePower) 
+    if (Settings.movePower) 
     {
         char buffer[100];
         buffer[0] = 0; // idk how to code

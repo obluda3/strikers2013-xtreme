@@ -8,7 +8,7 @@
 #include <shd_debug.h>
 #include <utilitysato.h>
 #include "music.h"
-#include "xtreme_settings.h"
+#include "xtreme.h"
 
 static char* s_HelpbarText_SP = "#b84#=もどる #b83#=けってい #b87#=ルールせってい #b88#=そうさ #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
 static char* s_HelpbarText_Wifi_a = "#b84#=もどる #b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
@@ -136,7 +136,7 @@ int updateCurrentBgm(int argBak)
     
     s32 openingFirst = playlistInfo.openingFirst;
     u32 bgmMax = playlistInfo.size;
-    int maxBgm = openingFirst == -1 ? bgmMax - 1 : g_Jukebox.allowOpenings ? bgmMax - 1 : openingFirst;
+    int maxBgm = openingFirst == -1 ? bgmMax - 1 : Settings.allowOpenings ? bgmMax - 1 : openingFirst;
     if (currentBgm < 0) currentBgm = maxBgm;
     if (currentBgm > maxBgm) currentBgm = 0;
 

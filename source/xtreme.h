@@ -34,4 +34,4 @@ class XtremeSettings
         // s32 m_yOff;
 };
 
-extern XtremeSettings g_Jukebox;
+extern XtremeSettings Settings;
