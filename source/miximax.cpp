@@ -19,26 +19,25 @@ Miximax g_MiximaxTable[] =
     { P_12014KINAKO, 0, P_12812KINAKO, W_MIXIMAX_TRANSFORMATION, W_KIRA_KIRA_ILLUSION, 0 },
     { P_10008MATSUKAZE, 0, P_12803TEMMA, W_MIXIMAX_TRANSFORMATION, W_WONDER_TRAP_ARMED, W_BLACK_ASH_MIXI_MAX  },
     { P_10008MATSUKAZE, 1, P_12813TEMMA, W_MIXIMAX_TRANSFORMATION, W_OU_NO_TSURUGI, W_SAIKYOU_ELEVEN_HADOU },
+    { P_10008MATSUKAZE_TNM, 0, P_12803TEMMA, W_MIXIMAX_TRANSFORMATION, W_WONDER_TRAP_ARMED, W_BLACK_ASH_MIXI_MAX  },
+    { P_10008MATSUKAZE_TNM, 1, P_12813TEMMA, W_MIXIMAX_TRANSFORMATION, W_OU_NO_TSURUGI, W_SAIKYOU_ELEVEN_HADOU },
     { P_12012YUICHI, 0, P_12802TSURUGI, W_MIXIMAX_TRANSFORMATION, W_DEATH_DROP_B, 0 },
     { P_12150ZANAKU, 0, P_12815ZANAKU, W_MIXIMAX_TRANSFORMATION, W_SHINKUUMA_MIXI_MAX, 0 },
     { P_12150ZANAKU, 1, P_12816SZANAKU, W_MIXIMAX_TRANSFORMATION, W_GREAT_MAX_NA_ORE, 0 },
     { P_12492FURAN, 0, P_12502YOBI, W_MIXIMAX_TRANSFORMATION, W_CHAOS_METEOR_UNUSED, 0 },
     { P_12330SARU, 0, P_12817SARU, W_NORMAL_DRIBBLE_CHARGE, W_MORTAL_SMASH, W_SHELLBIT_BURST },
     { P_12056GAMMA, 0, P_10443OKAZEYA, W_MIXIMAX_TRANSFORMATION, 0, 0, },
+    { P_10350HAKURYU, 0, P_10444RINNO, W_MIXIMAX_TRANSFORMATION, W_TENCHI_RAIMEI, 0 },
     { 0xFFFF, 0, 0, 0, 0, 0 },
 };
 
 Miximax* newGetMiximaxData(int playerId, int slot)
 {
-    int listId = GetPLYIDToListID(playerId, 0);
     for (Miximax* mixiData = g_MiximaxTable; mixiData->player > 0; ++mixiData)
     {
-        int source = mixiData->player;
         if (mixiData->slot != slot)
             continue;
-        if (!listId && source == playerId)
-            return mixiData;
-        if (listId == GetPLYIDToListID(source, 0))
+        if (mixiData->player == playerId)
             return mixiData;
     }
     return 0;
@@ -61,17 +60,9 @@ bool newIsMiximaxPlayer(int player, int* unk)
 
 Miximax* newGetMiximaxData2(int tableIdx)
 {
-    if (tableIdx > 0)
-    {
-        int realIndex = 0;
-        for (Miximax* mixiData = g_MiximaxTable; mixiData->player > 0; mixiData++)
-        {
-            if (realIndex == tableIdx)
-                return &g_MiximaxTable[realIndex];
-            realIndex++;
-        }
-    }
-    return 0;
+    if (tableIdx >= sizeof(g_MiximaxTable) / sizeof(Miximax))
+        return 0;
+    return &g_MiximaxTable[tableIdx];
 }
 
 kmBranchDefAsm(0x800bF008, 0x800bF00c)
