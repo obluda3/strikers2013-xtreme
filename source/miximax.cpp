@@ -24,6 +24,7 @@ Miximax g_MiximaxTable[] =
     { P_12150ZANAKU, 1, P_12816SZANAKU, W_MIXIMAX_TRANSFORMATION, W_GREAT_MAX_NA_ORE, 0 },
     { P_12492FURAN, 0, P_12502YOBI, W_MIXIMAX_TRANSFORMATION, W_CHAOS_METEOR_UNUSED, 0 },
     { P_12330SARU, 0, P_12817SARU, W_NORMAL_DRIBBLE_CHARGE, W_MORTAL_SMASH, W_SHELLBIT_BURST },
+    { P_12056GAMMA, 0, P_10443OKAZEYA, W_MIXIMAX_TRANSFORMATION, 0, 0, },
     { 0xFFFF, 0, 0, 0, 0, 0 },
 };
 
@@ -72,14 +73,14 @@ Miximax* newGetMiximaxData2(int tableIdx)
     }
     return 0;
 }
-/*
+
 kmBranchDefAsm(0x800bF008, 0x800bF00c)
 {
     nofralloc
     lis r6, g_MiximaxTable@h
     ori r6, r6, g_MiximaxTable@l
     blr
-}*/
+}
 
 kmBranch(0x800bed14, newGetMiximaxData);
 kmBranch(0x800BEBE4, newIsMiximaxPlayer);
@@ -190,20 +191,6 @@ kmBranchDefAsm(0x800BF098, 0x800BF09C)
     mr r3, r30
     mr r30, r0
     end:
-    blr
-}
-
-kmBranchDefAsm(0x800DBE84, 0x800DBE88)
-{
-    lwz r25, 0x124C(r6)
-    cmpwi r25, W_NORMAL_DRIBBLE_CHARGE
-    bne branch_back
-    shitty_hack:
-    li r0, 1
-    li r3, 78
-    cmpwi r0, 2
-    branch_back:
-    extsb. r0, r0
     blr
 }
 

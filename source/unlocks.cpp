@@ -7,33 +7,33 @@
 u32* dword_8051D640 = (u32*)0x8051D640;
 u32* MixiAnnCount = (u32*)0x8051EB40;
 
+int MixiUnlockList[] = { P_12492FURAN, P_12490ASUTA, P_12330SARU, P_12011FUEI, P_12056GAMMA, P_12150ZANAKU };
+
 SavePlayerParam* unlockSecretMiximaxes(register PLAYER_DEF* player_def)
 {
     asm("mr player_def, r22");
     int id = player_def->id;
     SavePlayerParam* player_data = Savedata_getPlayerData(id);
     bool hasMiximax = (player_data->Flag & MIXIMAX_LEVEL_ONE) == MIXIMAX_LEVEL_ONE;
-    if ((id == P_12492FURAN || id == P_12330SARU) && !hasMiximax)
+    if (!hasMiximax)
     {
-        int otherPlayer = -1;
-        int textEntry = -1;
-        if (id == P_12330SARU)
-        { 
-            otherPlayer = P_12011FUEI;
-            textEntry = 18;
-        }
-        else if (id == P_12492FURAN)
+        for (int i = 0; i < 3; i++) 
         {
-            otherPlayer = P_12490ASUTA;
-            textEntry = 17;
+            if (MixiUnlockList[i*2] != id) continue;
+            else
+            {
+                int otherPlayer = MixiUnlockList[i*2 + 1];
+                int textEntry = 17 + i;
+                KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(id, otherPlayer);
+                if (kizunaData->value >= 50)
+                {
+                    player_data->Flag |= MIXIMAX_LEVEL_ONE;
+                    dword_8051D640[*MixiAnnCount + 1345] = textEntry;
+                    *MixiAnnCount += 1;
+                }
+            }
         }
-        KizunaData* kizunaData = Savedata_getPlayeData_KizunaData(id, otherPlayer);
-        if (kizunaData->value >= 50)
-        {
-            player_data->Flag |= MIXIMAX_LEVEL_ONE;
-            dword_8051D640[*MixiAnnCount + 1345] = textEntry;
-            *MixiAnnCount += 1;
-        }
+        
     }
     return player_data;
 }
