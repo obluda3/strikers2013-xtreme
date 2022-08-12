@@ -1,6 +1,9 @@
 #include <kamek_asm.S>
 .set W_NORMAL_DRIBBLE_CHARGE, 0x9e
 .set W_PERFECT_TOWER, 0x2b
+.set W_KOUTEI_PENGUIN_X, 0x10C
+.set W_DARK_MATTER, 0x12B
+.set W_CHAOS_METEOR_UNUSED, 0x184 
 .set WAZATasks, 0x807B184C
 fix_skip_mixi_saru:
     lwz r25, 0x124C(r6)
@@ -23,11 +26,13 @@ remove_skip_new_block:
     beq go_back
     cmpwi r0, W_CHAOS_METEOR_UNUSED
     beq go_back
+    cmpwi r0, W_DARK_MATTER
+    beq go_back
     kamek_bl 0x800DF5E4
     go_back:
     kamek_b 0x800E184C
 
-fix_skip_block:
+fix_skip_new_block:
     // orig inst
     stb r0, 0x1793(r3)
     lwz r0, 0x124C(r3)
@@ -36,6 +41,8 @@ fix_skip_block:
     cmpwi r0, W_KOUTEI_PENGUIN_X
     bne end
     cmpwi r0, W_CHAOS_METEOR_UNUSED
+    bne end
+    cmpwi r0, W_DARK_MATTER
     bne end
     // stop anim
     li r0, 1
