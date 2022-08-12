@@ -14,20 +14,28 @@ fix_skip_mixi_saru:
     extsb. r0, r0
     blr
 
-remove_skip_perfect_tower:
+remove_skip_new_block:
     lwz R12, -0x6BE0(r13)
     lwz r0, 0x124C(r12)
     cmpwi r0, W_PERFECT_TOWER
+    beq go_back
+    cmpwi r0, W_KOUTEI_PENGUIN_X
+    beq go_back
+    cmpwi r0, W_CHAOS_METEOR_UNUSED
     beq go_back
     kamek_bl 0x800DF5E4
     go_back:
     kamek_b 0x800E184C
 
-fix_skip_perfect_tower:
+fix_skip_block:
     // orig inst
     stb r0, 0x1793(r3)
     lwz r0, 0x124C(r3)
     cmpwi r0, W_PERFECT_TOWER
+    bne end
+    cmpwi r0, W_KOUTEI_PENGUIN_X
+    bne end
+    cmpwi r0, W_CHAOS_METEOR_UNUSED
     bne end
     // stop anim
     li r0, 1
@@ -43,5 +51,5 @@ fix_skip_perfect_tower:
     kamek_b 0x800E1858
 
 kmCall 0x800DBE84, fix_skip_mixi_saru
-kmBranch 0x800E1854, fix_skip_perfect_tower
-kmBranch 0x800E1848, remove_skip_perfect_tower
+kmBranch 0x800E1854, fix_skip_new_block
+kmBranch 0x800E1848, remove_skip_new_block
