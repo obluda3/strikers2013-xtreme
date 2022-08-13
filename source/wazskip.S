@@ -60,3 +60,4 @@ fix_skip_new_block:
 kmCall 0x800DBE84, fix_skip_mixi_saru
 kmBranch 0x800E1854, fix_skip_new_block
 kmBranch 0x800E1848, remove_skip_new_block
+kmWrite32 0x800DCAFC, 0x4800000c
