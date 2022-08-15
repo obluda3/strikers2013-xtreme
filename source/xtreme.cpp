@@ -39,11 +39,11 @@ void XtremeSettings::Init()
 
     // Init text edits
     char** maintext = *((char ***)0x805131C0);
-    maintext[1675] = "ザナーク × クララジェーン";
-    maintext[5640] = "ガンマ × ザナーク";
-    maintext[5641] = "白竜 × 孔明";
-    maintext[5642] = "フラン × くろいばら";
-    maintext[5643] = "SARU × Sいでんし";
+    maintext[1675] = "ザナーク　×　クララジェーン";
+    maintext[5640] = "ガンマ　×　ザナーク";
+    maintext[5641] = "白竜　×　孔明";
+    maintext[5642] = "フラン　×　くろいばら";
+    maintext[5643] = "ＳＡＲＵ　×　Ｓいでんし";
 }
 
 void XtremeSettings::Save()
