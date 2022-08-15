@@ -37,13 +37,14 @@ fix_skip_new_block:
     stb r0, 0x1793(r3)
     lwz r0, 0x124C(r3)
     cmpwi r0, W_PERFECT_TOWER
-    bne end
+    beq stop
     cmpwi r0, W_KOUTEI_PENGUIN_X
-    bne end
+    beq stop
     cmpwi r0, W_CHAOS_METEOR_UNUSED
-    bne end
+    beq stop
     cmpwi r0, W_DARK_MATTER
-    bne end
+    b end
+    stop:
     // stop anim
     li r0, 1
     stb r0, 0x1796(r3)
