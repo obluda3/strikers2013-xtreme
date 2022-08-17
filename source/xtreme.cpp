@@ -57,39 +57,46 @@ void XtremeSettings::Init()
 
     if (!s_is_wiimmfi_done)
     {
-        // ToadKing/wiilauncher-nossl
-        for (int i = 0; i < sizeof(https_list) / 4; i++)
+        if (!memcmp((char*)domain_urls[0], "wiimmfi.de", strlen("wiimmfi.de")))
         {
-            char* cur = (char*)https_list[i]; 
-            int len = strlen(cur);
-            memmove(cur + 4, cur + 5, len - 5);
-            cur[len - 1] = 0;
-        }
-
-        // wiidev/usbloadergx
-        for (int j = 0; j < sizeof(domain_urls) / 4; j++)
+            s_is_wiimmfi_done = true;     
+        }   
+        else
         {
-            char* cur = (char*)domain_urls[j];
-            int len = strlen(cur);
-            memcpy(cur, "wiimmfi.de", strlen("wiimmfi.de"));
-            memmove(cur + strlen("wiimmfi.de"), cur + 16, len - 16);
-            for (int k = 16 - strlen("wiimmfi.de"); k > 0; k--)
-                cur[len - k] = 0;
-        }
+            // ToadKing/wiilauncher-nossl
+            for (int i = 0; i < sizeof(https_list) / 4; i++)
+            {
+                char* cur = (char*)https_list[i]; 
+                int len = strlen(cur);
+                memmove(cur + 4, cur + 5, len - 5);
+                cur[len - 1] = 0;
+            }
 
-        for (int l = 0; l < sizeof(update_urls) / 4; l++)
-        {
-            char* cur = (char*)update_urls[l];
-            char* newurl = new_update_urls[l];
-            strcpy(cur, newurl);
-        } 
+            // wiidev/usbloadergx
+            for (int j = 0; j < sizeof(domain_urls) / 4; j++)
+            {
+                char* cur = (char*)domain_urls[j];
+                int len = strlen(cur);
+                memcpy(cur, "wiimmfi.de", strlen("wiimmfi.de"));
+                memmove(cur + strlen("wiimmfi.de"), cur + 16, len - 16);
+                for (int k = 16 - strlen("wiimmfi.de"); k > 0; k--)
+                    cur[len - k] = 0;
+            }
 
-        memcpy((char*)0x80472A3C, security_patchA, 56);
-        memcpy((char*)0x80472BD0, security_patchB, 72);
+            for (int l = 0; l < sizeof(update_urls) / 4; l++)
+            {
+                char* cur = (char*)update_urls[l];
+                char* newurl = new_update_urls[l];
+                strcpy(cur, newurl);
+            } 
 
-        strcpy((char*)0x8050bacc, "X-3-1");
-        s_is_wiimmfi_done = true;
-    }   
+            memcpy((char*)0x80472A3C, security_patchA, 56);
+            memcpy((char*)0x80472BD0, security_patchB, 72);
+
+            strcpy((char*)0x8050bacc, "X-3-1");
+            s_is_wiimmfi_done = true;
+        }     
+    }
 }
 
 void XtremeSettings::Save()
