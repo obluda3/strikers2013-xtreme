@@ -42,6 +42,8 @@ ArmedInfo ArmedTable[] =
     { P_12011FUEI, P_12011FUEI_ARMD },
     { P_10290AMEMIYA, P_10290AMEMIYA_ARMD },
     { P_10008MATSUKAZE_TNM, P_10008MATSUKAZE_ARMD },
+    { P_12492FURAN, P_12492FURAN_ARMD },
+    { P_12502YOBI, P_12492FURAN_ARMD },
 };
 // changes the player def to an armed player def that has the original player's face
 kmBranchDefAsm(0x800DAE48, 0x800dae4c)
