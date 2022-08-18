@@ -4,6 +4,7 @@
 .set W_KOUTEI_PENGUIN_X, 0x10C
 .set W_DARK_MATTER, 0x12B
 .set W_CHAOS_METEOR_UNUSED, 0x184 
+.set W_KILLER_FIELDS, 0xA7
 .set WAZATasks, 0x807B184C
 fix_skip_mixi_saru:
     lwz r25, 0x124C(r6)
@@ -58,7 +59,14 @@ fix_skip_new_block:
     end:
     kamek_b 0x800E1858
 
+check_fixed_users:
+    cmpwi r29, W_KILLER_FIELDS
+    beq get_back
+    cmpwi r29, W_PERFECT_TOWER
+    get_back:
+    kamek_b 0x800DCB04
+
 kmCall 0x800DBE84, fix_skip_mixi_saru
 kmBranch 0x800E1854, fix_skip_new_block
 kmBranch 0x800E1848, remove_skip_new_block
-kmWrite32 0x800DCAFC, 0x4800000c
+kmBranch 0x800DCB00, check_fixed_users
