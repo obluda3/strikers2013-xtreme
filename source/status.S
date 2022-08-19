@@ -10,3 +10,4 @@ param_to_rank:
 
 kmCall 0x801066E4, param_to_rank
 kmWrite32 0x8010678C, 0x3803006e
+kmWrite16 0x80106726, 2 // after item use
