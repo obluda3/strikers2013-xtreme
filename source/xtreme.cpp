@@ -39,6 +39,9 @@ char security_patchB[] = { 0x38, 0xE0, 0x00, 0x04, 0x7D, 0x03, 0x3C, 0x2C, 0x55,
 
 bool s_is_wiimmfi_done = false;
 
+char* text_edits[] ={ "ガンマ　×　ザナーク", "白竜　×　孔明", "フラン　×　くろいばら", "ＳＡＲＵ　×　Ｓいでんし", "黒の騎士団", "エンシャントダーク", "アンリミテッドシャイニング", "稲妻KFC", "エルドラドチーム01", "エルドラドチーム02", "エルドラドチーム03", "クロノストーム", "ザン", "ガル", "ギル", "ツキガミの一族", "ヴァンプティム", "ジ・エグゼラー", "アースイレブン", "レジスタンスジャパン", "ファイアードラゴン", "ビッグウェイブス", "シャムシール", "マッハタイガー", "ストームウルフ", "サザナーライレブン", "サンドリアスイレブン", "ラトニークイレブン", "ガードンイレブン", "ファラム・ディーテ", "イクサルフリート", "ビッグバン", "スーパーノヴァ", "スペースランカーズ" };
+
+
 void XtremeSettings::Init()
 {
     u8 flag = *SaveFlag;
@@ -50,10 +53,10 @@ void XtremeSettings::Init()
     // Init text edits
     char** maintext = *((char ***)0x805131C0);
     maintext[1675] = "ザナーク　×　クララジェーン";
-    maintext[5640] = "ガンマ　×　ザナーク";
-    maintext[5641] = "白竜　×　孔明";
-    maintext[5642] = "フラン　×　くろいばら";
-    maintext[5643] = "ＳＡＲＵ　×　Ｓいでんし";
+    for (int i = 0; i < sizeof(text_edits) / sizeof(char*); i++)
+    {
+        maintext[i+5640] = text_edits[i];
+    }
 
     if (!s_is_wiimmfi_done)
     {
