@@ -7,7 +7,7 @@
 u32* dword_8051D640 = (u32*)0x8051D640;
 u32* MixiAnnCount = (u32*)0x8051EB40;
 
-int MixiUnlockList[] = { P_12492FURAN, P_12490ASUTA, P_12330SARU, P_12011FUEI, P_12056GAMMA, P_12150ZANAKU };
+int MixiUnlockList[] = { P_12492FURAN, P_12490ASUTA, P_12330SARU, P_12011FUEI, P_12056GAMMA, P_12150ZANAKU, P_10350HAKURYU, P_10444RINNO };
 
 SavePlayerParam* unlockSecretMiximaxes(register PLAYER_DEF* player_def)
 {
@@ -17,7 +17,7 @@ SavePlayerParam* unlockSecretMiximaxes(register PLAYER_DEF* player_def)
     bool hasMiximax = (player_data->Flag & MIXIMAX_LEVEL_ONE) == MIXIMAX_LEVEL_ONE;
     if (!hasMiximax)
     {
-        for (int i = 0; i < 3; i++) 
+        for (int i = 0; i < 4; i++) 
         {
             if (MixiUnlockList[i*2] != id) continue;
             else
