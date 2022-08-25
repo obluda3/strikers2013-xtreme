@@ -73,6 +73,24 @@ struct WAZA_DEF
     u16 invocationAnimTime;
     u16 _8A;
 };
+
+struct WazaInfo
+{
+    u32 MoveType;
+    u32 _4;
+    u32 MoveName;
+    u32 _C;
+    u32 OtherName;
+    u32 ModelType;
+    u32 SkipStart;
+    u32 SkipEnd;
+    u8 _20[0x18];
+    u32 EffectType;
+    u32 SpecialEffect;
+    u32 SpecialEffect2;
+    u8 _44[0x20];
+};
+
 bool WAZIsMiximax(int id);
 bool WAZIsKeshinArmed(int id);
 bool WAZIsKeshinGroup(int id);
