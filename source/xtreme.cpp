@@ -92,13 +92,12 @@ void XtremeSettings::Init()
                 char* newurl = new_update_urls[l];
                 strcpy(cur, newurl);
             } 
-
-            memcpy((char*)0x80472A3C, security_patchA, 56);
-            memcpy((char*)0x80472BD0, security_patchB, 72);
-
-            strcpy((char*)0x8050bacc, "X-3-1");
             s_is_wiimmfi_done = true;
         }     
+        memcpy((char*)0x80472A3C, security_patchA, 56);
+        memcpy((char*)0x80472BD0, security_patchB, 72);
+
+        strcpy((char*)0x8050bacc, "X-3-1");
     }
 }
 
