@@ -1,8 +1,11 @@
 #include "xtreme.h"
 #include <menu_setting.h>
 #include <kamek.h>
+#include <enums.h>
 #include "music.h"
+#include <shd_debug.h>
 #include "keyboard.h"
+#include <moves.h>
 
 XtremeSettings Settings;
 u8* SaveFlag = (u8*)0x805F912E;
@@ -38,9 +41,13 @@ char security_patchA[] = { 0x88, 0xA1, 0x00, 0x11, 0x28, 0x05, 0x00, 0x80, 0x41,
 char security_patchB[] = { 0x38, 0xE0, 0x00, 0x04, 0x7D, 0x03, 0x3C, 0x2C, 0x55, 0x46, 0xC2, 0x1E, 0x55, 0x40, 0x40, 0x0E, 0xA1, 0x21, 0x00, 0x12, 0x91, 0x01, 0x00, 0x0C, 0x89, 0x01, 0x00, 0x11, 0x51, 0x46, 0xC6, 0x3E, 0x51, 0x40, 0x44, 0x2E, 0x7D, 0x27, 0x46, 0x70, 0x28, 0x08, 0x00, 0x80, 0x38, 0xA0, 0x00, 0x04, 0x7C, 0xC6, 0x03, 0x78, 0x51, 0x27, 0x42, 0x2E, 0x60, 0x00, 0x00, 0x00, 0xB0, 0xE1, 0x00, 0x12, 0x54, 0xC0, 0x80, 0x3E, 0x41, 0x81, 0x00, 0x14 };
 
 bool s_is_wiimmfi_done = false;
+bool s_is_text_done = false;
 
 char* text_edits[] ={ "ガンマ　×　ザナーク", "白竜　×　孔明", "フラン　×　くろいばら", "ＳＡＲＵ　×　Ｓいでんし", "黒の騎士団", "エンシャントダーク", "アンリミテッドシャイニング", "稲妻KFC", "エルドラドチーム01", "エルドラドチーム02", "エルドラドチーム03", "クロノストーム", "ザン", "ガル", "ギル", "ツキガミの一族", "ヴァンプティム", "ジ・エグゼラー", "アースイレブン", "レジスタンスジャパン", "ファイアードラゴン", "ビッグウェイブス", "シャムシール", "マッハタイガー", "ストームウルフ", "サザナーライレブン", "サンドリアスイレブン", "ラトニークイレブン", "ガードンイレブン", "ファラム・ディーテ", "イクサルフリート", "ビッグバン", "スーパーノヴァ", "スペースランカーズ", "ガードンイレブン" };
 
+char NewMoveNames[6][50];
+int go_moves[] = { W_SHIPPUU_DASH_B, W_THE_WALL_B };
+int full_moves[] = { W_KING_FIRE_B, W_GIGANTIC_BOMB_B, W_MAJIN_THE_HAND_B, W_BUTTOBI_PUNCH_ARMED_B };
 
 void XtremeSettings::Init()
 {
@@ -51,12 +58,42 @@ void XtremeSettings::Init()
     SwitchKeyboardLayout(Settings.keyboardType);
 
     // Init text edits
-    char** maintext = *((char ***)0x805131C0);
-    maintext[1675] = "ザナーク　×　クララジェーン";
-    for (int i = 0; i < sizeof(text_edits) / sizeof(char*); i++)
+    if (!s_is_text_done)
     {
-        maintext[i+5640] = text_edits[i];
+        char** maintext = *((char ***)0x805131C0);
+        maintext[1675] = "ザナーク　×　クララジェーン";
+        for (int i = 0; i <  sizeof(text_edits) / sizeof(char*); i++)
+        {
+            maintext[i+5640] = text_edits[i];
+        }
+        WazaInfo* moveInfo = *((WazaInfo**)0x8051EBD4);
+        for (int i = 0; i < 2; i++)
+        {
+            WazaInfo* curMove = &moveInfo[go_moves[i]];
+            int textIndex = curMove->MoveName;
+            strncpy(NewMoveNames[i], maintext[textIndex], 50);
+            strcat(NewMoveNames[i], " (go)");
+            int newTextIndex = 5640 +  sizeof(text_edits) / sizeof(char*) + i;
+            curMove->MoveName = newTextIndex;
+            curMove->OtherName = newTextIndex;
+            maintext[newTextIndex] = NewMoveNames[i];
+            int test = curMove->MoveName;
+            cprintf("%s \n", maintext[test]);
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            WazaInfo* curMove = &moveInfo[full_moves[i]];
+            int textIndex = curMove->MoveName;
+            strncpy(NewMoveNames[i+2], maintext[textIndex], 50);
+            strcat(NewMoveNames[i+2], " (full)");
+            int newTextIndex = 5640 +  sizeof(text_edits) / sizeof(char*) + i + 2;
+            curMove->MoveName = newTextIndex;
+            curMove->OtherName = newTextIndex;
+            maintext[newTextIndex] = NewMoveNames[i+2];
+        }
+        s_is_text_done = true;
     }
+
 
     if (!s_is_wiimmfi_done)
     {
@@ -76,20 +113,20 @@ void XtremeSettings::Init()
             }
 
             // wiidev/usbloadergx
-            for (int j = 0; j < sizeof(domain_urls) / 4; j++)
+            for (int i = 0; i < sizeof(domain_urls) / 4; i++)
             {
-                char* cur = (char*)domain_urls[j];
+                char* cur = (char*)domain_urls[i];
                 int len = strlen(cur);
                 memcpy(cur, "wiimmfi.de", strlen("wiimmfi.de"));
                 memmove(cur + strlen("wiimmfi.de"), cur + 16, len - 16);
-                for (int k = 16 - strlen("wiimmfi.de"); k > 0; k--)
-                    cur[len - k] = 0;
+                for (int i = 16 - strlen("wiimmfi.de"); i > 0; i--)
+                    cur[len - i] = 0;
             }
 
-            for (int l = 0; l < sizeof(update_urls) / 4; l++)
+            for (int i = 0; i < sizeof(update_urls) / 4; i++)
             {
-                char* cur = (char*)update_urls[l];
-                char* newurl = new_update_urls[l];
+                char* cur = (char*)update_urls[i];
+                char* newurl = new_update_urls[i];
                 strcpy(cur, newurl);
             } 
             s_is_wiimmfi_done = true;
