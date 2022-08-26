@@ -197,6 +197,9 @@ kmWrite32(0x800DD7B0, 0x60000000);
 // enable miximax in default teams
 kmWrite32(0x800244D4, 0x60000000);
 
+// remove check for normal dribbles
+kmWrite32(0x8008c1bc, 0x60000000);
+
 kmBranch(0x800BF698, ResetMiximax);
 kmBranch(0x800DA73C, IsMiximaxMove);
 kmBranch(0x800BF52C, NewResetMiximaxPlayerDefB);
