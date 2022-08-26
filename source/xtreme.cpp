@@ -72,7 +72,7 @@ void XtremeSettings::Init()
             WazaInfo* curMove = &moveInfo[go_moves[i]];
             int textIndex = curMove->MoveName;
             strncpy(NewMoveNames[i], maintext[textIndex], 50);
-            strcat(NewMoveNames[i], " (go)");
+            strcat(NewMoveNames[i], "（ＧＯ）");
             int newTextIndex = 5640 +  sizeof(text_edits) / sizeof(char*) + i;
             curMove->MoveName = newTextIndex;
             curMove->OtherName = newTextIndex;
@@ -85,7 +85,7 @@ void XtremeSettings::Init()
             WazaInfo* curMove = &moveInfo[full_moves[i]];
             int textIndex = curMove->MoveName;
             strncpy(NewMoveNames[i+2], maintext[textIndex], 50);
-            strcat(NewMoveNames[i+2], " (full)");
+            strcat(NewMoveNames[i+2], "（Ｆ）");
             int newTextIndex = 5640 +  sizeof(text_edits) / sizeof(char*) + i + 2;
             curMove->MoveName = newTextIndex;
             curMove->OtherName = newTextIndex;
