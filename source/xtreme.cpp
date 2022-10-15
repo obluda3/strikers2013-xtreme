@@ -265,3 +265,5 @@ void XtremeSettings::DrawMenu()
 }
 
 kmBranch(0x8004208C, XtremeSettings::Init);
+// supplement bug
+kmWrite32(0x801558B8, 0x480000A0);
