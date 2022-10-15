@@ -387,3 +387,11 @@ kmWrite32(0x8002E83C, 0x60000000);
 kmWrite32(0x8002EA78, 0x60000000);
 kmWrite32(0x8002EDAC, 0x60000000);
 kmWrite32(0x8002EFC8, 0x60000000);
+
+// handle bigger mcb1 size
+kmCallDefCpp(0x80336568, void, )
+{
+    cprintf("mcb sz over\n");
+}
+
+kmWrite32(0x8033656C, 0x48000108);
