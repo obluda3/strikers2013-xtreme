@@ -141,12 +141,12 @@ namespace MENU_TP_DATA
         { 80, 5665, "GDS_emb_sazaanara" },
         { 72, 5666, "GDS_emb_sandorius" }, 
         { 79, 5667, "GDS_emb_ratoniik" },
-        { 84, 5673, "GDS_emb_flem" },
-        { 87, 5668, "GDS_emb_faram" },   
-        { 76, 5669, "GDS_emb_ixal" },
-        { 91, 5670, "GDS_emb_bigbang" },
-        { 93, 5671, "GDS_emb_supernova" },
-        { 94, 5672, "GDS_emb_spacerankers" },
+        { 84, 5668, "GDS_emb_flem" },
+        { 87, 5669, "GDS_emb_faram" },   
+        { 76, 5670, "GDS_emb_ixal" },
+        { 91, 5671, "GDS_emb_bigbang" },
+        { 93, 5672, "GDS_emb_supernova" },
+        { 94, 5673, "GDS_emb_spacerankers" },
     };
 
     EmblemData* newGetEmblemData(int index) 
