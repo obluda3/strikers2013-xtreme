@@ -44,6 +44,7 @@ fix_skip_new_block:
     cmpwi r0, W_CHAOS_METEOR_UNUSED
     beq stop
     cmpwi r0, W_DARK_MATTER
+    beq stop
     b end
     stop:
     // stop anim
