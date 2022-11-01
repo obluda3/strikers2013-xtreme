@@ -26,6 +26,7 @@ int is_file_modified();
 void shdFileLoadBeginWrapper(int ftyp, int offset, int size, unsigned char* buffer);
 void shdSysFileLoad(const char* filename, int offset, void* dest, int size);
 void shdSysFileExist(const char* filename);
+void shdFileLoadSync(int a1);
 void* MEMAlloc(unsigned long size, int align, int a3, int a4);
 void MEMFree(void* buf);
 void cprintf(char* format, ...);
@@ -39,23 +40,34 @@ struct BinHeader
 	int padfactor;
 	int mulfactor;
 	int shiftfactor;
-	int mask[1];
+	unsigned int mask[1];
 };
 
+unsigned int bswap32(unsigned int x) 
+{
+    return ((x & 0xFF000000u) >> 24) | ((x & 0xFF0000u) >> 8) | ((x & 0xFF00u) << 8) | ((x & 0xFF) << 24);
+}
+
+int bswap32(int x) 
+{
+    return ((x & 0xFF000000u) >> 24) | ((x & 0xFF0000u) >> 8) | ((x & 0xFF00u) << 8) | ((x & 0xFF) << 24);
+}
+
 BinHeader** flab_tbl = (BinHeader**)0x805255B8;
+int* ftyp_cnv = (int*)0x804C6CA4;
+int* ftyp_fofs = (int*)0x804C6C90;
+char** ftyp_fname = (char**)0x804C6C68;
 char* archive_names[] = {"grp", "scn", "scn_sh", "ui", "dat"};
+
 char* fileLoadBegin(int ftyp, int offset, int size, unsigned char* buffer)
 {
 	BinHeader* archive = flab_tbl[ftyp];
-	int shiftfactor = archive->shiftfactor;
-	int padfactor = archive->padfactor;
-	shiftfactor = ((shiftfactor & 0xFF000000u) >> 24) | ((shiftfactor & 0xFF0000u) >> 8) | ((shiftfactor & 0xFF00u) << 8) | ((shiftfactor & 0xFF) << 24);
-    padfactor = ((padfactor & 0xFF000000u) >> 24) | ((padfactor & 0xFF0000u) >> 8) | ((padfactor & 0xFF00u) << 8) | ((padfactor & 0xFF) << 24);
+	int shiftfactor = bswap32(archive->shiftfactor);
+	int padfactor = bswap32(archive->padfactor);
 	int index;
 	for (index = 1; index < 9999; index++)
 	{
-		unsigned int offsize = archive->mask[index];
-		offsize = ((offsize & 0xFF000000u) >> 24) | ((offsize & 0xFF0000u) >> 8) | ((offsize & 0xFF00u) << 8) | ((offsize & 0xFF) << 24);
+		unsigned int offsize =  bswap32(archive->mask[index]);
 		int cur_offset = (offsize >> shiftfactor) * padfactor;
 		if (cur_offset == offset)
 			break;
@@ -71,16 +83,38 @@ char* fileLoadBegin(int ftyp, int offset, int size, unsigned char* buffer)
 		shdFileLoadBegin(ftyp, offset, size, buffer);
 		return (char*)buffer;
 	}
-	MEMFree(buffer);
 	DVDHandle handle;
 	DVDFastOpen(entrynum, &handle);
 	int roundedLength = (handle.length + 0x1F) & ~0x1F;
-	void *newbuffer = MEMAlloc(roundedLength, -32, 3, 31);
+    void* newbuffer = (void*)buffer;
+    if (roundedLength > size)
+    {
+        MEMFree(buffer);
+        newbuffer = MEMAlloc(roundedLength, -32, 3, 31);
+    }
 	DVDReadPrio(&handle, newbuffer, roundedLength, 0, 2);
 	DVDClose(&handle);
 
     return (char*)newbuffer;
 }
+
+void new_load_file(int fIndex, void* buffer, int bufferSize)
+{
+    shdFileLoadSync(1);
+    int ftyp = ftyp_cnv[fIndex / 10000];
+    BinHeader* archive = flab_tbl[ftyp];
+    int fileIndex = fIndex - ftyp_fofs[ftyp];
+    unsigned int offsize = bswap32(archive->mask[fileIndex]);
+    int offset = (offsize >> bswap32(archive->shiftfactor)) * bswap32(archive->padfactor);
+    int size = (offsize & bswap32(archive->mask[0])) *  bswap32(archive->mulfactor);
+    int padFactor = bswap32(archive->padfactor);
+    int paddedSize = padFactor * ((size + padFactor - 1) / padFactor);
+    cprintf("read:[%s],idx=%04d,ofs=0x%08x,sz=%06dKB",ftyp_fname[ftyp],fileIndex,offset,(size+1023)/1024);
+    fileLoadBegin(ftyp, offset, size, (unsigned char*)buffer);
+    shdFileLoadSync(1);
+}
+kmBranch(0x80023C5C, new_load_file);
+
 // we hook into the fileLoadBegin call, then replace the buffer address in the stack
 // with our newly allocated one
 // very beautiful hooks
