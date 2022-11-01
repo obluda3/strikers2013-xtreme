@@ -5,7 +5,7 @@
 #include "music.h"
 #include <shd_debug.h>
 #include "keyboard.h"
-#include <dolphinIo.h>
+#include "dolphinios.h"
 #include <moves.h>
 
 XtremeSettings Settings;
@@ -70,38 +70,31 @@ void OutdatedDolphinVersion()
 
 void CheckForDolphin()
 {
-    int handle = IOS_Open("/dev/dolphin", 0);
-    if (handle >= 0)
+    if (Dolphin::IsOpen())
     {
-        // Get Dolphin version
-        IOVector command;
-        char versionName[20];
-        command.data = versionName;
-        command.size = sizeof(versionName);
-        int result = IOS_Ioctlv(handle, IOCTL_DOLPHIN_GET_VERSION, 0, 1, &command); 
-        if (!result)
+        char* versionName = Dolphin::GetVersion();
+        int version;
+        int subVersion;
+        int revision;
+        sscanf(versionName, "%d.%d-%d", &version, &subVersion, &revision);
+        if (version == 5 && subVersion == 0 && revision < 14795) // Cross-platform online desyncs were fixed in Dolphin 5.0-14795
         {
-            int version;
-            int subVersion;
-            int revision;
-            sscanf(versionName, "%d.%d-%d", &version, &subVersion, &revision);
-            if (version == 5 && subVersion == 0 && revision < 14795) // Cross-platform online desyncs were fixed in Dolphin 5.0-14795
-            {
-                IOS_Close(handle);
-                outdated_dolphin = true;
-            }
+            outdated_dolphin = true;
         }
     }
     // We're either on a Wii or Dolphin pre 5.0-11186
-    else if (handle = IOS_Open("/title", 1) == -106) // https://github.com/TheLordScruffy/mkw-tournament-museum/blob/master/loader/loader.cpp
+    else 
     {
-        outdated_dolphin = true;
+        // https://github.com/TheLordScruffy/mkw-tournament-museum/blob/master/loader/loader.cpp
+        int handle = IOS_Open("/title", 1);
+        if (handle == -106) outdated_dolphin = true;
+        IOS_Close(handle);
     }
-    IOS_Close(handle);
 }
 
 void XtremeSettings::Init()
 {
+    Dolphin::Init();
     u8 flag = *SaveFlag;
     Settings.allowOpenings = flag & 1;
     Settings.movePower = flag & 2;
