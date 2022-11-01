@@ -1,117 +1,112 @@
 #include <kamek.h>
 
-struct PatchData
-{
-    int offset;
-    int length;
+struct PatchData {
+  int offset;
+  int length;
 };
-PatchData* list = 0;
-int* lookup_table = 0;
+PatchData *list = 0;
+int *lookup_table = 0;
 int entry_num = 0;
-struct DVDHandle
-{
-	u32 _unk[12];
-	u32 address, length;
-	u32 _unk38;
+struct DVDHandle {
+  u32 _unk[12];
+  u32 address, length;
+  u32 _unk38;
 };
-extern "C"
-{
-    int DVDConvertPathToEntrynum(char* path);
-	void DVDFastOpen(int entrynum, DVDHandle* handle);
-	void DVDReadPrio(DVDHandle* handle, void* buffer, int size, int a4, int a5);
-	void DVDClose(DVDHandle* handle);
+extern "C" {
+int DVDConvertPathToEntrynum(char *path);
+void DVDFastOpen(int entrynum, DVDHandle *handle);
+void DVDReadPrio(DVDHandle *handle, void *buffer, int size, int a4, int a5);
+void DVDClose(DVDHandle *handle);
 }
 
 int is_file_modified();
-void shdFileLoadBeginWrapper(int ftyp, int offset, int size, unsigned char* buffer);
-void shdSysFileLoad(const char* filename, int offset, void* dest, int size);
-void shdSysFileExist(const char* filename);
+void shdFileLoadBeginWrapper(int ftyp, int offset, int size,
+                             unsigned char *buffer);
+void shdSysFileLoad(const char *filename, int offset, void *dest, int size);
+void shdSysFileExist(const char *filename);
 void shdFileLoadSync(int a1);
-void* MEMAlloc(unsigned long size, int align, int a3, int a4);
-void MEMFree(void* buf);
-void cprintf(char* format, ...);
-void bprintf(char* format, ...);
-void shdFileLoadBegin(int ftyp, int offset, int size, unsigned char* buffer);
-void wiiFileLoadBegin(int ftyp, int offset, int size, unsigned char* buffer);
+void *MEMAlloc(unsigned long size, int align, int a3, int a4);
+void MEMFree(void *buf);
+void cprintf(char *format, ...);
+void bprintf(char *format, ...);
+void shdFileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer);
+void wiiFileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer);
 
-struct BinHeader
-{
-	int filecount;
-	int padfactor;
-	int mulfactor;
-	int shiftfactor;
-	unsigned int mask[1];
+struct BinHeader {
+  int filecount;
+  int padfactor;
+  int mulfactor;
+  int shiftfactor;
+  unsigned int mask[1];
 };
 
-unsigned int bswap32(unsigned int x) 
-{
-    return ((x & 0xFF000000u) >> 24) | ((x & 0xFF0000u) >> 8) | ((x & 0xFF00u) << 8) | ((x & 0xFF) << 24);
+unsigned int bswap32(unsigned int x) {
+  return ((x & 0xFF000000u) >> 24) | ((x & 0xFF0000u) >> 8) |
+         ((x & 0xFF00u) << 8) | ((x & 0xFF) << 24);
 }
 
-int bswap32(int x) 
-{
-    return ((x & 0xFF000000u) >> 24) | ((x & 0xFF0000u) >> 8) | ((x & 0xFF00u) << 8) | ((x & 0xFF) << 24);
+int bswap32(int x) {
+  return ((x & 0xFF000000u) >> 24) | ((x & 0xFF0000u) >> 8) |
+         ((x & 0xFF00u) << 8) | ((x & 0xFF) << 24);
 }
 
-BinHeader** flab_tbl = (BinHeader**)0x805255B8;
-int* ftyp_cnv = (int*)0x804C6CA4;
-int* ftyp_fofs = (int*)0x804C6C90;
-char** ftyp_fname = (char**)0x804C6C68;
-char* archive_names[] = {"grp", "scn", "scn_sh", "ui", "dat"};
+BinHeader **flab_tbl = (BinHeader **)0x805255B8;
+int *ftyp_cnv = (int *)0x804C6CA4;
+int *ftyp_fofs = (int *)0x804C6C90;
+char **ftyp_fname = (char **)0x804C6C68;
+char *archive_names[] = {"grp", "scn", "scn_sh", "ui", "dat"};
 
-char* fileLoadBegin(int ftyp, int offset, int size, unsigned char* buffer)
-{
-	BinHeader* archive = flab_tbl[ftyp];
-	int shiftfactor = bswap32(archive->shiftfactor);
-	int padfactor = bswap32(archive->padfactor);
-	int index;
-	for (index = 1; index < 9999; index++)
-	{
-		unsigned int offsize =  bswap32(archive->mask[index]);
-		int cur_offset = (offsize >> shiftfactor) * padfactor;
-		if (cur_offset == offset)
-			break;
-	}
-	
-    index -= 1;
-	char path[256];
-	sprintf(path, "Modified/%s/%d.bin", archive_names[ftyp], index);
-	int entrynum = DVDConvertPathToEntrynum(path);
-	cprintf(" realpath=%s", path);
-	if (entrynum < 0) 
-    {
-		shdFileLoadBegin(ftyp, offset, size, buffer);
-		return (char*)buffer;
-	}
-	DVDHandle handle;
-	DVDFastOpen(entrynum, &handle);
-	int roundedLength = (handle.length + 0x1F) & ~0x1F;
-    void* newbuffer = (void*)buffer;
-    if (roundedLength > size)
-    {
-        MEMFree(buffer);
-        newbuffer = MEMAlloc(roundedLength, -32, 3, 31);
-    }
-	DVDReadPrio(&handle, newbuffer, roundedLength, 0, 2);
-	DVDClose(&handle);
+char *fileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer) {
+  BinHeader *archive = flab_tbl[ftyp];
+  int shiftfactor = bswap32(archive->shiftfactor);
+  int padfactor = bswap32(archive->padfactor);
+  int index;
+  for (index = 1; index < 9999; index++) {
+    unsigned int offsize = bswap32(archive->mask[index]);
+    int cur_offset = (offsize >> shiftfactor) * padfactor;
+    if (cur_offset == offset)
+      break;
+  }
 
-    return (char*)newbuffer;
+  index -= 1;
+  char path[256];
+  sprintf(path, "Modified/%s/%d.bin", archive_names[ftyp], index);
+  int entrynum = DVDConvertPathToEntrynum(path);
+  cprintf(" realpath=%s", path);
+  if (entrynum < 0) {
+    shdFileLoadBegin(ftyp, offset, size, buffer);
+    return (char *)buffer;
+  }
+  DVDHandle handle;
+  DVDFastOpen(entrynum, &handle);
+  int roundedLength = (handle.length + 0x1F) & ~0x1F;
+  void *newbuffer = (void *)buffer;
+  if (roundedLength > size) {
+    MEMFree(buffer);
+    newbuffer = MEMAlloc(roundedLength, -32, 3, 31);
+  }
+  DVDReadPrio(&handle, newbuffer, roundedLength, 0, 2);
+  DVDClose(&handle);
+
+  return (char *)newbuffer;
 }
 
-void new_load_file(int fIndex, void* buffer, int bufferSize)
-{
-    shdFileLoadSync(1);
-    int ftyp = ftyp_cnv[fIndex / 10000];
-    BinHeader* archive = flab_tbl[ftyp];
-    int fileIndex = fIndex - ftyp_fofs[ftyp];
-    unsigned int offsize = bswap32(archive->mask[fileIndex]);
-    int offset = (offsize >> bswap32(archive->shiftfactor)) * bswap32(archive->padfactor);
-    int size = (offsize & bswap32(archive->mask[0])) *  bswap32(archive->mulfactor);
-    int padFactor = bswap32(archive->padfactor);
-    int paddedSize = padFactor * ((size + padFactor - 1) / padFactor);
-    cprintf("read:[%s],idx=%04d,ofs=0x%08x,sz=%06dKB",ftyp_fname[ftyp],fileIndex,offset,(size+1023)/1024);
-    fileLoadBegin(ftyp, offset, size, (unsigned char*)buffer);
-    shdFileLoadSync(1);
+void new_load_file(int fIndex, void *buffer, int bufferSize) {
+  shdFileLoadSync(1);
+  int ftyp = ftyp_cnv[fIndex / 10000];
+  BinHeader *archive = flab_tbl[ftyp];
+  int fileIndex = fIndex - ftyp_fofs[ftyp];
+  unsigned int offsize = bswap32(archive->mask[fileIndex]);
+  int offset =
+      (offsize >> bswap32(archive->shiftfactor)) * bswap32(archive->padfactor);
+  int size =
+      (offsize & bswap32(archive->mask[0])) * bswap32(archive->mulfactor);
+  int padFactor = bswap32(archive->padfactor);
+  int paddedSize = padFactor * ((size + padFactor - 1) / padFactor);
+  cprintf("read:[%s],idx=%04d,ofs=0x%08x,sz=%06dKB", ftyp_fname[ftyp],
+          fileIndex, offset, (size + 1023) / 1024);
+  fileLoadBegin(ftyp, offset, size, (unsigned char *)buffer);
+  shdFileLoadSync(1);
 }
 kmBranch(0x80023C5C, new_load_file);
 
@@ -423,9 +418,6 @@ kmWrite32(0x8002EDAC, 0x60000000);
 kmWrite32(0x8002EFC8, 0x60000000);
 
 // handle bigger mcb1 size
-kmCallDefCpp(0x80336568, void, )
-{
-    cprintf("mcb sz over\n");
-}
+kmCallDefCpp(0x80336568, void, ) { cprintf("mcb sz over\n"); }
 
 kmWrite32(0x8033656C, 0x48000108);

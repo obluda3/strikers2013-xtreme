@@ -41,7 +41,7 @@ void SNDSeSysBAD(int unk);
 void shdBgmLoad(s32 unk, s32 id, s32 isMusicOn, s32 unk2);
 void shdBgmStop(s32 unk);
 void shdSePlay(int id, int leftVol, int rightVol);
-int wiiSndGetNameToID(const char* name);
+int wiiSndGetNameToID(const char *name);
 // TODO: add the other functions
 
 #endif

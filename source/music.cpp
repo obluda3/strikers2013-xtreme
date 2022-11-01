@@ -1,193 +1,182 @@
-#include <kamek.h>
-#include <snd.h>
-#include <buttonhelpers.h>
-#include <savedata.h>
-#include <dvd.h>
-#include <text.h>
-#include <random.h>
-#include <shd_debug.h>
-#include <utilitysato.h>
 #include "music.h"
 #include "xtreme.h"
+#include <buttonhelpers.h>
+#include <dvd.h>
+#include <kamek.h>
+#include <random.h>
+#include <savedata.h>
+#include <shd_debug.h>
+#include <snd.h>
+#include <text.h>
+#include <utilitysato.h>
 
-static char* s_HelpbarText_SP = "#b84#=もどる #b83#=けってい #b87#=ルールせってい #b88#=そうさ #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-static char* s_HelpbarText_Wifi_a = "#b84#=もどる #b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-static char* s_HelpbarText_Wifi_b = "#b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-static char* s_HelpbarText_Sett = "#b84#=もどる #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+static char *s_HelpbarText_SP =
+    "#b84#=もどる #b83#=けってい #b87#=ルールせってい #b88#=そうさ "
+    "#b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+static char *s_HelpbarText_Wifi_a =
+    "#b84#=もどる #b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+static char *s_HelpbarText_Wifi_b =
+    "#b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+static char *s_HelpbarText_Sett =
+    "#b84#=もどる #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
 
-static char ***s_MainTexts = (char***)0x805131C0;
-u16* IsMusicOn = (u16*)0x80904212;
+static char ***s_MainTexts = (char ***)0x805131C0;
+u16 *IsMusicOn = (u16 *)0x80904212;
 int g_CurrentBgm = 0;
-static char** BgmNames = (char**) 0;
-static char*** DefaultBgmNames = (char***) 0x8051ECA0;
-static int* g_BgmStatus = (int*)0x8050d6d8;
-static void* playlistBuffer = 0;
+static char **BgmNames = (char **)0;
+static char ***DefaultBgmNames = (char ***)0x8051ECA0;
+static int *g_BgmStatus = (int *)0x8050d6d8;
+static void *playlistBuffer = 0;
 static bool FirstExec = true;
 
-struct PlaylistInfo
-{
-    u32 size;
-    s32 openingFirst;
+struct PlaylistInfo {
+  u32 size;
+  s32 openingFirst;
 };
-struct PlaylistHeader
-{
-    u32 magic;
-    PlaylistInfo info;
+struct PlaylistHeader {
+  u32 magic;
+  PlaylistInfo info;
 };
 
 static PlaylistInfo playlistInfo;
-void parsePlaylistFile(u8* data)
-{
-    PlaylistHeader* header = (PlaylistHeader*) data;
-    BgmNames = (char**)&header[1];
-    playlistInfo = header->info;
-    u32 baseAddress = (u32)data;
-    data += sizeof(PlaylistHeader);
-    for (int i = 0; i < header->info.size; i++)
-    {
-        u32 pointer = *((u32 *)data);
-        u32 fixedPointer = pointer + baseAddress;
-        *((u32 *)data) = fixedPointer;
-        data += 4;
-    }
+void parsePlaylistFile(u8 *data) {
+  PlaylistHeader *header = (PlaylistHeader *)data;
+  BgmNames = (char **)&header[1];
+  playlistInfo = header->info;
+  u32 baseAddress = (u32)data;
+  data += sizeof(PlaylistHeader);
+  for (int i = 0; i < header->info.size; i++) {
+    u32 pointer = *((u32 *)data);
+    u32 fixedPointer = pointer + baseAddress;
+    *((u32 *)data) = fixedPointer;
+    data += 4;
+  }
 }
 
-void PlayBgmField(int defaultBgm)
-{
-    int bgmStatus = *g_BgmStatus;
-    int currentBgm = g_CurrentBgm;
-    char** defaultBgmNames = *DefaultBgmNames;
-    char* bgmName = BgmNames[currentBgm];
-    if (!currentBgm) 
-    {
-        currentBgm = defaultBgm;
-        bgmName = defaultBgmNames[currentBgm];
-    }
-    if (bgmStatus != currentBgm ) 
-    {
-        *g_BgmStatus = currentBgm;
-        int id = wiiSndGetNameToID(bgmName);
-        SNDBgmPlay_Direct(id);
-    }
+void PlayBgmField(int defaultBgm) {
+  int bgmStatus = *g_BgmStatus;
+  int currentBgm = g_CurrentBgm;
+  char **defaultBgmNames = *DefaultBgmNames;
+  char *bgmName = BgmNames[currentBgm];
+  if (!currentBgm) {
+    currentBgm = defaultBgm;
+    bgmName = defaultBgmNames[currentBgm];
+  }
+  if (bgmStatus != currentBgm) {
+    *g_BgmStatus = currentBgm;
+    int id = wiiSndGetNameToID(bgmName);
+    SNDBgmPlay_Direct(id);
+  }
 }
 
-void initBgmPlayer()
-{
-    char** mainTexts = *s_MainTexts;
-    mainTexts[858] = s_HelpbarText_SP;
-    mainTexts[530] = s_HelpbarText_Wifi_a;
-    mainTexts[531] = s_HelpbarText_Wifi_b;
-    mainTexts[532] = s_HelpbarText_Sett;
-    char* path = "Playlist.bin";
-    cprintf("Loading custom musics in: '%s'...\n", path);
+void initBgmPlayer() {
+  char **mainTexts = *s_MainTexts;
+  mainTexts[858] = s_HelpbarText_SP;
+  mainTexts[530] = s_HelpbarText_Wifi_a;
+  mainTexts[531] = s_HelpbarText_Wifi_b;
+  mainTexts[532] = s_HelpbarText_Sett;
+  char *path = "Playlist.bin";
+  cprintf("Loading custom musics in: '%s'...\n", path);
 
-    void* buffer = 0;
-    int entrynum = DVDConvertPathToEntrynum(path);
-    if (entrynum < 0)
-        cprintf("Could not find '%s' \n", path);
-    else 
-    {
-        DVDHandle handle;
-        if (!DVDFastOpen(entrynum, &handle)) 
-            cprintf("ERROR: Failed to open file!\n");
-        else
-        {
-            cprintf("DVD file located: addr=%p, size=%d\n", handle.address, handle.length);
+  void *buffer = 0;
+  int entrynum = DVDConvertPathToEntrynum(path);
+  if (entrynum < 0)
+    cprintf("Could not find '%s' \n", path);
+  else {
+    DVDHandle handle;
+    if (!DVDFastOpen(entrynum, &handle))
+      cprintf("ERROR: Failed to open file!\n");
+    else {
+      cprintf("DVD file located: addr=%p, size=%d\n", handle.address,
+              handle.length);
 
-            u32 length = handle.length, roundedLength = (handle.length + 0x1F) & ~0x1F;
-            buffer = MEMAlloc(roundedLength, 32, 3, 31);
-            if (!buffer)
-                cprintf("ERROR: Out of file memory");
-            else
-            {
-                DVDReadPrio(&handle, buffer, roundedLength, 0, 2);
-                DVDClose(&handle);
-            }
-        }
+      u32 length = handle.length,
+          roundedLength = (handle.length + 0x1F) & ~0x1F;
+      buffer = MEMAlloc(roundedLength, 32, 3, 31);
+      if (!buffer)
+        cprintf("ERROR: Out of file memory");
+      else {
+        DVDReadPrio(&handle, buffer, roundedLength, 0, 2);
+        DVDClose(&handle);
+      }
     }
-    parsePlaylistFile((u8 *)buffer);
-    playlistBuffer = buffer;
+  }
+  parsePlaylistFile((u8 *)buffer);
+  playlistBuffer = buffer;
 }
 
-void SNDSePlay_Direct(int id, int volLeft, int volRight)
-{
-    if (id >= 0 && *((s16*)0x80904214))
-        shdSePlay(id, volLeft, volRight);
+void SNDSePlay_Direct(int id, int volLeft, int volRight) {
+  if (id >= 0 && *((s16 *)0x80904214))
+    shdSePlay(id, volLeft, volRight);
 }
 
-int updateCurrentBgm(int argBak) 
-{
-    if (!FirstExec)
-        FirstExec = true;
+int updateCurrentBgm(int argBak) {
+  if (!FirstExec)
+    FirstExec = true;
 
-    int currentBgm = g_CurrentBgm;
-    bool changed = false;
+  int currentBgm = g_CurrentBgm;
+  bool changed = false;
 
-    if (UtilitySato::isPad(0, UtilitySato::PAD_PLUS, UtilitySato::HELD)) // +
-    {
-        currentBgm++;
-        changed = true;
-    }
-    else if (UtilitySato::isPad(0, UtilitySato::PAD_MINUS, UtilitySato::HELD)) // -
-    {
-        currentBgm--;
-        changed = true;
-    }
-    
-    s32 openingFirst = playlistInfo.openingFirst;
-    u32 bgmMax = playlistInfo.size;
-    int maxBgm = openingFirst == -1 ? bgmMax - 1 : Settings.allowOpenings ? bgmMax - 1 : openingFirst;
-    if (currentBgm < 0) currentBgm = maxBgm;
-    if (currentBgm > maxBgm) currentBgm = 0;
+  if (UtilitySato::isPad(0, UtilitySato::PAD_PLUS, UtilitySato::HELD)) // +
+  {
+    currentBgm++;
+    changed = true;
+  } else if (UtilitySato::isPad(0, UtilitySato::PAD_MINUS,
+                                UtilitySato::HELD)) // -
+  {
+    currentBgm--;
+    changed = true;
+  }
 
-    g_CurrentBgm = currentBgm;
-    if (changed)
-    {      
-        int songId;  
-        if (currentBgm)
-            songId = wiiSndGetNameToID(BgmNames[currentBgm]);
-        else
-            songId = wiiSndGetNameToID("BGM_M12_TENMAS2_MASTER_01");
-        SNDBgmPlay_Direct(songId);
-        SNDSeSysOK(-1);
-    }
-    return IsButtonPushed_OK(argBak); // default inst
-}
+  s32 openingFirst = playlistInfo.openingFirst;
+  u32 bgmMax = playlistInfo.size;
+  int maxBgm = openingFirst == -1       ? bgmMax - 1
+               : Settings.allowOpenings ? bgmMax - 1
+                                        : openingFirst;
+  if (currentBgm < 0)
+    currentBgm = maxBgm;
+  if (currentBgm > maxBgm)
+    currentBgm = 0;
 
-
-void drawBgmName()
-{
-    char message[50];
-    int currentBgm = g_CurrentBgm;
-
-    if (currentBgm > 0)
-        sprintf(message, "#j#I1Music Track %03d", currentBgm);
-    else if (currentBgm == 0)
-        strcpy(message, "#j#I1Default track");
+  g_CurrentBgm = currentBgm;
+  if (changed) {
+    int songId;
+    if (currentBgm)
+      songId = wiiSndGetNameToID(BgmNames[currentBgm]);
     else
-        strcpy(message, "#j#I1Random track");
-    disp_zen(message, 20, 20, 65);
+      songId = wiiSndGetNameToID("BGM_M12_TENMAS2_MASTER_01");
+    SNDBgmPlay_Direct(songId);
+    SNDSeSysOK(-1);
+  }
+  return IsButtonPushed_OK(argBak); // default inst
 }
 
-void SNDBgmPlay_Direct(int id)
-{
-    if (*IsMusicOn)
-        shdBgmLoad(0, id, *IsMusicOn, 1);
-    else
-        shdBgmStop(0);
+void drawBgmName() {
+  char message[50];
+  int currentBgm = g_CurrentBgm;
+
+  if (currentBgm > 0)
+    sprintf(message, "#j#I1Music Track %03d", currentBgm);
+  else if (currentBgm == 0)
+    strcpy(message, "#j#I1Default track");
+  else
+    strcpy(message, "#j#I1Random track");
+  disp_zen(message, 20, 20, 65);
 }
 
-void onlineDrawHook(CSprStudio* spriteStudio)
-{
-    spriteStudio->Draw();
-    drawBgmName();
+void SNDBgmPlay_Direct(int id) {
+  if (*IsMusicOn)
+    shdBgmLoad(0, id, *IsMusicOn, 1);
+  else
+    shdBgmStop(0);
 }
 
-void resetMusic()
-{
-    g_CurrentBgm = 0;
+void onlineDrawHook(CSprStudio *spriteStudio) {
+  spriteStudio->Draw();
+  drawBgmName();
 }
 
+void resetMusic() { g_CurrentBgm = 0; }
 
 kmWrite32(0x80047264, 0x7FE3FB78);
 kmCall(0x80047268, PlayBgmField);
