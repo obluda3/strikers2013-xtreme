@@ -1,7 +1,7 @@
-#include <base\c_stdlib.h>
 #include <kamek.h>
-#include <match.h>
 #include <players.h>
+#include <match.h>
+#include <base\c_stdlib.h>
 
 typedef struct ArmedInfo {
   u16 source;

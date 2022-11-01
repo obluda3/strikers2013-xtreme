@@ -1,8 +1,8 @@
 #ifndef UTILITY_SATO
 #define UTILITY_SATO
 #include "types.h"
-#include <players.h>
 #include <spritestudio.h>
+#include <players.h>
 
 namespace UtilitySato {
 enum PADSTATE { PAD_STATE0, PRESSED, HELD };
