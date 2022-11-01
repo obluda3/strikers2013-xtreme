@@ -5,6 +5,7 @@
 #include "music.h"
 #include <shd_debug.h>
 #include "keyboard.h"
+#include <dolphinIo.h>
 #include <moves.h>
 
 XtremeSettings Settings;
@@ -48,6 +49,56 @@ char* text_edits[] ={ "ガンマ　×　ザナーク", "白竜　×　孔明", "
 char NewMoveNames[6][50];
 int go_moves[] = { W_SHIPPUU_DASH_B, W_THE_WALL_B };
 int full_moves[] = { W_KING_FIRE_B, W_GIGANTIC_BOMB_B, W_MAJIN_THE_HAND_B, W_BUTTOBI_PUNCH_ARMED_B };
+
+static bool outdated_dolphin = false;
+static int call_cnt = 0;
+
+void OutdatedDolphinVersion()
+{
+    if (outdated_dolphin)
+    {
+        u32 fg = 0xFFFFFFFF, bg = 0;
+        char* message = "Unsupported Dolphin version. Use Dolphin 5.0-14795 or newer versions.";
+        if (call_cnt < 2) 
+        {
+            disp_zen(message, 0, 0, 100);
+            call_cnt++;
+        }
+        else OSFatal(&fg, &bg, message);
+    }
+}
+
+void CheckForDolphin()
+{
+    int handle = IOS_Open("/dev/dolphin", 0);
+    if (handle >= 0)
+    {
+        // Get Dolphin version
+        IOVector command;
+        char versionName[20];
+        command.data = versionName;
+        command.size = sizeof(versionName);
+        int result = IOS_Ioctlv(handle, IOCTL_DOLPHIN_GET_VERSION, 0, 1, &command); 
+        if (!result)
+        {
+            int version;
+            int subVersion;
+            int revision;
+            sscanf(versionName, "%d.%d-%d", &version, &subVersion, &revision);
+            if (version == 5 && subVersion == 0 && revision < 14795) // Cross-platform online desyncs were fixed in Dolphin 5.0-14795
+            {
+                IOS_Close(handle);
+                outdated_dolphin = true;
+            }
+        }
+    }
+    // We're either on a Wii or Dolphin pre 5.0-11186
+    else if (handle = IOS_Open("/title", 1) == -106) // https://github.com/TheLordScruffy/mkw-tournament-museum/blob/master/loader/loader.cpp
+    {
+        outdated_dolphin = true;
+    }
+    IOS_Close(handle);
+}
 
 void XtremeSettings::Init()
 {
@@ -136,6 +187,7 @@ void XtremeSettings::Init()
 
         strcpy((char*)0x8050bacc, "X-3-1");
     }
+    CheckForDolphin();
 }
 
 void XtremeSettings::Save()
@@ -264,6 +316,7 @@ void XtremeSettings::DrawMenu()
     disp_zen("#j#=->", 155, y, 90);
 }
 
+kmBranch(0x800E5B74, OutdatedDolphinVersion);
 kmBranch(0x8004208C, XtremeSettings::Init);
 // supplement bug
 kmWrite32(0x801558B8, 0x480000A0);

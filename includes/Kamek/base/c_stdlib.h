@@ -46,6 +46,7 @@ int snprintf(char *, size_t, const char *, ...);
 int sprintf(char *, const char *, ...);
 int vsnprintf(char *, size_t, const char *, va_list);
 int vsprintf(char *, const char *, va_list);
+int sscanf ( const char * s, const char * format, ...);
 
 /* stdlib.h */
 int abs(int);

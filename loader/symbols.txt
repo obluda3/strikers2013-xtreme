@@ -1,0 +1,5 @@
+DVDConvertPathToEntrynum=0x802958B0
+MEMAlloc__FUliii=0x80022B3C
+wiiFileLoadBegin__FiiiPUc=0x8032E940
+shdFileLoadBegin__FiiiPUc=0x80335EEC
+shdSysFileLoad__FPCciPvi=0x8032E758
