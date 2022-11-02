@@ -13,8 +13,3 @@ It uses a modified version of [Kamek](https://github.com/Treeki/Kamek) and [Syat
 Use the script in `/loader/` order to create a modified main.dol that will be able to load custom code.
 
 To build the custom code, use the `build.py` script, it will create a `CustomCode.bin` file that will be placed in a `Code` folder at the root of your extracted game.
-
-
-# TODO
-
-- Complete the header files (some of them are very empty right now)
