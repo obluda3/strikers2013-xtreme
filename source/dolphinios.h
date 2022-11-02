@@ -38,4 +38,4 @@ char *GetRealProductCode();
 int SetDiscordClient(char *id);
 int SetDiscordPresence(DiscordRichPresence *value);
 void ResetDiscord();
-}
+} // namespace Dolphin
