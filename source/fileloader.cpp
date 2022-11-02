@@ -108,8 +108,8 @@ void new_load_file(int fIndex, void *buffer, int bufferSize) {
   fileLoadBegin(ftyp, offset, size, (unsigned char *)buffer);
   shdFileLoadSync(1);
 }
-kmBranch(0x80023C5C, new_load_file);
-
+kmCall(0x8011E238, new_load_file);
+kmCall(0x80139D0C, new_load_file);
 // we hook into the fileLoadBegin call, then replace the buffer address in the stack
 // with our newly allocated one
 // very beautiful hooks
