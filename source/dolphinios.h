@@ -35,7 +35,7 @@ int GetSpeedLimit();
 void SetSpeedLimit(int value);
 int GetCPUSpeed();
 char *GetRealProductCode();
-int SetDiscordClient(char *id);
-int SetDiscordPresence(DiscordRichPresence *value);
+void SetClient(char *id);
+void SetDiscordPresence(DiscordRichPresence *value);
 void ResetDiscord();
 }

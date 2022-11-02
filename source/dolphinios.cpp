@@ -1,6 +1,5 @@
 #include "dolphinios.h"
 #include <Kamek/base/c_stdlib.h>
-#include <Kamek/base/rvl_sdk.h>
 #include <shd_debug.h>
 
 namespace Dolphin {
@@ -52,16 +51,15 @@ void SetSpeedLimit(int value) {
   IOS_Ioctlv(sDevDolphinHandle, IOCTL_DOLPHIN_SET_SPEED_LIMIT, 1, 0, &command);
 }
 
-int SetDiscordClient(char *id) {
+void SetClient(char *id) {
   IOVector command;
   command.data = id;
   command.size = strlen(id);
-  return IOS_Ioctlv(sDevDolphinHandle, IOCTL_DOLPHIN_DISCORD_SET_CLIENT, 1, 0,
-                    &command);
+  IOS_Ioctlv(sDevDolphinHandle, IOCTL_DOLPHIN_SET_SPEED_LIMIT, 1, 0, &command);
 }
 
-int SetDiscordPresence(DiscordRichPresence *value) {
-  IOVector command[10] = {0};
+void SetDiscordPresence(DiscordRichPresence *value) {
+  IOVector command[10];
   command[0].data = value->details;
   command[0].size = strlen(value->details);
   command[1].data = value->state;
@@ -70,10 +68,10 @@ int SetDiscordPresence(DiscordRichPresence *value) {
   command[2].size = strlen(value->largeImageKey);
   command[3].data = value->largeImageText;
   command[3].size = strlen(value->largeImageText);
-  // command[4].data = value->smallImageKey;
-  // command[4].size = strlen(value->smallImageKey);
-  // command[5].data = value->smallImageText;
-  // command[5].size = strlen(value->smallImageText);
+  command[4].data = value->smallImageKey;
+  command[4].size = strlen(value->smallImageKey);
+  command[5].data = value->smallImageText;
+  command[5].size = strlen(value->smallImageText);
   command[6].data = &value->startTimestamp;
   command[6].size = sizeof(s64);
   command[7].data = &value->endTimestamp;
@@ -82,9 +80,7 @@ int SetDiscordPresence(DiscordRichPresence *value) {
   command[8].size = sizeof(s32);
   command[9].data = &value->partyMax;
   command[9].size = sizeof(s32);
-
-  return IOS_Ioctlv(sDevDolphinHandle, IOCTL_DOLPHIN_DISCORD_SET_PRESENCE, 10,
-                    0, command);
+  IOS_Ioctlv(sDevDolphinHandle, IOCTL_DOLPHIN_DISCORD_SET_CLIENT, 10, 0, command);
 }
 
 void ResetDiscord() {
