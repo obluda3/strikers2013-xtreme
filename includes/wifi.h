@@ -8,5 +8,8 @@ void wifi_func_get_match_setting();
 void wifi_func_get_match_side();
 void wifi_func_get_match_standby();
 void wifi_func_get_match_start();
+bool is_wifi_mode();
+char* UserInfo(long id);
+long MyAID();
 
 #endif

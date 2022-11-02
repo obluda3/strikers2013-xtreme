@@ -1,4 +1,5 @@
 #include "xtreme.h"
+#include "discord.h"
 #include "dolphinios.h"
 #include "keyboard.h"
 #include "music.h"
@@ -101,8 +102,7 @@ char *text_edits[] = {"ガンマ　×　ザナーク",
 
 char NewMoveNames[6][50];
 int go_moves[] = {W_SHIPPUU_DASH_B, W_THE_WALL_B};
-int full_moves[] = {W_KING_FIRE_B, W_GIGANTIC_BOMB_B, W_MAJIN_THE_HAND_B,
-                    W_BUTTOBI_PUNCH_ARMED_B};
+int full_moves[] = {W_KING_FIRE_B, W_GIGANTIC_BOMB_B, W_MAJIN_THE_HAND_B, W_BUTTOBI_PUNCH_ARMED_B};
 
 static bool outdated_dolphin = false;
 static int call_cnt = 0;
@@ -146,6 +146,7 @@ void CheckForDolphin() {
 
 void XtremeSettings::Init() {
   Dolphin::Init();
+  Discord::Init();
   u8 flag = *SaveFlag;
   Settings.allowOpenings = flag & 1;
   Settings.movePower = flag & 2;
