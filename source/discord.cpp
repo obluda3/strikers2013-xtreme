@@ -67,7 +67,7 @@ void UpdateStatus() {
       break;
     case MCHG::MAP_MATCH:
       if (is_wifi_mode()) {
-        richPresence.state = "In online match";
+        richPresence.state = "In an online match";
       } else
         richPresence.state = "In a match";
       break;
