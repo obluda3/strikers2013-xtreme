@@ -1,4 +1,4 @@
-#include <Kamek\base\rvl_sdk.h>
+/*#include <Kamek\base\rvl_sdk.h>
 #include <buttonhelpers.h>
 #include <clubroom.h>
 #include <emblems.h>
@@ -286,6 +286,4 @@ int CClubroomMenuTeamCustom::Exec() {
   }
   return result;
 }
-
-kmBranch(0x801D29FC, callback1);
-kmBranch(0x801D1DCC, callback2);
+*/
