@@ -287,8 +287,5 @@ int CClubroomMenuTeamCustom::Exec() {
   return result;
 }
 
-void callback1(CClubroomMenuTeamCustom* menu) { menu->Draw(); }
-void callback2(CClubroomMenuTeamCustom* menu) { menu->Exec(); }
-
 kmBranch(0x801D29FC, callback1);
 kmBranch(0x801D1DCC, callback2);
