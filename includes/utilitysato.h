@@ -1,11 +1,14 @@
 #ifndef UTILITY_SATO
 #define UTILITY_SATO
-#include "types.h"
-#include <spritestudio.h>
 #include <players.h>
+#include <spritestudio.h>
+
+#include "types.h"
 
 namespace UtilitySato {
-enum PADSTATE { PAD_STATE0, PRESSED, HELD };
+enum PADSTATE { PAD_STATE0,
+                PRESSED,
+                HELD };
 
 enum BUTTONS {
   PAD_PLUS = 0x2000,
@@ -30,7 +33,7 @@ int isPad(s32 id, s32 mask, PADSTATE state);
 PLAYER_DEF *getPlayerDefAddrBase(int player);
 
 class CSpriteStudioCtrl {
-public:
+ public:
   void init();
   void rel();
   int getOt();
@@ -50,7 +53,7 @@ public:
   void update(bool unk);
   void draw(bool unk);
 
-private:
+ private:
   u32 m_anm;
   u32 m_x;
   u32 m_y;
@@ -71,6 +74,16 @@ private:
   u32 _44;
   u32 _48;
 };
-} // namespace UtilitySato
+class CModeSwitch {
+ public:
+  int selectedOption;
+  int currentValue;
+  int oldValue;
+  int justPressed;
+  int _10;
+  int _14;
+  void update();
+};
+}  // namespace UtilitySato
 
 #endif

@@ -2,6 +2,23 @@
 #define SPR_STUDIO
 
 #include "types.h"
+
+struct STRUC_LAYOUT {
+  s16 _00;
+  s16 _02;
+  s16 _04;
+  s16 x;
+  s16 y;
+  s16 width;
+  s16 height;
+  s16 _x;
+  s16 _y;
+  s16 otherWidth;
+  s16 otherHeight;
+  s16 _16;
+  s32 alpha;
+};
+
 struct unkStruct {
   u32 _0;
   u32 _4;
@@ -24,49 +41,45 @@ struct ssaComponent {
   u32 ot;
   f32 alpha;
   u32 _1C;
-  unkStruct *maybeIsPlaying;
-  f32 *p_24;
+  unkStruct* maybeIsPlaying;
+  f32* p_24;
   u32 p_28;
   u32 sprAnimCallback;
-  u32 _30;
-  u32 _34;
-  u32 _38;
-  u32 _3C;
-  u32 _40;
-  u32 _44;
-  u32 _48;
-  u32 _4C;
-  u32 _50;
-  u32 _54;
-  u32 _58;
-  u32 _5C;
-  u32 _60;
-  u32 _64;
-  u32 _68;
-  u32 _6C;
-  u32 _70;
-  u16 _74;
 };
 
+struct SSAL_PARTS {
+  int a1;
+};
+struct SSAL_USER_DATA {
+  int a1;
+};
+struct PRIM_SPR {
+  int A2;
+};
+class SpriteAnimationCallback {
+ public:
+  virtual void CallbackFunction(const SSAL_PARTS* a1, const SSAL_USER_DATA* a2, long a3, long a4, float a5, PRIM_SPR* prim);
+  virtual ~SpriteAnimationCallback();
+  short data;
+};
 class CSprStudio {
-public:
+ public:
   void Draw();
-  void Exec(int a1, int a2);
+  void Exec(int a1, int unused);
   void UpdateFrame(long a1, long a2);
   void EndSsa(long a1);
   void SSA_set_textureIdx(int texIdx, int a2, int fileIdx);
-  // todo
-private:
+  void PlaySsa(int ssaIdx, long ot, long xOffset, long yOffset, unsigned long flag, SpriteAnimationCallback* callback);
   u32 _0;
   u16 texSlots[64];
   u16 fileLabels[64];
   u16 m_textureMax;
   char _106;
-  unkStruct *pUnkStruct;
-  ssaComponent *m_pSsaComponent;
+  unkStruct* UnkStruct;
+  ssaComponent* SsaComponent;
   u32 _110;
-  u16 m_curFrameMaybe;
-  u16 m_ssaCount;
+  u16 curFrameMaybe;
+  u16 ssaCount;
   u16 _118;
   u16 _11A;
   u32 _11C;
@@ -94,17 +107,5 @@ private:
   u32 _174;
   u32 _178;
 };
-
-namespace WATAM_UTILITY {
-class CSetCallback {
-private:
-  CSprStudio *SpriteStudio;
-
-public:
-  virtual int CallbackFunction(int a1, int a2, int a3, int a4, int a5,
-                               int a6) = 0;
-  virtual ~CSetCallback() = 0;
-};
-} // namespace WATAM_UTILITY
 
 #endif

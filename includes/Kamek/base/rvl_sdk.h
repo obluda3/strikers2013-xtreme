@@ -1,3 +1,4 @@
+#include <types.h>
 #ifndef __KAMEK_BASE_RVL_SDK_H
 #define __KAMEK_BASE_RVL_SDK_H
 

@@ -3,7 +3,7 @@
 #include <types.h>
 
 class stNameWindow {
-public:
+ public:
   bool isNgWord(const char *word);
   bool setName(const char *name);
   void reset();
@@ -16,5 +16,8 @@ public:
   int getResult();
   char *getResultString();
   void enableCollisionTest(bool a1);
+  u8 _00[0x3C];
+  u32 _90;
+  u8 _94[0x8C];
 };
 #endif

@@ -1,5 +1,4 @@
-#ifndef TPDATA
-#define TPDATA
+#pragma once
 #include <enums.h>
 
 namespace MENU_TP_DATA {
@@ -22,8 +21,6 @@ void GetTeamOrgData(u32 a1);
 void GetUniformData(u32 index);
 int IsUniformNoHomeAwayFromTeam(s32 uniform);
 int IsUniformNoPositionFromTeam(s32 uniform);
-// To Complete
+}  // namespace MENU_TP_DATA
 
-}
-
-#endif
+int GetTeamIDToEmblemLL(int teamId);
