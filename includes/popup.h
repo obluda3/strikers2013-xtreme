@@ -12,8 +12,8 @@ class cPopup {
   void add_item(int index, const char* text, unsigned short isOption);
   void draw();
   void open(s32 a1, u16 a2);
-
- private:
-  u8 _00[0xF0];
+  u8 _00[0xE0];
+  u32 result;
+  u8 _E4[0xC];
 };
 #endif

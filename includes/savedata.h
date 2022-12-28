@@ -1,5 +1,4 @@
-#ifndef SAVEDATA
-#define SAVEDATA
+#pragma once
 #include "types.h"
 // TODO : add the other functions
 struct KizunaData {
@@ -13,6 +12,23 @@ enum FlagPlayer {
 };
 
 enum UnlockFlag { UNLOCKED, LOCKED, RECRUITED };
+
+struct _SV_PLAYER_TEAM_INFO {
+  s32 Id;
+  s32 Kit;
+  s32 FormationIndex;
+  s32 ClubroomKit;
+  s32 Flag;
+};
+
+struct _SV_TEAM_INFO {
+  s16 _00;
+  s16 Kit;
+  s32 Formation;
+  s32 Manager;
+  s32 Coach;
+  _SV_PLAYER_TEAM_INFO players[16];
+};
 
 struct SavePlayerParam {
   s32 Flag;
@@ -79,4 +95,3 @@ char *Savedata_GetSavedata_UserName(int slot);
 int Savedata_GetSavedata_FaceIcon(int slot);
 KizunaData *Savedata_getPlayeData_KizunaData(int player1, int player2);
 SavePlayerParam *Savedata_getPlayerData(int player);
-#endif

@@ -4,9 +4,10 @@
 #include <kamek.h>
 #include <random.h>
 #include <savedata.h>
+#include "music.h"
 #include <snd.h>
 #include <utilitysato.h>
-
+#include <Kamek\base\rvl_sdk.h>
 #include "xtutils.h"
 
 namespace CLUBROOM_TEAMORG {
@@ -14,16 +15,27 @@ void setNewPlayer_toSaveData(int slot, int player);
 };
 
 static RandomMode* menu = 0;
-
 RandomMode::RandomMode() {
   m_state = 0;
   m_slot = 0;
   m_timer = 0;
-  m_popup = new cPopup();
-  m_popup->alloc(4, 3878);
-  m_popup->add_item(0, "Generer une equipe aleatoire ?", false);
-  m_popup->add_item(1, "Oui", 1);
-  m_popup->add_item(2, "Non", 1);
+  m_valid = true;
+  m_popupConfirm = new cPopup();
+  m_popupConfirm->alloc(4, 3878);
+  m_popupConfirm->add_item(0, "Generer une equipe aleatoire ?", false);
+  m_popupConfirm->add_item(1, "Oui", true);
+  m_popupConfirm->add_item(2, "Non", true);
+
+  m_popupKeep = new cPopup();
+  m_popupKeep->alloc(4, 3878);
+  m_popupKeep->add_item(0, "Conserver l'equipe generee ?", false);
+  m_popupKeep->add_item(1, "Oui", true);
+  m_popupKeep->add_item(2, "Non", true);
+
+  m_popupInvalid = new cPopup();
+  m_popupInvalid->alloc(3, 3878);
+  m_popupInvalid->add_item(0, "Vous n'avez pas recrute suffisamment de joueurs", false);
+  m_popupInvalid->add_item(1, "Ok", true);
 }
 
 bool RandomMode::IsPlayerBanned(int player) {
@@ -66,34 +78,84 @@ int getPosition(int slot) {
 }
 
 bool custom_menu = false;
+int last_room_music = 0;
+
+void RandomMode::BackupData() {
+  _SV_TEAM_INFO* cur = GetCurrentTeam();
+  memcpy(&m_backup, cur, sizeof(_SV_TEAM_INFO));
+}
+
+void RandomMode::RestoreData() {
+  _SV_TEAM_INFO* cur = GetCurrentTeam();
+  memcpy(cur, &m_backup, sizeof(_SV_TEAM_INFO));
+}
 
 void RandomMode::Update(UtilitySato::CModeSwitch* menuOrganize) {
   switch (m_state) {
-    case 0:
+    case INIT: {
+      
+
       // show button info and yes no
       // save current team
       m_slot = 0;
       memset(m_picked_players, 0, sizeof(m_picked_players));
-      m_popup->open(1, 0);
-      m_state = 8;
-      break;
-    case 8: {
-      // display popup
-      m_popup->draw();
-      int result = m_popup->exec(0);
-      if (result) {
-        if (result > 0)
-          m_state = 1;
-        else
-          m_state = 5;
-      }
+      SNDSeSysOK(-1);
+      m_popupConfirm->open(1, 0);
+      m_state = POPUP_CONFIRM;
       break;
     }
-    case 1:
-      // display rows
-      m_state = 2;
+
+    case POPUP_INVALID:
+
+
+    case POPUP_CONFIRM:
+      // ask for confirmation
+      m_popupConfirm->draw();
+      if (m_popupConfirm->exec(0)) {
+        SNDBgmPlay_Direct(wiiSndGetNameToID("JINGLE_GOAL_01"));
+        if (m_popupConfirm->result == 1) {
+          // check if enough players
+          int dfCnt = 0;
+          int fwCnt = 0;
+          int mfCnt = 0;
+          int gkCnt = 0;
+          for (int i = 0; i < P_12502YOBI; i++) {
+            if (!Savedata_ChkPlayerFlag(i, RECRUITED)) continue;
+            int position = GetPlayerDef(i)->position;
+            if (position == GK)
+              gkCnt++;
+            else if (position == MF)
+              mfCnt++;
+            else if (position == DF)
+              dfCnt++;
+            else
+              fwCnt++;
+          }
+
+          if (!(fwCnt > 4 && mfCnt > 4 && gkCnt > 2)) {
+            m_popupInvalid->open(0,0);
+            SNDSeSysBAD(-1);
+            m_valid = false;
+          }
+          m_state = POPUP_HELP;
+        }
+        else
+          m_state = END;
+      }
       break;
-    case 2:
+
+    case POPUP_HELP:
+      if (m_valid) {
+        BackupData();
+        m_state = MAIN_LOOP;
+      }
+      else {
+        m_popupInvalid->draw();
+        if (m_popupInvalid->exec(0)) m_state = END;
+      }
+      break;
+
+    case MAIN_LOOP:
       // main loop
       m_timer++;
       if (m_timer % 5 == 0) {
@@ -101,34 +163,44 @@ void RandomMode::Update(UtilitySato::CModeSwitch* menuOrganize) {
           CLUBROOM_TEAMORG::setNewPlayer_toSaveData(i, GetRandomPlayer(getPosition(i)));
         }
       }
-      if (m_timer % 60 == 0) {
+
+      if (m_timer % 40 == 0) {
         int player = GetRandomPlayer(getPosition(m_slot));
         m_picked_players[player] = true;
         CLUBROOM_TEAMORG::setNewPlayer_toSaveData(m_slot, player);
-        m_slot++;
-        if (m_slot < 16) *(int*)((int)menuOrganize + 572) = m_slot;
         SNDSeSysOK(-1);
         m_timer = 0;
+        m_slot++;
+        if (m_slot < 16) 
+          *(int*)((int)menuOrganize + 572) = m_slot;
       }
+
       if (m_slot > 15) {
         memset(m_picked_players, 0, sizeof(m_picked_players));
-        m_state = 5;
+        m_state = POPUP_KEEP;
+        SNDSeSysOK(-1);
+        m_popupKeep->open(1, 0);
       }
       break;
-    case 3:
+
+    case POPUP_KEEP:
       // show button keep team or not
       // if keep end
       // if not restart maybe
-      m_state = 4;
+      m_popupKeep->draw();
+      if (m_popupKeep->exec(0)) {
+        if (m_popupKeep->result != 1)
+          RestoreData();
+        m_state = END;
+      }
       break;
-    case 4:
-      // ask restart
-      m_state = 5;
-      break;
-    case 5:
+
+    case END:
       // end
       custom_menu = false;
       menuOrganize->currentValue = 2;
+      m_state = INIT;
+      SNDBgmPlayRoom(last_room_music);
       break;
   }
 }
@@ -149,6 +221,17 @@ void randomizer(UtilitySato::CModeSwitch* menuOrganize) {
 void clean() { delete menu; }
 void init() {
   menu = new RandomMode();
+}
+
+// backup last room music 
+kmBranchDefAsm(0x80046F7C, 0x80046F84) {
+  nofralloc
+  stwu r1, -0x10(r1)
+  mflr r0
+  stw r0, 0x14(r1)
+  lis r4, last_room_music@ha
+  stw r3, last_room_music@l(r4)
+  blr
 }
 
 kmCall(0x801D6B68, randomizer);
