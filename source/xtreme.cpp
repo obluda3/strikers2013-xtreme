@@ -4,9 +4,12 @@
 #include "keyboard.h"
 #include "music.h"
 #include <enums.h>
+#include <players.h>
 #include <kamek.h>
 #include <menu_setting.h>
 #include <moves.h>
+#include <players.h>
+#include "xtutils.h"
 #include <shd_debug.h>
 
 XtremeSettings Settings;
@@ -64,45 +67,8 @@ char security_patchB[] = {
 bool s_is_wiimmfi_done = false;
 bool s_is_text_done = false;
 
-char *text_edits[] = {"ガンマ　×　ザナーク",
-                      "白竜　×　孔明",
-                      "フラン　×　くろいばら",
-                      "ＳＡＲＵ　×　Ｓいでんし",
-                      "黒の騎士団",
-                      "エンシャントダーク",
-                      "アンリミテッドシャイニング",
-                      "稲妻KFC",
-                      "エルドラドチーム01",
-                      "エルドラドチーム02",
-                      "エルドラドチーム03",
-                      "クロノストーム",
-                      "ザン",
-                      "ガル",
-                      "ギル",
-                      "ツキガミの一族",
-                      "ヴァンプティム",
-                      "ジ・エグゼラー",
-                      "アースイレブン",
-                      "レジスタンスジャパン",
-                      "ファイアードラゴン",
-                      "ビッグウェイブス",
-                      "シャムシール",
-                      "マッハタイガー",
-                      "ストームウルフ",
-                      "サザナーライレブン",
-                      "サンドリアスイレブン",
-                      "ラトニークイレブン",
-                      "ガードンイレブン",
-                      "ファラム・ディーテ",
-                      "イクサルフリート",
-                      "ビッグバン",
-                      "スーパーノヴァ",
-                      "スペースランカーズ",
-                      "ガードンイレブン"};
 
 char NewMoveNames[6][50];
-int go_moves[] = {W_SHIPPUU_DASH_B, W_THE_WALL_B};
-int full_moves[] = {W_KING_FIRE_B, W_GIGANTIC_BOMB_B, W_MAJIN_THE_HAND_B, W_BUTTOBI_PUNCH_ARMED_B};
 
 static bool outdated_dolphin = false;
 static int call_cnt = 0;
@@ -144,6 +110,85 @@ void CheckForDolphin() {
   }
 }
 
+int go_moves[] = {W_SHIPPUU_DASH_B, W_THE_WALL_B};
+int full_moves[] = {W_KING_FIRE_B, W_GIGANTIC_BOMB_B, W_MAJIN_THE_HAND_B, W_BUTTOBI_PUNCH_ARMED_B};
+
+char *text_edits[] = {"ガンマ　×　ザナーク",
+                      "白竜　×　孔明",
+                      "フラン　×　くろいばら",
+                      "ＳＡＲＵ　×　Ｓいでんし",
+                      "黒の騎士団",
+                      "エンシャントダーク",
+                      "アンリミテッドシャイニング",
+                      "稲妻KFC",
+                      "エルドラドチーム01",
+                      "エルドラドチーム02",
+                      "エルドラドチーム03",
+                      "クロノストーム",
+                      "ザン",
+                      "ガル",
+                      "ギル",
+                      "ツキガミの一族",
+                      "ヴァンプティム",
+                      "ジ・エグゼラー",
+                      "アースイレブン",
+                      "レジスタンスジャパン",
+                      "ファイアードラゴン",
+                      "ビッグウェイブス",
+                      "シャムシール",
+                      "マッハタイガー",
+                      "ストームウルフ",
+                      "サザナーライレブン",
+                      "サンドリアスイレブン",
+                      "ラトニークイレブン",
+                      "ガードンイレブン",
+                      "ファラム・ディーテ",
+                      "イクサルフリート",
+                      "ビッグバン",
+                      "スーパーノヴァ",
+                      "スペースランカーズ",
+                      "ガードンイレブン"};
+
+char* premixed_descs[] = {
+ "フェイがティラノサウルスのオーラでミキシマックスした#R荒々(あらあら)しい#R姿(すがた)。",
+ "#R優一(ゆういち)が#R弟(おとうと)の#R京介(きょうすけ)とミキシマックスした#R姿(すがた)。#R兄弟(きょうだい)なので#R相性(あいしょう)バツグン#R力(ちから)がみなぎる。",
+ "#R天馬(てんま)とシュウがミキシマックスした#R姿(すがた)。#R２人(ふたり)の#R固(かた)い#R絆(きずな)が#R力(ちから)を#R増幅(ぞうふく)させている。",
+ "#R神童(しんどう)と#R信長(のぶなが)がミキシマックスした#R姿(すがた)。#R人(ひと)と#R大局(たいきょく)を#R見抜(みぬ)く#R真実(しんじつ)のゲームメーカー。",
+ "#R霧野(きりの)とジャンヌがミキシマックスした#R姿(すがた)。#R仲間(なかま)の#R勇気(ゆうき)を#R奮(ふる)いたたせるカリスマＤＦ。" ,
+ "#R太陽(たいよう)と#R孔明(こうめい)がミキシマックスした#R姿(すがた)。#R未来(みらい)をも#R見通(みとお)し#R敵(てき)を#R突(つ)く#R正確無比(せいかくむひ)のＭＦ。",
+ "#R信助(しんすけ)と#R劉備(りゅうび)がミキシマックスした#R姿(すがた)。#R強靭(きょうじん)な#R行動力(こうどうりょく)と#R実行力(じっこうりょく)を#R持(も)つ#R鉄壁(てっぺき)のＧＫ。",
+ "トーブとトーチャンがミキシマックス。#R自由自在(じゆうじざい)に#R空(そら)を#R制(せい)するフライングＤＦ。",
+ "フェイとビッグがミキシマックスした#R姿(すがた)。#R太古(たいこ)の#R力(ちから)を#R宿(やど)したダイナミックＭＦ。",
+ "#R錦(にしき)と#R坂本(さかもと)#R龍馬(りょうま)がミキシマックスした#R姿(すがた)。#R攻守(こうしゅ)をつなぐスーパートリッキーＭＦ。",
+ "#R剣城(つるぎ)と#R沖田(おきた)がミキシマックスした#R姿(すがた)。#R雷(いかずち)の#R如(ごと)き#R電光石火(でんこうせっか)のスピードストライカー。",
+ "#R黄名子(きなこ)とドラゴンがミキシマックスした#R姿(すがた)。すべてをこなすファンタジックリベロ。",
+ "#R天馬(てんま)とアーサー#R王(おう)がミキシマックスした#R姿(すがた)。 #R絶対的(ぜったいてき)な#R勇気(ゆうき)を#R持(も)ったキングオブＭＦ。",
+ "ザナークと#R曹操(そうそう)がミキシマックスした#R姿(すがた)。まさに#R最強最悪(さいきょうさいあく)の#R組(く)み#R合(あ)わせだといえる。",
+ "ザナークが#R台風(たいふう)とミキシマックスした#R姿(すがた)。#R自称(じしょう)『スーパーザナーク』とのことだ。",
+ "#R戦(たたか)いを#R憎(にく)む#R心(こころ)がフランの#R姿(すがた)を#R変(か)える。その#R姿(すがた)はまさに#R黒(くろ)い#R魔女(まじょ)のようだ…。",
+ "ＳＡＲＵの#R遺伝子(いでんし)に#R眠(ねむ)る#R力(ちから)が#R目覚(めざ)めたくましい#R大猿(おおざる)のような#R姿(すがた)になった。"
+};
+
+int premixed_list[] = {
+  P_12013FUEI,
+  P_12802TSURUGI,
+  P_12803TEMMA,
+  P_12804SHINDO,
+  P_12805KIRINO,
+  P_12806AMEMIYA,
+  P_12807SHINSUKE,
+  P_12808TOBU,
+  P_12809FUEI,
+  P_12810NISHIKI,
+  P_12811TSURUGI,
+  P_12812KINAKO,
+  P_12813TEMMA,
+  P_12815ZANAKU,
+  P_12816SZANAKU,
+  P_12502YOBI,
+  P_12817SARU
+};
+
 void XtremeSettings::Init() {
   Dolphin::Init();
   Discord::Init();
@@ -182,6 +227,12 @@ void XtremeSettings::Init() {
       curMove->MoveName = newTextIndex;
       curMove->OtherName = newTextIndex;
       maintext[newTextIndex] = NewMoveNames[i + 2];
+    }
+    for (int i = 0; i < sizeof(premixed_list) / 4; i++) {
+      int textIndex = 5640 + sizeof(text_edits) / sizeof(char*) + i + 2 + 4;
+      PLAYER_DEF* player = GetPlayerDef(premixed_list[i]);
+      player->description = textIndex;
+      maintext[textIndex] = premixed_descs[i];
     }
     s_is_text_done = true;
   }
