@@ -12,7 +12,7 @@ url_list:
 .int 0
 
 new_url:
-.string "xtreme13.com"
+.string "inazumafrance.fr:2201"
 .align 4
 replace_urls:
     stwu r1, -0x30(r1)
