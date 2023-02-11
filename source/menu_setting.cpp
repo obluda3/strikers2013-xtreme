@@ -102,7 +102,6 @@ void SettingLoop(int state, void *arg) {
 
 void push_xtremesetting_hook(MENU_SETTING::CMenuSetting* menu) {
   HelpBar_SetTextID(532);
-  menu->SetAnime()
   menu->SetAnime(0, 80);
   menu->tasks->Pop(0);
   menu->tasks->Push(XtremeSettings::MusicLoop, menu);
