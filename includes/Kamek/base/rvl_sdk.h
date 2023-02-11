@@ -7,10 +7,29 @@ extern "C" {
 #endif
 
 /* OS Module */
+typedef struct {
+  u32 gprs[32];
+  u32 _cr;
+  u32 lr;
+  u32 ctr;
+  u32 xer;
+  u32 fprs[32];
+  u32 _fpscr;
+  u32 srr0;
+  u32 srr1;
+  u32 unk;
+  u64 gqrs[4];
+  u32 unk2;
+  u64 pairedSingles[32];
+} OSContext;
+
 void OSReport(const char *format, ...);
 u64 OSGetTime();
 u32 OSGetTick();
 void OSFatal(u32 *fg, u32 *bg, const char *message);
+void _RAS_OSDisableInterrupts_begin();
+void OSSetCurrentContext(OSContext* context);
+void OSRestoreInterrupts(s32 a1);
 
 typedef struct {
   int sec, min, hour, mday, mon, year, wday, yday, msec, usec;

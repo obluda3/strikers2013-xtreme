@@ -6,7 +6,10 @@
 namespace Dolphin {
 static int sDevDolphinHandle = -1;
 
-void Init() { sDevDolphinHandle = IOS_Open("/dev/dolphin", 0); }
+void Init() { 
+  sDevDolphinHandle = IOS_Open("/dev/dolphin", 0);
+  if (!IsOpen()) OSReport("/dev/dolphin not detected."); 
+}
 
 bool IsOpen() { return sDevDolphinHandle >= 0; }
 
