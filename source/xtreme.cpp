@@ -203,7 +203,6 @@ void XtremeSettings::Init() {
   OSReport("\n");
   OSReport("Initializing Discord Rich Presence...\n");
   Discord::Init();
-  u8 flag = *SaveFlag;
   Settings.allowOpenings = flag & 1;
   Settings.movePower = flag & 2;
   Settings.keyboardType = (flag >> 2) & 3;
@@ -280,29 +279,20 @@ void XtremeSettings::Exec() {
       UtilitySato::isPad(0, UtilitySato::PAD_LEFT, UtilitySato::HELD);
   bool isPadRight =
       UtilitySato::isPad(0, UtilitySato::PAD_RIGHT, UtilitySato::HELD);
-  if (isPadDown)
-    pos++;
-  else if (isPadUp)
-    pos--;
-  if (pos > 2)
-    pos = 0;
-  else if (pos < 0)
-    pos = 1;
+  if (isPadDown) pos++;
+  else if (isPadUp) pos--;
+  if (pos > 2) pos = 0;
+  else if (pos < 0) pos = 1;
   if (pos != m_pos) {
     m_pos = pos;
     SNDSeSysCLICK(-1);
   } else {
     if (!m_pos) {
       s8 openings = allowOpenings;
-      if (isPadLeft)
-        openings--;
-      else if (isPadRight)
-        openings++;
-
-      if (openings < 0)
-        openings = 1;
-      else if (openings > 1)
-        openings = 0;
+      if (isPadLeft) openings--;
+      else if (isPadRight) openings++;
+      if (openings < 0) openings = 1;
+      else if (openings > 1) openings = 0;
 
       if (openings != allowOpenings) {
         allowOpenings = openings;
@@ -310,15 +300,11 @@ void XtremeSettings::Exec() {
       }
     } else if (m_pos == 1) {
       s8 keyboard = keyboardType;
-      if (isPadLeft)
-        keyboard--;
-      else if (isPadRight)
-        keyboard++;
+      if (isPadLeft) keyboard--;
+      else if (isPadRight) keyboard++;
 
-      if (keyboard < 0)
-        keyboard = 2;
-      else if (keyboard > 2)
-        keyboard = 0;
+      if (keyboard < 2) keyboard = 2;
+      else if (keyboard > 2) keyboard = 0;
       if (keyboard != keyboardType) {
         keyboardType = keyboard;
         SwitchKeyboardLayout(keyboard);
@@ -327,16 +313,11 @@ void XtremeSettings::Exec() {
     }
     if (m_pos == 2) {
       s8 values = movePower;
-      if (isPadLeft)
-        values--;
-      else if (isPadRight)
-        values++;
+      if (isPadLeft) values--;
+      else if (isPadRight) values++;
 
-      if (values < 0)
-        values = 1;
-      else if (values > 1)
-        values = 0;
-
+      if (values < 0) values = 1;
+      else if (values > 1) values = 0;
       if (values != movePower) {
         movePower = values;
         SNDSeSysCLICK(-1);
@@ -390,6 +371,6 @@ void XtremeSettings::DrawMenu() {
 }
 
 kmBranch(0x800E5B74, OutdatedDolphinVersion);
-kmBranch(0x8004208C, XtremeSettings::Init);
+kmBranch(0x80044E3C, XtremeSettings::Init);
 // supplement bug
 kmWrite32(0x801558B8, 0x480000A0);
