@@ -33,6 +33,7 @@ void SettingLoop(int state, void *arg) {
     if (menu->nameWindow->exec()) {
       tasks->Pop(0);
       const char pass[] = "２００８０８２２";
+      const char pass2[] = "2００8０822";
       if (menu->nameWindow->getResult()) {
         int index = -1;
         menu->textEntry = -1;
@@ -73,7 +74,7 @@ void SettingLoop(int state, void *arg) {
             menu->popup->set_itemtext(2, 7568);
           }
           tasks->Push(MENU_SETTING::CMenuSetting::AlgoConfirmPassword, menu);
-        } else if (memcmp(input, pass, 16) != 0) {
+        } else if (memcmp(input, pass, 16) != 0 || memcmp(input, pass2, 16) != 0) {
           SNDSePlay(90, 128, 128);
           menu->textEntry = 7565;
           menu->popup2->set_itemtext(1, "");
