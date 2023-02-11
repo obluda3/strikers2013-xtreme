@@ -10,7 +10,7 @@ void SettingLoop(int state, void *menu);
 void SettingPassLoop(int state, void *arg);
 
 namespace MENU_SETTING {
-int SecretPlayerIds[] = {P_10036AOI,      P_10037AKANE,  P_10038MIDORI, P_10121MIYABINO, P_12110INABA,  P_12012YUICHI, P_11780SAN, P_11201WANDABA};
+int SecretPlayerIds[] = {P_10036AOI, P_10037AKANE, P_10038MIDORI, P_10121MIYABINO, P_12110INABA, P_12012YUICHI, P_11780SAN, P_11201WANDABA};
 char NewPasswords[8][18] = {
         { 0x8D, 0xB7, 0xAF, 0xD1, 0xC9, 0xF8, 0xEB, 0xD5, 0x05, 0x52, 0x27, 0x76, 0x41, 0x34, 0x63, 0x52, 0x00, 0x00, },
         { 0x8D, 0xAB, 0xAF, 0xCD, 0xC9, 0xE9, 0xEB, 0xA4, 0x05, 0x28, 0x27, 0x16, 0x41, 0x65, 0x63, 0x5B, 0x00, 0x00, },
@@ -32,8 +32,6 @@ void SettingLoop(int state, void *arg) {
       HelpBar_SetTextID(helpStrId);
     if (menu->nameWindow->exec()) {
       tasks->Pop(0);
-      const char pass[] = "２００８０８２２";
-      const char pass2[] = "2００8０822";
       if (menu->nameWindow->getResult()) {
         int index = -1;
         menu->textEntry = -1;
@@ -74,22 +72,12 @@ void SettingLoop(int state, void *arg) {
             menu->popup->set_itemtext(2, 7568);
           }
           tasks->Push(MENU_SETTING::CMenuSetting::AlgoConfirmPassword, menu);
-        } else if (memcmp(input, pass, 16) != 0 && memcmp(input, pass2, 16) != 0) {
+        } else {
           SNDSePlay(90, 128, 128);
           menu->textEntry = 7565;
           menu->popup2->set_itemtext(1, "");
           tasks->Push(MENU_SETTING::CMenuSetting::AlgoConfirmPassword, menu);
-        } else {
-          Settings.passAccepted = true;
-          updateCurrentBgm(0);
-          SNDSePlay(238, 128, 128);
-          menu->popup->set_itemtext(0, "おめでとうございます。");
-          menu->popup->set_itemtext(1, "ひみつのパスワードが入力されました。");
-          menu->popup->set_itemtext(
-              2, "これでXtremeの設定にアクセスできるようになりました!");
-          menu->nameWindow->setWindowAnm(1);
-          tasks->Push(SettingPassLoop, menu);
-        }
+        } 
       } else {
         menu->textEntry = 0;
         tasks->Pop(0);
@@ -112,22 +100,19 @@ void SettingLoop(int state, void *arg) {
   }
 }
 
-void SettingPassLoop(int state, void *arg) {
-  MENU_SETTING::CMenuSetting *menu = (MENU_SETTING::CMenuSetting *)arg;
-  cPopup *popup = menu->popup;
-  if (state == 2) {
-    if (popup->exec(0)) {
-      menu->tasks->Pop(0);
-      menu->tasks->Push(XtremeSettings::MusicLoop, arg);
-      HelpBar_SetTextID(532);
-    }
-    menu->nameWindow->exec();
-    menu->nameWindow->draw();
-    popup->draw();
-  } else if (!state) {
-    popup->open(0, 144);
-    HelpBar_SetTextID(2530);
-  }
+void push_xtremesetting_hook(MENU_SETTING::CMenuSetting* menu) {
+  HelpBar_SetTextID(532);
+  menu->SetAnime()
+  menu->SetAnime(0, 80);
+  menu->tasks->Pop(0);
+  menu->tasks->Push(XtremeSettings::MusicLoop, menu);
+}
+
+kmBranchDefAsm(0x8013F2D8, 0x8013F2E8) {
+  nofralloc
+  mr r3, r31
+  bl push_xtremesetting_hook
+  blr
 }
 
 kmBranch(0x8013f794, SettingLoop);

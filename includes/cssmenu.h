@@ -25,6 +25,7 @@ private:
 public:
   virtual void OnExec();
   virtual void OnDraw();
+  void SetAnime(long a1, unsigned long a2);
   u32 sprAnimCallback;
   u32 ot;
   u32 m_ssaCount;
