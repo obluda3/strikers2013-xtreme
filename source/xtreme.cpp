@@ -312,6 +312,8 @@ void XtremeSettings::Init() {
   if (!s_is_text_done) {
     char **maintext = *((char ***)0x805131C0);
     maintext[1675] = "ザナーク　×　クララジェーン";
+    maintext[587] = "Change Xtreme's additional settings";
+    maintext[529] = "Xtreme settings";
     for (int i = 0; i < sizeof(text_edits) / sizeof(char *); i++) {
       maintext[i + 5640] = text_edits[i];
     }

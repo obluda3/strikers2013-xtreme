@@ -102,8 +102,6 @@ void SettingLoop(int state, void *arg) {
 
 void push_xtremesetting_hook(MENU_SETTING::CMenuSetting* menu) {
   HelpBar_SetTextID(532);
-  menu->SetAnime(0, 80);
-  menu->tasks->Pop(0);
   menu->tasks->Push(XtremeSettings::MusicLoop, menu);
 }
 
@@ -111,6 +109,20 @@ kmBranchDefAsm(0x8013F2D8, 0x8013F2E8) {
   nofralloc
   mr r3, r31
   bl push_xtremesetting_hook
+  blr
+}
+
+// remove fading animation for xtreme's menu
+kmBranchDefAsm(0x801404D4, 0x801404E4) {
+  nofralloc
+  cmpwi r0, 3
+  beq case_3
+  cmpwi r0, 4
+  bne end
+  case_3:
+  li r0, 5
+  stw r0, 0x1BC(r31)
+  end:
   blr
 }
 
