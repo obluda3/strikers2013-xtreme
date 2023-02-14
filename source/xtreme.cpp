@@ -54,7 +54,7 @@ void XtremeSettings::Exec() {
   if (isPadDown) pos++;
   else if (isPadUp) pos--;
   if (pos > 2) pos = 0;
-  else if (pos < 0) pos = 1;
+  else if (pos < 0) pos = 2;
   if (pos != m_pos) {
     m_pos = pos;
     SNDSeSysCLICK(-1);
@@ -75,7 +75,7 @@ void XtremeSettings::Exec() {
       if (isPadLeft) keyboard--;
       else if (isPadRight) keyboard++;
 
-      if (keyboard < 2) keyboard = 2;
+      if (keyboard < 0) keyboard = 2;
       else if (keyboard > 2) keyboard = 0;
       if (keyboard != keyboardType) {
         keyboardType = keyboard;
