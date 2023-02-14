@@ -112,7 +112,6 @@ void RandomMode::Update(UtilitySato::CModeSwitch* menuOrganize) {
       // ask for confirmation
       m_popupConfirm->draw();
       if (m_popupConfirm->exec(0)) {
-        SNDBgmPlay_Direct(wiiSndGetNameToID("JINGLE_GOAL_01"));
         if (m_popupConfirm->result == 1) {
           // check if enough players
           int dfCnt = 0;
@@ -147,6 +146,7 @@ void RandomMode::Update(UtilitySato::CModeSwitch* menuOrganize) {
     case POPUP_HELP:
       if (m_valid) {
         BackupData();
+        SNDBgmPlay_Direct(wiiSndGetNameToID("JINGLE_GOAL_01"));
         m_state = MAIN_LOOP;
       }
       else {
