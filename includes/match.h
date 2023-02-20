@@ -1,6 +1,6 @@
-#ifndef TEAM
-#define TEAM
+#pragma once
 #include "file.h"
+#include "team.h"
 #include "players.h"
 
 struct UserPwork {
@@ -114,8 +114,6 @@ struct _PWORK {
   u32 field_FC;
 };
 
-struct TEAM_DEF {};
-TEAM_DEF *getTeamDef(int a1, int a2);
 _PWORK *get_gk_pw(u8 team);
 void SetTeamDefToBody(PLAYER_DEF *player, int isFieldPlayer, int a3,
                       const TEAM_DEF *teamDef);
@@ -131,6 +129,3 @@ void MI_useInazmaPoint(_PWORK* player, int amount);
 int MI_getInazmaPoint(u8 index);
 bool MI_chkInazmaState(_PWORK* player);
 int MI_getTensionGauge(int team, bool a2);
-
-
-#endif

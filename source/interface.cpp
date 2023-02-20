@@ -6,7 +6,6 @@
 #include <shd_mem.h>
 
 namespace GUI_TG { void Draw(); }
-void set_tcut_to_uv(SHD_TEXCUT const* a1, PRIM_SPR* a2, signed char a3);
 
 struct TensionBar {
   PRIM_SPR firstPlayerDigit1;
