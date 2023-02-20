@@ -26,7 +26,7 @@ char NewPasswords[8][18] = {
 void SettingLoop(int state, void *arg) {
   MENU_SETTING::CMenuSetting *menu = (MENU_SETTING::CMenuSetting *)arg;
   cTASK *tasks = menu->tasks;
-  if (state == 2 && !Settings.passAccepted) {
+  if (state == 2) {
     int helpStrId = menu->nameWindow->getHelpStrID();
     if (HelpBar_GetTextID() != helpStrId)
       HelpBar_SetTextID(helpStrId);
@@ -91,13 +91,7 @@ void SettingLoop(int state, void *arg) {
     menu->nameWindow->setName("");
     menu->nameWindow->reset();
     menu->nameWindow->enableCollisionTest(true);
-  } else if (Settings.passAccepted) {
-    updateCurrentBgm(0);
-    if (IsButtonPushed_Cancel(0)) {
-      tasks->Pop(0);
-    }
-    drawBgmName();
-  }
+  } 
 }
 
 void push_xtremesetting_hook(MENU_SETTING::CMenuSetting* menu) {

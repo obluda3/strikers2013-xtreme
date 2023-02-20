@@ -16,6 +16,26 @@
 XtremeSettings Settings;
 u8 *SaveFlag = (u8 *)0x805F912E;
 
+int XtremeSettings::GetKeyboardType() { return m_keyboardType; }
+bool XtremeSettings::AreOpeningsAllowed() { return m_allowOpenings; }
+bool XtremeSettings::IsMovePowerDisplayed() { return m_movePower; }
+bool XtremeSettings::IsCompactInterface() { return false; }
+
+char *FlagToEng(int val) {
+  if (val)
+    return "< ON >";
+  else
+    return "< OFF >";
+}
+
+char *KeyboardType(int val) {
+  if (val == KEY_LTN)
+    return "< Latin >";
+  else if (val == KEY_CRL)
+    return "#x15< Кириллица >";
+  return "< 日本語 >";
+}
+
 void XtremeSettings::MusicLoop(int state, void *arg) {
   MENU_SETTING::CMenuSetting *menu = (MENU_SETTING::CMenuSetting *)arg;
   if (state == 2) {
@@ -28,7 +48,6 @@ void XtremeSettings::MusicLoop(int state, void *arg) {
       Settings.Save();
       menu->tasks->Pop(0);
       menu->tasks->Push(MENU_SETTING::CMenuSetting::MenuSet0Loop, arg);
-      Settings.passAccepted = false;
       SNDSeSysCANCEL(-1);
     }
   }
@@ -36,10 +55,11 @@ void XtremeSettings::MusicLoop(int state, void *arg) {
 
 void XtremeSettings::Save() {
   u8 flag = 0;
-  flag |= (keyboardType << 2) & 12;
-  flag |= allowOpenings;
-  flag |= movePower << 1;
+  flag |= (m_keyboardType << 2) & 12;
+  flag |= m_allowOpenings;
+  flag |= m_movePower << 1;
   *SaveFlag = flag;
+  OSReport("##Xtreme Settings##- Openings = %s\n- Move Power = %s\n- Keyboard Type = %s\n", FlagToEng(Settings.m_allowOpenings), FlagToEng(Settings.m_movePower), KeyboardType(Settings.m_keyboardType));
 }
 
 void XtremeSettings::Exec() {
@@ -60,60 +80,45 @@ void XtremeSettings::Exec() {
     SNDSeSysCLICK(-1);
   } else {
     if (!m_pos) {
-      s8 openings = allowOpenings;
+      s8 openings = m_allowOpenings;
       if (isPadLeft) openings--;
       else if (isPadRight) openings++;
       if (openings < 0) openings = 1;
       else if (openings > 1) openings = 0;
 
-      if (openings != allowOpenings) {
-        allowOpenings = openings;
+      if (openings != m_allowOpenings) {
+        m_allowOpenings = openings;
         SNDSeSysCLICK(-1);
       }
     } else if (m_pos == 1) {
-      s8 keyboard = keyboardType;
+      s8 keyboard = m_keyboardType;
       if (isPadLeft) keyboard--;
       else if (isPadRight) keyboard++;
 
       if (keyboard < 0) keyboard = 2;
       else if (keyboard > 2) keyboard = 0;
-      if (keyboard != keyboardType) {
-        keyboardType = keyboard;
+      if (keyboard != m_keyboardType) {
+        m_keyboardType = keyboard;
         SwitchKeyboardLayout(keyboard);
         SNDSeSysCLICK(-1);
       }
     }
     if (m_pos == 2) {
-      s8 values = movePower;
+      s8 values = m_movePower;
       if (isPadLeft) values--;
       else if (isPadRight) values++;
 
       if (values < 0) values = 1;
       else if (values > 1) values = 0;
-      if (values != movePower) {
-        movePower = values;
+      if (values != m_movePower) {
+        m_movePower = values;
         SNDSeSysCLICK(-1);
       }
     }
   }
 }
 
-char *FlagToEng(int val) {
-  if (val)
-    return "< ON >";
-  else
-    return "< OFF >";
-}
-
-char *KeyboardType(int val) {
-  if (val == KEY_LTN)
-    return "< Latin >";
-  else if (val == KEY_CRL)
-    return "#x15< Кириллица >";
-  return "< 日本語 >";
-}
 void XtremeSettings::DrawMenu() {
-  char extendedMessage[100];
   char message[50];
   s32 currentBgm = g_CurrentBgm;
   if (currentBgm > 0)
@@ -127,9 +132,9 @@ void XtremeSettings::DrawMenu() {
   disp_zen("テーマソング", 225, 250, 90);
   disp_zen("キーボード", 225, 280, 90);
   disp_zen("威力数値", 225, 310, 90);
-  disp_zen(KeyboardType(keyboardType), 575, 280, 90);
-  disp_zen(FlagToEng(allowOpenings), 575, 250, 90);
-  disp_zen(FlagToEng(movePower), 575, 310, 90);
+  disp_zen(KeyboardType(m_keyboardType), 575, 280, 90);
+  disp_zen(FlagToEng(m_allowOpenings), 575, 250, 90);
+  disp_zen(FlagToEng(m_movePower), 575, 310, 90);
 
   s32 y = 250 + 30 * m_pos;
   disp_zen("#j#=->", 155, y, 90);
@@ -267,15 +272,20 @@ URL_Patch new_server[] = {
     {0x805060d0, "http://"},
     {0x805060e0, "http://"},
     {0x80506350, "http://"},
+    
     {0x805064b0, "inazumafrance.fr:2201"},
     {0x80506894, "inazumafrance.fr:2201"},
+    {0x80507724, "inazumafrance.fr:2201"},
+    {0x80507744, "inazumafrance.fr:2201"},
+    {0x8050780B, "inazumafrance.fr:2201"},
+    {0x8050782F, "inazumafrance.fr:2201"},
+    {0x8050C1F3, "inazumafrance.fr:2201"}
 };
 
 int domain_urls[] = { 0x805033d8, 0x805039e0, 0x805045e0, 0x80505a45,
-                     0x8050665f, 0x80506683, 0x8050669f, 0x80506743, 0x805068a1,
-                     0x805076f4, 0x80507710, 0x80507731, 0x80507752, 0x80507774,
-                     0x80507796, 0x805077b6, 0x805077d6, 0x805077f5, 0x80507818,
-                     0x8050783d, 0x8050785b, 0x8050c201};
+                      0x8050665f, 0x80506683, 0x8050669f, 0x80506743,
+                      0x805076f4, 0x80507710, 0x80507774, 0x80507796, 
+                      0x805077b6, 0x805077d6, 0x805077f5, 0x8050785b };
 int update_urls[] = {0x8050b7b0, 0x8050b7d8, 0x8050b7fc,
                      0x8050b830, 0x8050b858, 0x8050b87c};
 char *new_update_urls[] = {
@@ -309,10 +319,11 @@ void XtremeSettings::Init() {
   OSReport("Initializing Discord Rich Presence...\n");
   Discord::Init();
   u8 flag = *SaveFlag;
-  Settings.allowOpenings = flag & 1;
-  Settings.movePower = flag & 2;
-  Settings.keyboardType = (flag >> 2) & 3;
-  SwitchKeyboardLayout(Settings.keyboardType);
+  Settings.m_allowOpenings = flag & 1;
+  Settings.m_movePower = flag & 2;
+  Settings.m_keyboardType = (flag >> 2) & 3;
+  OSReport("##Xtreme Settings##- Openings = %s\n- Move Power = %s\n- Keyboard Type = %s\n", FlagToEng(Settings.m_allowOpenings), FlagToEng(Settings.m_movePower), KeyboardType(Settings.m_keyboardType));
+  SwitchKeyboardLayout(Settings.m_keyboardType);
   // Init text edits
   if (!s_is_text_done) {
     char **maintext = *((char ***)0x805131C0);
@@ -354,12 +365,13 @@ void XtremeSettings::Init() {
   }
 
   if (!s_is_online_done) {
+      for (int i = 0; i < sizeof(domain_urls) / 4; i++) strcpy((char*)domain_urls[i], "inazumafrance.fr");
+      for (int i = 0; i < sizeof(update_urls) / 4; i++) strcpy((char*)update_urls[i], new_update_urls[i]);
+      
       for (int i = 0; i < sizeof(new_server) / sizeof(URL_Patch); i++) {
         URL_Patch* cur = &new_server[i];
         strcpy((char*)cur->address, cur->text);
       }
-      for (int i = 0; i < sizeof(domain_urls) / 4; i++) strcpy((char*)domain_urls[i], "inazumafrance.fr");
-      for (int i = 0; i < sizeof(update_urls) / 4; i++) strcpy((char*)update_urls[i], new_update_urls[i]);
       s_is_online_done = true;
   }
   memcpy((char *)0x80472A3C, security_patchA, 56);
@@ -371,6 +383,6 @@ void XtremeSettings::Init() {
   
 
 kmBranch(0x800E5B74, OutdatedDolphinVersion);
-kmBranch(0x80044E3C, XtremeSettings::Init);
+kmBranch(0x800E49A8, XtremeSettings::Init);
 // supplement bug
 kmWrite32(0x801558B8, 0x480000A0);

@@ -121,8 +121,7 @@ int updateCurrentBgm(int argBak) {
   {
     currentBgm++;
     changed = true;
-  } else if (UtilitySato::isPad(0, UtilitySato::PAD_MINUS,
-                                UtilitySato::HELD)) // -
+  } else if (UtilitySato::isPad(0, UtilitySato::PAD_MINUS, UtilitySato::HELD)) // -
   {
     currentBgm--;
     changed = true;
@@ -131,8 +130,8 @@ int updateCurrentBgm(int argBak) {
   s32 openingFirst = playlistInfo.openingFirst;
   u32 bgmMax = playlistInfo.size;
   int maxBgm = openingFirst == -1       ? bgmMax - 1
-               : Settings.allowOpenings ? bgmMax - 1
-                                        : openingFirst;
+               : Settings.AreOpeningsAllowed() ? bgmMax - 1
+                                               : openingFirst;
   if (currentBgm < 0)
     currentBgm = maxBgm;
   if (currentBgm > maxBgm)

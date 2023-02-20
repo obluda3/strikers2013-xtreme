@@ -10,15 +10,19 @@ public:
   void DrawMenu();
   static void Init();
   void Save();
-  s8 allowOpenings;
-  s8 passAccepted;
-  s8 movePower;
-  s8 keyboardType;
   static void MusicLoop(int state, void *arg);
   void Exec();
+  int GetKeyboardType();
+  bool IsMovePowerDisplayed();
+  bool AreOpeningsAllowed();
+  bool IsCompactInterface();
+
 
 private:
   u8 m_pos;
+  s8 m_allowOpenings;
+  s8 m_movePower;
+  s8 m_keyboardType;
   // s32 m_xOff;
   // s32 m_yOff;
 };

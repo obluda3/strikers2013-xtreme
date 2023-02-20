@@ -123,6 +123,14 @@ PLAYER_DEF *GetPLYIDToPlayerEntryTeam(s32 player, s32 team);
 u32 GetPLYIDToIndex(u32 player, u32 team);
 PLAYER_DEF *GetPLYIDToPlayerEntry(u32 player, u32 unk);
 u32 GetPLYIDToListID(s32 id, s32 unk);
-// TODO: add other functions to make this file useful
+
+// MatchInfo
+void MI_AddInazmaPoint(_PWORK* player, int gaugeAction);
+void MI_subInazmaPoint(_PWORK* player, int sub, bool a3);
+void MI_useInazmaPoint(_PWORK* player, int amount);
+int MI_getInazmaPoint(u8 index);
+bool MI_chkInazmaState(_PWORK* player);
+int MI_getTensionGauge(int team, bool a2);
+
 
 #endif
