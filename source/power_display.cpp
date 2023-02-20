@@ -16,7 +16,7 @@ char *IsBlockMove = (char *)0x807ACE5A;
 char *IsInteractionWon = (char *)0x807ACE5B;
 int *ShootPower = (int *)0x807AC578;
 char *MoveType = (char *)0x807ACE54;
-&void displayMovePower() {
+void displayMovePower() {
   if (Settings.IsMovePowerDisplayed()) {
     char buffer[100];
     buffer[0] = 0; // idk how to code
