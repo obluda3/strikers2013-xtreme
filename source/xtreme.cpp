@@ -384,5 +384,7 @@ void XtremeSettings::Init() {
 
 kmBranch(0x800E5B74, OutdatedDolphinVersion);
 kmBranch(0x800E49A8, XtremeSettings::Init);
-// supplement bug
-kmWrite32(0x801558B8, 0x480000A0);
+// bugfixes
+kmWrite32(0x801558B8, 0x480000A0); // supplement bug
+kmWrite32(0x80037ba2, 0x15ef); // change checksum for wiimote team
+kmWrite32(0x800376B6, 0x15ef); // change checksum for wiimote team
