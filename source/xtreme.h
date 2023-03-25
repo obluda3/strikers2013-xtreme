@@ -16,6 +16,7 @@ public:
   bool IsMovePowerDisplayed();
   bool AreOpeningsAllowed();
   bool IsCompactInterface();
+  static bool IsWiimmfi();
 
 
 private:
