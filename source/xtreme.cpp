@@ -377,7 +377,6 @@ void XtremeSettings::Init() {
         strcpy((char*)cur->address, cur->text);
       }
       s_is_online_done = true;
-      while (true) ;
   }
   memcpy((char *)0x80472A3C, security_patchA, 56);
   memcpy((char *)0x80472BD0, security_patchB, 72);
