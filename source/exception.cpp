@@ -8,6 +8,8 @@ extern "C" {
 void exception(int context) {
   char message[1024];
   char tmp[50];
+  memset(message, 0, sizeof(message));
+  memset(tmp, 0, sizeof(tmp));
 
   int* sp = OSGetStackPointer();
   int cnt = 0;
