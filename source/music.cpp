@@ -10,18 +10,6 @@
 #include <text.h>
 #include <utilitysato.h>
 
-static char *s_HelpbarText_SP =
-    "#b84#=もどる #b83#=けってい #b87#=ルールせってい #b88#=そうさ "
-    "#b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-static char *s_HelpbarText_Wifi_a =
-    "#b84#=もどる #b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-static char *s_HelpbarText_Wifi_b =
-    "#b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-static char *s_HelpbarText_Sett =
-    "#b84#=もどる #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-
-static char ***s_MainTexts = (char ***)0x805131C0;
-u16 *IsMusicOn = (u16 *)0x80904212;
 int g_CurrentBgm = 0;
 static char **BgmNames = (char **)0;
 static char ***DefaultBgmNames = (char ***)0x8051ECA0;
@@ -70,11 +58,11 @@ void PlayBgmField(int defaultBgm) {
 }
 
 void initBgmPlayer() {
-  char **mainTexts = *s_MainTexts;
-  mainTexts[858] = s_HelpbarText_SP;
-  mainTexts[530] = s_HelpbarText_Wifi_a;
-  mainTexts[531] = s_HelpbarText_Wifi_b;
-  mainTexts[532] = s_HelpbarText_Sett;
+  char **mainTexts = *(char***)0x805131C0;
+  mainTexts[858] =  "#b84#=もどる #b83#=けってい #b87#=ルールせってい #b88#=そうさ #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+  mainTexts[530] = "#b84#=もどる #b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+  mainTexts[531] = "#b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+  mainTexts[532] = "#b84#=もどる #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
   char *path = "Playlist.bin";
   cprintf("Loading custom musics in: '%s'...\n", path);
 
@@ -164,8 +152,9 @@ void drawBgmName() {
 }
 
 void SNDBgmPlay_Direct(int id) {
-  if (*IsMusicOn)
-    shdBgmLoad(0, id, *IsMusicOn, 1);
+  int isMusicOn = *(u16*)0x80904212;
+  if (isMusicOn)
+    shdBgmLoad(0, id, isMusicOn, 1);
   else
     shdBgmStop(0);
 }
