@@ -15,7 +15,7 @@ public:
   int GetKeyboardType();
   bool IsMovePowerDisplayed();
   bool AreOpeningsAllowed();
-  bool IsCompactInterface();
+  int GetInterface();
   static bool IsWiimmfi();
 
 
@@ -24,6 +24,7 @@ private:
   s8 m_allowOpenings;
   s8 m_movePower;
   s8 m_keyboardType;
+  s8 m_interface;
   // s32 m_xOff;
   // s32 m_yOff;
 };

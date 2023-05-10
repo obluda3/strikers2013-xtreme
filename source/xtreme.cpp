@@ -19,7 +19,7 @@ u8 *SaveFlag = (u8 *)0x805F912E;
 int XtremeSettings::GetKeyboardType() { return m_keyboardType; }
 bool XtremeSettings::AreOpeningsAllowed() { return m_allowOpenings; }
 bool XtremeSettings::IsMovePowerDisplayed() { return m_movePower; }
-bool XtremeSettings::IsCompactInterface() { return true; }
+int XtremeSettings::GetInterface() { return 0;/*m_interface;*/ }
 
 char *FlagToEng(int val) {
   if (val)
@@ -55,6 +55,7 @@ void XtremeSettings::MusicLoop(int state, void *arg) {
 
 void XtremeSettings::Save() {
   u8 flag = 0;
+  flag |= (m_interface << 4);
   flag |= (m_keyboardType << 2) & 12;
   flag |= m_allowOpenings;
   flag |= m_movePower << 1;
@@ -63,7 +64,7 @@ void XtremeSettings::Save() {
 }
 
 void XtremeSettings::Exec() {
-  u8 pos = m_pos;
+  s8 pos = m_pos;
   bool isPadUp = UtilitySato::isPad(0, UtilitySato::PAD_UP, UtilitySato::HELD);
   bool isPadDown =
       UtilitySato::isPad(0, UtilitySato::PAD_DOWN, UtilitySato::HELD);
@@ -115,6 +116,19 @@ void XtremeSettings::Exec() {
         SNDSeSysCLICK(-1);
       }
     }
+    /*
+    if (m_pos == 3) {
+      s8 values = m_interface;
+      if (isPadLeft) values--;
+      else if (isPadRight) values++;
+
+      if (values < 0) values = 1;
+      else if (values > 1) values = 0;
+      if (values != m_interface) {
+        m_interface = values;
+        SNDSeSysCLICK(-1);
+      }
+    }*/
   }
 }
 
@@ -132,9 +146,11 @@ void XtremeSettings::DrawMenu() {
   disp_zen("テーマソング", 225, 250, 90);
   disp_zen("キーボード", 225, 280, 90);
   disp_zen("威力数値", 225, 310, 90);
+  //disp_zen("Interface", 225, 340, 90);
   disp_zen(KeyboardType(m_keyboardType), 575, 280, 90);
   disp_zen(FlagToEng(m_allowOpenings), 575, 250, 90);
   disp_zen(FlagToEng(m_movePower), 575, 310, 90);
+  //disp_zen(FlagToEng(m_interface), 575, 340, 90);
 
   s32 y = 250 + 30 * m_pos;
   disp_zen("#j#=->", 155, y, 90);
@@ -271,13 +287,13 @@ URL_Patch wiimmfi_server[] = {
   {0x805060e0, "http://"},
   {0x80506350, "http://"},
 
-  {0x805064b0, "gamestats.gs.wiimmfi.de"},
-  {0x80506894, "gamestats.gs.wiimmfi.de"},
-  {0x80507724, "gamestats.gs.wiimmfi.de"},
-  {0x80507744, "gamestats2.gs.wiimmfi.de"},
-  {0x8050780B, "gamestats.gs.wiimmfi.de"},
-  {0x8050782F, "gamestats2.gs.wiimmfi.de"},
-  {0x8050C1F3, "gamestats2.gs.wiimmfi.de/"}
+  {0x805064b0, "gamestats.xtreme13.com"},
+  {0x80506894, "gamestats.xtreme13.com"},
+  {0x80507724, "gamestats.xtreme13.com"},
+  {0x80507744, "gamestats2.xtreme13.com"},
+  {0x8050780B, "gamestats.xtreme13.com"},
+  {0x8050782F, "gamestats2.xtreme13.com"},
+  {0x8050C1F3, "gamestats2.xtreme13.com/"}
 };
 
 int domain_urls[] = { 0x805033d8, 0x805039e0, 0x805045e0, 0x80505a45,
@@ -313,6 +329,7 @@ void XtremeSettings::Init() {
   Settings.m_allowOpenings = flag & 1;
   Settings.m_movePower = flag & 2;
   Settings.m_keyboardType = (flag >> 2) & 3;
+  Settings.m_interface = (flag >> 4) & 1;
   OSReport("##Xtreme Settings##- Openings = %s\n- Move Power = %s\n- Keyboard Type = %s\n", FlagToEng(Settings.m_allowOpenings), FlagToEng(Settings.m_movePower), KeyboardType(Settings.m_keyboardType));
   SwitchKeyboardLayout(Settings.m_keyboardType);
   // Init text edits
@@ -391,3 +408,4 @@ kmBranch(0x800E49A8, XtremeSettings::Init);
 // bugfixes
 kmWrite32(0x801558B8, 0x480000A0); // supplement bug
 kmWrite32(0x802011dc, 0x48000028); // Wiimote team save
+kmWrite32(0x80041b5c, 0x4800001c); // Restore autosave

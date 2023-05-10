@@ -6,6 +6,10 @@ void TEX_getFileLabel(int idx);
 void TEX_PageSet(int a1, int a2);
 int TEX_Alloc(int fileLabel, int a2, int a3);
 int TEXGetTPageToFlab(int tex);
+int TEXLoad_Alloc(int fileIndex);
+int TEXLoad(int idx, int page);
+int TEXLoad_Emblem(int idx);
+int TEXLoad_EmblemLL(int idx, int page);
 
 struct PRIM_SPR {
   s32 color;
@@ -35,6 +39,7 @@ struct SHD_TEXCUT {
   s16 field_A;
   int field_C;
 };
+void shdSetSprtM(PRIM_SPR* a1);
 void set_tcut_to_uv(SHD_TEXCUT const* a1, PRIM_SPR* a2, signed char a3);
 
 #endif
