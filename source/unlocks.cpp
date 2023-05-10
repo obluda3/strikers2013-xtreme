@@ -9,7 +9,7 @@ u32 *MixiAnnCount = (u32 *)0x8051EB40;
 
 int MixiUnlockList[] = {  P_12492FURAN,   P_12490ASUTA,  P_12330SARU, P_12011FUEI,
                           P_12056GAMMA,  P_12150ZANAKU, P_10350HAKURYU, P_12806AMEMIYA, 
-                          P_12189REI, P_12050ARUFUA};
+                          P_12189REI, -1};
 
 SavePlayerParam *unlockSecretMiximaxes(register PLAYER_DEF *player_def) {
   asm("mr player_def, r22"); 
@@ -27,7 +27,7 @@ SavePlayerParam *unlockSecretMiximaxes(register PLAYER_DEF *player_def) {
         KizunaData *kizunaData =
             Savedata_getPlayeData_KizunaData(id, otherPlayer);
         bool isReiValid = true;
-        //if (id == P_12189REI) isReiValid = kizunaData->value >= 50 && Savedata_getPlayeData_KizunaData(id, P_12055BETA)->value >= 50 && Savedata_getPlayeData_KizunaData(id, P_12056GAMMA)->value >= 50;
+        if (id == P_12189REI) isReiValid = kizunaData->value >= 50 && Savedata_getPlayeData_KizunaData(id, P_12055BETA)->value >= 50 && Savedata_getPlayeData_KizunaData(id, P_12056GAMMA)->value >= 50;
         if (kizunaData->value >= 50 || isReiValid) {
           player_data->Flag |= MIXIMAX_LEVEL_ONE;
           dword_8051D640[*MixiAnnCount + 1345] = textEntry;
