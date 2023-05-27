@@ -16,6 +16,7 @@ static char ***DefaultBgmNames = (char ***)0x8051ECA0;
 static int *g_BgmStatus = (int *)0x8050d6d8;
 static void *playlistBuffer = 0;
 static bool FirstExec = true;
+int maxBgm = 0;
 
 struct PlaylistInfo {
   u32 size;
@@ -42,8 +43,10 @@ void parsePlaylistFile(u8 *data) {
 }
 
 void PlayBgmField(int defaultBgm) {
+  if (g_CurrentBgm == -1) g_CurrentBgm = shdRndi(0, maxBgm);
   int bgmStatus = *g_BgmStatus;
   int currentBgm = g_CurrentBgm;
+  
   char **defaultBgmNames = *DefaultBgmNames;
   char *bgmName = BgmNames[currentBgm];
   if (!currentBgm) {
@@ -117,18 +120,17 @@ int updateCurrentBgm(int argBak) {
 
   s32 openingFirst = playlistInfo.openingFirst;
   u32 bgmMax = playlistInfo.size;
-  int maxBgm = openingFirst == -1       ? bgmMax - 1
-               : Settings.AreOpeningsAllowed() ? bgmMax - 1
-                                               : openingFirst;
-  if (currentBgm < 0)
+  maxBgm = openingFirst == -1 ? bgmMax - 1 : Settings.AreOpeningsAllowed() ? bgmMax - 1 : openingFirst;
+  OSReport("%d currentBgm\n", currentBgm);
+  if (currentBgm < -1)
     currentBgm = maxBgm;
   if (currentBgm > maxBgm)
-    currentBgm = 0;
+    currentBgm = -1;
 
   g_CurrentBgm = currentBgm;
   if (changed) {
     int songId;
-    if (currentBgm)
+    if (currentBgm > 0)
       songId = wiiSndGetNameToID(BgmNames[currentBgm]);
     else
       songId = wiiSndGetNameToID("BGM_M12_TENMAS2_MASTER_01");
