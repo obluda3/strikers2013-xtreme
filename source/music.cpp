@@ -61,11 +61,6 @@ void PlayBgmField(int defaultBgm) {
 }
 
 void initBgmPlayer() {
-  char **mainTexts = *(char***)0x805131C0;
-  mainTexts[858] =  "#b84#=もどる #b83#=けってい #b87#=ルールせってい #b88#=そうさ #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-  mainTexts[530] = "#b84#=もどる #b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-  mainTexts[531] = "#b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
-  mainTexts[532] = "#b84#=もどる #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
   char *path = "Playlist.bin";
   cprintf("Loading custom musics in: '%s'...\n", path);
 

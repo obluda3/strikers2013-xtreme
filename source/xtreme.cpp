@@ -287,13 +287,13 @@ URL_Patch wiimmfi_server[] = {
   {0x805060e0, "http://"},
   {0x80506350, "http://"},
 
-  {0x805064b0, "gamestats.xtreme13.com"},
-  {0x80506894, "gamestats.xtreme13.com"},
-  {0x80507724, "gamestats.xtreme13.com"},
-  {0x80507744, "gamestats2.xtreme13.com"},
-  {0x8050780B, "gamestats.xtreme13.com"},
-  {0x8050782F, "gamestats2.xtreme13.com"},
-  {0x8050C1F3, "gamestats2.xtreme13.com/"}
+  {0x805064b0, "rnk.xtreme13.com"},
+  {0x80506894, "rnk.xtreme13.com"},
+  {0x80507724, "rnk.xtreme13.com"},
+  {0x80507744, "rnk.xtreme13.com"},
+  {0x8050780B, "rnk.xtreme13.com"},
+  {0x8050782F, "rnk.xtreme13.com"},
+  {0x8050C1F3, "rnk.xtreme13.com/"}
 };
 
 int domain_urls[] = { 0x805033d8, 0x805039e0, 0x805045e0, 0x80505a45,
@@ -319,6 +319,50 @@ bool XtremeSettings::IsWiimmfi() {
   return *((int*)0x805060DC) == 0;
 }
 
+void PerformTextEdits() {
+  char **maintext = *((char ***)0x805131C0);
+  maintext[1675] = "ザナーク　×　クララジェーン";
+  maintext[587] = "Change Xtreme's additional settings";
+  maintext[529] = "Xtreme settings";
+  maintext[893] = "#b84#=もどる #b83#=けってい #b87#=いれかえ #b88#=ステータス #b86#=ルーレット";
+  maintext[858] = "#b84#=もどる #b83#=けってい #b87#=ルールせってい #b88#=そうさ #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+  maintext[530] = "#b84#=もどる #b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+  maintext[531] = "#b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+  maintext[532] = "#b84#=もどる #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
+  for (int i = 0; i < sizeof(text_edits) / sizeof(char *); i++) {
+    maintext[i + 5640] = text_edits[i];
+  }
+  WazaInfo *moveInfo = *((WazaInfo **)0x8051EBD4);
+  for (int i = 0; i < 2; i++) {
+    WazaInfo *curMove = &moveInfo[go_moves[i]];
+    int textIndex = curMove->MoveName;
+    strncpy(NewMoveNames[i], maintext[textIndex], 50);
+    strcat(NewMoveNames[i], "（ＧＯ）");
+    int newTextIndex = 5640 + sizeof(text_edits) / sizeof(char *) + i;
+    curMove->MoveName = newTextIndex;
+    curMove->OtherName = newTextIndex;
+    maintext[newTextIndex] = NewMoveNames[i];
+    int test = curMove->MoveName;
+  }
+  for (int i = 0; i < 4; i++) {
+    WazaInfo *curMove = &moveInfo[full_moves[i]];
+    int textIndex = curMove->MoveName;
+    strncpy(NewMoveNames[i + 2], maintext[textIndex], 50);
+    strcat(NewMoveNames[i + 2], "（Ｆ）");
+    int newTextIndex = 5640 + sizeof(text_edits) / sizeof(char *) + i + 2;
+    curMove->MoveName = newTextIndex;
+    curMove->OtherName = newTextIndex;
+    maintext[newTextIndex] = NewMoveNames[i + 2];
+  }
+  for (int i = 0; i < sizeof(premixed_list) / 4; i++) {
+    int textIndex = 5640 + sizeof(text_edits) / sizeof(char *) + i + 2 + 4;
+    PLAYER_DEF *player = GetPlayerDef(premixed_list[i]);
+    player->description = textIndex;
+    maintext[textIndex] = premixed_descs[i];
+  }
+  s_is_text_done = true;
+}
+
 void XtremeSettings::Init() {
   OSReport("Initializing /dev/dolphin driver... ");
   Dolphin::Init();
@@ -334,42 +378,7 @@ void XtremeSettings::Init() {
   SwitchKeyboardLayout(Settings.m_keyboardType);
   // Init text edits
   if (!s_is_text_done) {
-    char **maintext = *((char ***)0x805131C0);
-    maintext[1675] = "ザナーク　×　クララジェーン";
-    maintext[587] = "Change Xtreme's additional settings";
-    maintext[529] = "Xtreme settings";
-    for (int i = 0; i < sizeof(text_edits) / sizeof(char *); i++) {
-      maintext[i + 5640] = text_edits[i];
-    }
-    WazaInfo *moveInfo = *((WazaInfo **)0x8051EBD4);
-    for (int i = 0; i < 2; i++) {
-      WazaInfo *curMove = &moveInfo[go_moves[i]];
-      int textIndex = curMove->MoveName;
-      strncpy(NewMoveNames[i], maintext[textIndex], 50);
-      strcat(NewMoveNames[i], "（ＧＯ）");
-      int newTextIndex = 5640 + sizeof(text_edits) / sizeof(char *) + i;
-      curMove->MoveName = newTextIndex;
-      curMove->OtherName = newTextIndex;
-      maintext[newTextIndex] = NewMoveNames[i];
-      int test = curMove->MoveName;
-    }
-    for (int i = 0; i < 4; i++) {
-      WazaInfo *curMove = &moveInfo[full_moves[i]];
-      int textIndex = curMove->MoveName;
-      strncpy(NewMoveNames[i + 2], maintext[textIndex], 50);
-      strcat(NewMoveNames[i + 2], "（Ｆ）");
-      int newTextIndex = 5640 + sizeof(text_edits) / sizeof(char *) + i + 2;
-      curMove->MoveName = newTextIndex;
-      curMove->OtherName = newTextIndex;
-      maintext[newTextIndex] = NewMoveNames[i + 2];
-    }
-    for (int i = 0; i < sizeof(premixed_list) / 4; i++) {
-      int textIndex = 5640 + sizeof(text_edits) / sizeof(char *) + i + 2 + 4;
-      PLAYER_DEF *player = GetPlayerDef(premixed_list[i]);
-      player->description = textIndex;
-      maintext[textIndex] = premixed_descs[i];
-    }
-    s_is_text_done = true;
+    PerformTextEdits();
   }
 
   if (!s_is_online_done) {
