@@ -22,20 +22,20 @@ RandomMode::RandomMode() {
   m_valid = true;
   m_popupConfirm = new cPopup();
   m_popupConfirm->alloc(4, 3878);
-  m_popupConfirm->add_item(0, "Generer une equipe aleatoire ?", false);
-  m_popupConfirm->add_item(1, "Oui", true);
-  m_popupConfirm->add_item(2, "Non", true);
+  m_popupConfirm->add_item(0, "Xtremeルーレットを回しますか？", false);
+  m_popupConfirm->add_item(1, "はい", true);
+  m_popupConfirm->add_item(2, "いいえ", true);
 
   m_popupKeep = new cPopup();
   m_popupKeep->alloc(4, 3878);
-  m_popupKeep->add_item(0, "Conserver l'equipe generee ?", false);
-  m_popupKeep->add_item(1, "Oui", true);
-  m_popupKeep->add_item(2, "Non", true);
+  m_popupKeep->add_item(0, "このチームを保存しますか？", false);
+  m_popupKeep->add_item(1, "はい", true);
+  m_popupKeep->add_item(2, "いいえ", true);
 
   m_popupInvalid = new cPopup();
   m_popupInvalid->alloc(3, 3878);
-  m_popupInvalid->add_item(0, "Vous n'avez pas recrute suffisamment de joueurs", false);
-  m_popupInvalid->add_item(1, "Ok", true);
+  m_popupInvalid->add_item(0, "メンバーが足りません", false);
+  m_popupInvalid->add_item(1, "はい", true);
 }
 
 bool RandomMode::IsPlayerBanned(int player) {
