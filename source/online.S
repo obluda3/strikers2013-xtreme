@@ -10,7 +10,7 @@ kmWrite32 0x802566C8, 0x38A00001
 kmWrite32 0x8025668C, 0x38A00001
 
 // Matchmaking filter
-kmWrite32 0x804A685F, 0x58543200
+kmWrite32 0x804A685F, 0x58503200
 
 // Ranking region
 kmWrite32 0x80231dc4, 0x38800002
