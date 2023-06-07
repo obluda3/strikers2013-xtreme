@@ -1,10 +1,16 @@
 #include <kamek_asm.S>
 
 new_anim_table:
+    .int -1
+    .int -1
     .int 0xae5
     .int 0x6d0
     .int 0x144
     .int 0x349
+    .int 0xe8
+    .int 0x22e
+    .int 0xa89
+    .int 0x638
     .int 0
     .int 0
 
