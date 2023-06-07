@@ -1,11 +1,13 @@
 #include "music.h"
 #include <kamek.h>
+#include <base\c_stdlib.h>
 #include <match.h>
 #include <savedata.h>
 #include <snd.h>
 
 u32 *dword_8051D640 = (u32 *)0x8051D640;
 u32 *MixiAnnCount = (u32 *)0x8051EB40;
+bool reiFlag = false;
 
 int MixiUnlockList[] = {  P_12492FURAN,   P_12490ASUTA,  P_12330SARU, P_12011FUEI,
                           P_12056GAMMA,  P_12150ZANAKU, P_10350HAKURYU, P_12806AMEMIYA, 
@@ -26,9 +28,8 @@ SavePlayerParam *unlockSecretMiximaxes(register PLAYER_DEF *player_def) {
         int textEntry = 17 + i;
         KizunaData *kizunaData =
             Savedata_getPlayeData_KizunaData(id, otherPlayer);
-        bool isReiValid = true;
-        if (id == P_12189REI) isReiValid = kizunaData->value >= 50 && Savedata_getPlayeData_KizunaData(id, P_12055BETA)->value >= 50 && Savedata_getPlayeData_KizunaData(id, P_12056GAMMA)->value >= 50;
-        if (kizunaData->value >= 50 || isReiValid) {
+        if (id == P_12189REI) reiFlag = kizunaData->value >= 50 && Savedata_getPlayeData_KizunaData(id, P_12055BETA)->value >= 50 && Savedata_getPlayeData_KizunaData(id, P_12056GAMMA)->value >= 50;
+        if (kizunaData->value >= 50 || reiFlag) {
           player_data->Flag |= MIXIMAX_LEVEL_ONE;
           dword_8051D640[*MixiAnnCount + 1345] = textEntry;
           *MixiAnnCount += 1;
@@ -38,6 +39,19 @@ SavePlayerParam *unlockSecretMiximaxes(register PLAYER_DEF *player_def) {
   }
   return player_data;
 }
+
+void hstrcat(char* base, const char* concat);
+void secretMiximaxText(char* buffer, char* secondPart) {
+  if (reiFlag) secondPart = "は“ハイパーダイブモード”を解放できるようになった！";
+  hstrcat(buffer, secondPart);
+}
+
+void secretMiximaxText2(cPopup* pop, int index, char* text, int isOption) {
+  if (!reiFlag) pop->add_item(index, text, isOption);
+  reiFlag = false;
+}
+kmCall(0x8019BCA0, secretMiximaxText2);
+kmCall(0x8019BC68, secretMiximaxText);
 
 inline void handlePopup(int id, int *clubroomMenuScout, int uglyTrick) {
   asm {
