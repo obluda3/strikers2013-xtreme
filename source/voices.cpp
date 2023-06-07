@@ -287,7 +287,9 @@ char *NewVoicelines[] = {"VCE_WANDABA_REQUESTPASS",
                         "VCE_GOAL_05_A0_12189_REI",
                         "VCE_HISSATU_SHOOT_A1_12189_REI",
                         "VCE_MODOCHANGE",
-
+                        "VCE_MODOCHANGE",
+                        "VCE_MODOCHANGE",
+                        "VCE_MODOCHANGE",
                          };
 
 void LoadNewVoicelines() {
