@@ -13,7 +13,8 @@ class RandomMode {
     POPUP_KEEP,
     POPUP_RESTART,
     POPUP_INVALID,
-    END
+    END,
+    DONE
   };
   RandomMode();
 

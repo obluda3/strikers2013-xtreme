@@ -191,16 +191,16 @@ void RandomMode::Update(UtilitySato::CModeSwitch* menuOrganize) {
       if (m_popupKeep->exec(0)) {
         if (m_popupKeep->result != 1)
           RestoreData();
-        m_state = END;
+        m_state = DONE;
       }
       break;
-
+    case DONE:
+      SNDBgmPlayRoom(last_room_music);
     case END:
       // end
       custom_menu = false;
       menuOrganize->currentValue = 2;
       m_state = INIT;
-      SNDBgmPlayRoom(last_room_music);
       break;
   }
 }
