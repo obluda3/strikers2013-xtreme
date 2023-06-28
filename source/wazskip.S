@@ -5,6 +5,8 @@
 .set W_DARK_MATTER, 0x12B
 .set W_CHAOS_METEOR_UNUSED, 0x184 
 .set W_KILLER_FIELDS, 0xA7
+.set W_GUARDIAN_SHIELD, 0xBE
+.set W_GUARDIAN_SHIELD_F, 0x22
 .set WAZATasks, 0x807B184C
 fix_skip_mixi_saru:
     lwz r25, 0x124C(r6)
@@ -67,7 +69,21 @@ check_fixed_users:
     get_back:
     kamek_b 0x800DCB04
 
+fix_end_guardian_shield:
+    lhz r0, 0x34(r4)
+    cmpwi r25, W_GUARDIAN_SHIELD
+    bne test2
+    li r0, 148
+    blr
+    test2:
+    cmpwi r25, W_GUARDIAN_SHIELD_F
+    bnelr
+    li r0, 283
+    blr
+
+
 kmCall 0x800DBE84, fix_skip_mixi_saru
 kmBranch 0x800E1854, fix_skip_new_block
 kmBranch 0x800E1848, remove_skip_new_block
 kmBranch 0x800DCB00, check_fixed_users
+kmCall 0x800daab4, fix_end_guardian_shield
