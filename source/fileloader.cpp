@@ -1,17 +1,12 @@
 #include <kamek.h>
 
-struct PatchData {
-  int offset;
-  int length;
-};
-PatchData *list = 0;
-int *lookup_table = 0;
 int entry_num = 0;
 struct DVDHandle {
   u32 _unk[12];
   u32 address, length;
   u32 _unk38;
 };
+
 extern "C" {
 int DVDConvertPathToEntrynum(char *path);
 void DVDFastOpen(int entrynum, DVDHandle *handle);
@@ -56,6 +51,40 @@ int *ftyp_fofs = (int *)0x804C6C90;
 char **ftyp_fname = (char **)0x804C6C68;
 char *archive_names[] = {"grp", "scn", "scn_sh", "ui", "dat"};
 
+int* isWiiFix = (int*)0x805060DC;
+
+struct Reroute {
+    int origFile;
+    int newFile;
+};
+
+Reroute reroutedFiles[] = {
+    {32525, 32525},
+    {32521, 32521},
+    {3650, 3640},
+    {4174, 4164},
+    {4543, 4533},
+    {3649, 3695},
+    {4173, 4222},
+    {4542, 4591},
+    {3648, 3683},
+    {4172, 4209},
+    {4541, 4578},
+    {3652, 3756},
+    {4176, 4283},
+    {4545, 4652},
+    {-1, -1}
+
+};
+
+int getRerouted(int index) {
+    if (!*isWiiFix) return -1;
+    for (Reroute* r = reroutedFiles; r->origFile != -1; r++) {
+        if (r->origFile == index) return r->newFile;
+    }
+    return -1;
+}
+
 char *fileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer) {
   BinHeader *archive = flab_tbl[ftyp];
   int shiftfactor = bswap32(archive->shiftfactor);
@@ -69,11 +98,28 @@ char *fileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer) {
   }
 
   index -= 1;
+  int realIndex = index + 10000*ftyp;
+  int rerouted = getRerouted(realIndex);
+  if (rerouted != -1 && rerouted != realIndex) {
+    ftyp = rerouted / 10000;
+    BinHeader *tmpArchive = flab_tbl[ftyp];
+    int shift = bswap32(tmpArchive->shiftfactor);
+    int pad = bswap32(tmpArchive->padfactor);
+    int mul = bswap32(tmpArchive->mulfactor);
+    int mask = bswap32(archive->mask[0]);
+    unsigned int offsize = bswap32(archive->mask[rerouted+1]);
+    offset = (offsize >> shift) * pad;
+    int sz = (offsize & mask) * mul;
+    size = ((sz + pad - 1) & ~(pad - 1));
+    MEMFree(buffer);
+    buffer = (unsigned char*)MEMAlloc(size, -32, 3, 31);
+  }
+
   char path[256];
   sprintf(path, "Modified/%s/%d.bin", archive_names[ftyp], index);
   int entrynum = DVDConvertPathToEntrynum(path);
   cprintf(" realpath=%s", path);
-  if (entrynum < 0) {
+  if (entrynum < 0 || rerouted != -1) {
     shdFileLoadBegin(ftyp, offset, size, buffer);
     return (char *)buffer;
   }
@@ -91,25 +137,6 @@ char *fileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer) {
   return (char *)newbuffer;
 }
 
-void new_load_file(int fIndex, void *buffer, int bufferSize) {
-  shdFileLoadSync(1);
-  int ftyp = ftyp_cnv[fIndex / 10000];
-  BinHeader *archive = flab_tbl[ftyp];
-  int fileIndex = fIndex - ftyp_fofs[ftyp];
-  unsigned int offsize = bswap32(archive->mask[fileIndex]);
-  int offset =
-      (offsize >> bswap32(archive->shiftfactor)) * bswap32(archive->padfactor);
-  int size =
-      (offsize & bswap32(archive->mask[0])) * bswap32(archive->mulfactor);
-  int padFactor = bswap32(archive->padfactor);
-  int paddedSize = padFactor * ((size + padFactor - 1) / padFactor);
-  cprintf("read:[%s],idx=%04d,ofs=0x%08x,sz=%06dKB", ftyp_fname[ftyp],
-          fileIndex, offset, (size + 1023) / 1024);
-  fileLoadBegin(ftyp, offset, size, (unsigned char *)buffer);
-  shdFileLoadSync(1);
-}
-//kmCall(0x8011E238, new_load_file);
-//kmCall(0x80139D0C, new_load_file);
 // we hook into the fileLoadBegin call, then replace the buffer address in the stack
 // with our newly allocated one
 // very beautiful hooks
