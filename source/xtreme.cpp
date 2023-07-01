@@ -316,9 +316,7 @@ bool s_is_text_done = false;
 
 char NewMoveNames[6][50];
 
-bool XtremeSettings::IsWiimmfi() {
-  return *((int*)0x805060DC) == 0;
-}
+bool XtremeSettings::IsWiimmfi() { return true; }
 
 void PerformTextEdits() {
   char **maintext = *((char ***)0x805131C0);
