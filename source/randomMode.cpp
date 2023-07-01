@@ -191,6 +191,13 @@ void RandomMode::Update(UtilitySato::CModeSwitch* menuOrganize) {
       if (m_popupKeep->exec(0)) {
         if (m_popupKeep->result != 1)
           RestoreData();
+        else {
+          // apply correct formation
+          _SV_TEAM_INFO* team = (_SV_TEAM_INFO*)0x8058A05C;
+          team->Formation = 2;  
+          static int formationIndex[] = { 48, 50, 49, 52, 51, 57, 54, 53, 55, 56, 57, 57, 0, 57, 52, 53, };
+          for (int i = 0; i<16; i++) team->players[i].FormationIndex = formationIndex[i];
+        }
         m_state = DONE;
       }
       break;
