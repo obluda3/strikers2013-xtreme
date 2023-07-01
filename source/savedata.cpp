@@ -17,11 +17,10 @@ kmWrite32(0x80041FE4, 0x2800004C);
 kmWrite32(0x80044d68, 0x2065004C);
 kmWrite32(0x80044d6C, 0x3805FFB4);
 
-char* new_save_name = "xt1.sav";
+char* new_save_name = "beta.sav";
 void patch_save_name() {
   char** filenames = *(char***)0x8051D5F4;
-  
-  if (!XtremeSettings::IsWiimmfi()) new_save_name = "xt2.sav";
+
   filenames[2652] = new_save_name;
 }
 
