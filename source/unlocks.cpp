@@ -11,7 +11,7 @@ bool reiFlag = false;
 
 int MixiUnlockList[] = {  P_12492FURAN,   P_12490ASUTA,  P_12330SARU, P_12011FUEI,
                           P_12056GAMMA,  P_12150ZANAKU, P_10350HAKURYU, P_12806AMEMIYA, 
-                          P_12189REI, -1};
+                          P_12189REI, P_12050ARUFUA};
 
 SavePlayerParam *unlockSecretMiximaxes(register PLAYER_DEF *player_def) {
   asm("mr player_def, r22"); 
