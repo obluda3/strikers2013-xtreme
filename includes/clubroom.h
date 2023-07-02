@@ -2,8 +2,18 @@
 #include <types.h>
 #include <utilitysato.h>
 
-class ClubroomManager {
+class ClubroomActor { 
+ private:
+  u8 _00[0x1e8];
  public:
+  void reqReLoad(int id, int kit, int clubroomKit, int isCaptain, int isGoalkeeper);
+};
+
+class ClubroomManager {
+ private:
+  u8 _00[0x23F0];
+ public:
+  ClubroomActor actors[16];
   static ClubroomManager* getInstance();
   bool isAllActorLoaded();
 };

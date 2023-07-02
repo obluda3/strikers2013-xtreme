@@ -4,6 +4,7 @@
 #include <kamek.h>
 #include <random.h>
 #include <savedata.h>
+#include <clubroom.h>
 #include "music.h"
 #include <snd.h>
 #include <utilitysato.h>
@@ -196,7 +197,16 @@ void RandomMode::Update(UtilitySato::CModeSwitch* menuOrganize) {
           _SV_TEAM_INFO* team = (_SV_TEAM_INFO*)0x8058A05C;
           team->Formation = 2;  
           static int formationIndex[] = { 48, 50, 49, 52, 51, 57, 54, 53, 55, 56, 57, 57, 0, 57, 52, 53, };
-          for (int i = 0; i<16; i++) team->players[i].FormationIndex = formationIndex[i];
+          ClubroomManager* manager = ClubroomManager::getInstance();
+          for (int i = 0; i < 16; i++) {
+            team->players[i].FormationIndex = formationIndex[i];
+            int flag = team->players[i].Flag;
+            int isGoalkeeper = (flag & 2) != 0 ? 0 : 31;
+            int isCaptain = (flag >> 2) & 1;
+            OSReport("aa");
+            OSReport("rr");
+            manager->actors[i].reqReLoad(team->players[i].Id, team->players[i].Kit, team->players[i].ClubroomKit, isCaptain, isGoalkeeper);
+          }
         }
         m_state = DONE;
       }
