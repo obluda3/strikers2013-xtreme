@@ -5,17 +5,26 @@
 class RandomMode {
  public:
   void Update(UtilitySato::CModeSwitch* menuOrganize);
+  void SetPopupConfirm();
+  char* GetTeamName();
   enum State {
     INIT,
     POPUP_CONFIRM,
     POPUP_HELP,
     MAIN_LOOP,
+    UPDATE_SLOT,
+    SELECTION,
     POPUP_KEEP,
     POPUP_RESTART,
     POPUP_INVALID,
     END,
     DONE
   };
+  enum Mode {
+    ROULETTE = 1,
+    DRAFT
+  };
+
   RandomMode();
 
  private:

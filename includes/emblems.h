@@ -15,12 +15,18 @@ struct EmblemData {
   char *Name;
 };
 
+struct TeamOrgData {
+  int teamId;
+  int _04;
+};
+
 void Initialize();
 void GetTeamSortPriority(u32 a1);
 void GetTeamOrgData(u32 a1);
 void GetUniformData(u32 index);
 int IsUniformNoHomeAwayFromTeam(s32 uniform);
 int IsUniformNoPositionFromTeam(s32 uniform);
+int GetTeamOrgEmblemID(const TeamOrgData* team);
 }  // namespace MENU_TP_DATA
 
 int GetTeamIDToEmblemLL(int teamId);

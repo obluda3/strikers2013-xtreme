@@ -323,7 +323,7 @@ void PerformTextEdits() {
   maintext[1675] = "ザナーク　×　クララジェーン";
   maintext[587] = "Change Xtreme's additional settings";
   maintext[529] = "Xtreme settings";
-  maintext[893] = "#b84#=もどる #b83#=けってい #b87#=いれかえ #b88#=ステータス #b86#=ルーレット";
+  maintext[893] = "#b84#=もどる #b83#=けってい #b87#=いれかえ #b88#=ステータス #b86#=ルーレット #b85#=ドラフト";
   maintext[858] = "#b84#=もどる #b83#=けってい #b87#=ルールせってい #b88#=そうさ #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
   maintext[530] = "#b84#=もどる #b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
   maintext[531] = "#b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
