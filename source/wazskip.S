@@ -8,6 +8,7 @@
 .set W_GUARDIAN_SHIELD, 0xBE
 .set W_GUARDIAN_SHIELD_F, 0x22
 .set WAZATasks, 0x807B184C
+.set gpWaza, 0x8050D820
 fix_skip_mixi_saru:
     lwz r25, 0x124C(r6)
     cmpwi r25, W_NORMAL_DRIBBLE_CHARGE
@@ -71,6 +72,11 @@ check_fixed_users:
 
 fix_end_guardian_shield:
     lhz r0, 0x34(r4)
+    lis r7, gpWaza@ha
+    lwz r7, gpWaza@l(r7)
+    lbz r7, 0x1793(r7)
+    cmpwi r7, 0
+    bnelr
     cmpwi r25, W_GUARDIAN_SHIELD
     bne test2
     li r0, 148
