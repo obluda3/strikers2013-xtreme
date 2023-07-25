@@ -16,21 +16,21 @@ char *IsBlockMove = (char *)0x807ACE5A;
 char *IsInteractionWon = (char *)0x807ACE5B;
 int *ShootPower = (int *)0x807AC578;
 char *MoveType = (char *)0x807ACE54;
-void displayMovePower() {
+int displayMovePower(int argBackup) {
   if (Settings.IsMovePowerDisplayed()) {
     char buffer[100];
     buffer[0] = 0; // idk how to code
     int moveType = *MoveType;
     int isBlock = *IsBlockMove;
     if (moveType == 1)
-      return;
+      return argBackup;
     if (moveType == 2 && !isBlock)
-      return;
+      return argBackup;
     if (isBlock && moveType != 3) {
       if (!*IsInteractionWon)
         sprintf(buffer, "#j#z120#=TOTAL %d", *ShootPower);
       else
-        return;
+        return argBackup;
     }
     if (!moveType) {
       int randomBonus = info.randomBonus;
@@ -49,6 +49,7 @@ void displayMovePower() {
     }
     disp_zen(buffer, 20, 30, 50);
   }
+  return argBackup;
 }
 
 kmBranchDefAsm(0x8009E730, 0x8009E734) {
