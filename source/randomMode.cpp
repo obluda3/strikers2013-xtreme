@@ -50,7 +50,7 @@ void RandomMode::SetPopupConfirm() {
   else {
     m_popupConfirm = new cPopup();
     m_popupConfirm->alloc(4, 3878);
-    m_popupConfirm->add_item(0, "Xtremeピックを開始しますか？", false);
+    m_popupConfirm->add_item(0, "XtremeDRAFTを開始しますか？", false);
     m_popupConfirm->add_item(1, "はい", true);
     m_popupConfirm->add_item(2, "いいえ", true);
   }
