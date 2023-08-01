@@ -109,7 +109,7 @@ char *fileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer) {
     int pad = bswap32(tmpArchive->padfactor);
     int mul = bswap32(tmpArchive->mulfactor);
     int mask = bswap32(archive->mask[0]);
-    unsigned int offsize = bswap32(archive->mask[rerouted+1]);
+    unsigned int offsize = bswap32(archive->mask[rerouted+1 - 10000*ftyp]);
     offset = (offsize >> shift) * pad;
     int sz = (offsize & mask) * mul;
     size = ((sz + pad - 1) & ~(pad - 1));
@@ -120,11 +120,12 @@ char *fileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer) {
   char path[256];
   sprintf(path, "Modified/%s/%d.bin", archive_names[ftyp], index);
   int entrynum = DVDConvertPathToEntrynum(path);
-  cprintf(" realpath=%s", path);
+  cprintf(" realpath=%s rerouted=%d", path, rerouted);
   if (entrynum < 0 || rerouted != -1) {
     shdFileLoadBegin(ftyp, offset, size, buffer);
     return (char *)buffer;
   }
+  cprintf(" patched");
   DVDHandle handle;
   DVDFastOpen(entrynum, &handle);
   int roundedLength = (handle.length + 0x1F) & ~0x1F;
