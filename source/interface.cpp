@@ -1,4 +1,4 @@
-#include <kamek.h>
+/*#include <kamek.h>
 #include <spritestudio.h>
 #include <text.h>
 #include <xtreme.h>
@@ -306,4 +306,4 @@ void modify_interface() {
 kmBranch(0x800C6B24, modify_interface);
 kmCall(0x800C72D0, draw_bar);
 kmCall(0x800C7350, draw_score);
-kmCall(0x800D717C, draw_score);
+kmCall(0x800D717C, draw_score);*/
