@@ -175,6 +175,7 @@ void RandomMode::Update(UtilitySato::CModeSwitch* menuOrganize) {
 
     case POPUP_HELP:
       if (m_valid) {
+        shdRndInit(OSGetTick()); // reset rng seed
         BackupData();
         SNDBgmPlay_Direct(wiiSndGetNameToID("JINGLE_GOAL_01"));
         m_state = custom_menu == DRAFT ? UPDATE_SLOT : MAIN_LOOP;

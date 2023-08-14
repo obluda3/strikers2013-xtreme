@@ -2,7 +2,6 @@
 #include <discord.h>
 #include <kamek.h>
 #include <mchg.h>
-#include <random.h>
 #include <wifi.h>
 
 #include "dolphinios.h"
@@ -59,7 +58,6 @@ void UpdateStatus() {
             } else
               richPresence.state = "In online menu";
             break;
-            shdRndInit(Calendar_GetDateID(0)); // reset rng seed
           }
           case MCHG::MODE_MATCHSTART:
             richPresence.state = "Starting a match";
