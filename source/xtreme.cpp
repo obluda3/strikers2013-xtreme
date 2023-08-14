@@ -288,13 +288,13 @@ URL_Patch wiimmfi_server[] = {
   {0x805060e0, "http://"},
   {0x80506350, "http://"},
 
-  {0x805064b0, "rnk.xtreme13.com"},
-  {0x80506894, "rnk.xtreme13.com"},
-  {0x80507724, "rnk.xtreme13.com"},
-  {0x80507744, "rnk.xtreme13.com"},
-  {0x8050780B, "rnk.xtreme13.com"},
-  {0x8050782F, "rnk.xtreme13.com"},
-  {0x8050C1F3, "rnk.xtreme13.com/"}
+  {0x805064b0, "rnk.xtreme13.com:2201"},
+  {0x80506894, "rnk.xtreme13.com:2201"},
+  {0x80507724, "rnk.xtreme13.com:2201"},
+  {0x80507744, "rnk.xtreme13.com:2201"},
+  {0x8050780B, "rnk.xtreme13.com:2201"},
+  {0x8050782F, "rnk.xtreme13.com:2201"},
+  {0x8050C1F3, "rnk.xtreme13.com:2201"}
 };
 
 int domain_urls[] = { 0x805033d8, 0x805039e0, 0x805045e0, 0x80505a45,
