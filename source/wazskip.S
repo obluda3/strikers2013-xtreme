@@ -7,6 +7,7 @@
 .set W_KILLER_FIELDS, 0xA7
 .set W_GUARDIAN_SHIELD, 0xBE
 .set W_GUARDIAN_SHIELD_F, 0x22
+.set W_GANIMEDE_PROTON, 0xFD
 .set WAZATasks, 0x807B184C
 .set gpWaza, 0x8050D820
 fix_skip_mixi_saru:
@@ -32,6 +33,8 @@ remove_skip_new_block:
     beq go_back
     cmpwi r0, W_DARK_MATTER
     beq go_back
+    cmpwi r0, W_GANIMEDE_PROTON
+    beq go_back
     kamek_bl 0x800DF5E4
     go_back:
     kamek_b 0x800E184C
@@ -47,6 +50,8 @@ fix_skip_new_block:
     cmpwi r0, W_CHAOS_METEOR_UNUSED
     beq stop
     cmpwi r0, W_DARK_MATTER
+    beq stop
+    cmpwi r0, W_GANIMEDE_PROTON
     beq stop
     b end
     stop:
