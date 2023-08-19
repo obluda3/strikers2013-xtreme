@@ -51,6 +51,8 @@ int *ftyp_fofs = (int *)0x804C6C90;
 char **ftyp_fname = (char **)0x804C6C68;
 char *archive_names[] = {"grp", "scn", "scn_sh", "ui", "dat"};
 
+int backup_size = 0;
+
 int* isWiiFix = (int*)0x805060DC;
 
 struct Reroute {
@@ -153,7 +155,7 @@ int getRerouted(int index) {
     return -1;
 }
 
-char *fileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer) {
+char *fileLoadBegin(int ftyp, int offset, register int size, unsigned char *buffer) {
   BinHeader *archive = flab_tbl[ftyp];
   int shiftfactor = bswap32(archive->shiftfactor);
   int padfactor = bswap32(archive->padfactor);
@@ -189,12 +191,13 @@ char *fileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer) {
   cprintf(" realpath=%s rerouted=%d", path, rerouted);
   if (entrynum < 0 || rerouted != -1) {
     shdFileLoadBegin(ftyp, offset, size, buffer);
+    asm("mr r4, size");
     return (char *)buffer;
   }
   cprintf(" patched");
   DVDHandle handle;
   DVDFastOpen(entrynum, &handle);
-  int roundedLength = (handle.length + 0x1F) & ~0x1F;
+  register int roundedLength = (handle.length + 0x1F) & ~0x1F;
   void *newbuffer = (void *)buffer;
   if (roundedLength > size) {
     MEMFree(buffer);
@@ -202,7 +205,8 @@ char *fileLoadBegin(int ftyp, int offset, int size, unsigned char *buffer) {
   }
   DVDReadPrio(&handle, newbuffer, roundedLength, 0, 2);
   DVDClose(&handle);
-
+  backup_size = roundedLength;
+  asm("mr r4, roundedLength");
   return (char *)newbuffer;
 }
 
@@ -455,11 +459,14 @@ asm void patch_buffer_r26() {
     stw r0, 0x14(r1)
     bl fileLoadBegin
     stw r3, 4(r26)
+    stw r4, 8(r26)
     lwz r0, 0x14(r1)
     addi r1, r1, 0x10
     mtlr r0
     blr
 }
+
+
 kmCall(0x8002F868, patch_buffer_r26);
 kmCall(0x8002fbbc, patch_buffer_r26);
 kmCall(0x80030024, patch_buffer_r26);
@@ -512,6 +519,38 @@ kmWrite32(0x8002E83C, 0x60000000);
 kmWrite32(0x8002EA78, 0x60000000);
 kmWrite32(0x8002EDAC, 0x60000000);
 kmWrite32(0x8002EFC8, 0x60000000);
+
+asm void patch_get_size() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0x8(r1)
+    
+    bl shdFileLoadSync
+    cmpwi r3, 0
+    bgt epilogue
+    lis r31, backup_size@ha
+    lwz r3, backup_size@l(r31)
+    li r0, 0
+    stw r0, backup_size@l(r31)
+
+    epilogue:
+    lwz r0, 0x14(r1)
+    lwz r31, 0x8(r1)
+    addi r1, r1, 0x10
+    mtlr r0
+    blr
+}
+
+kmCall(0x80030070, patch_get_size);
+kmCall(0x8002f89c, patch_get_size);
+kmCall(0x8002FC00, patch_get_size);
+kmCall(0x800304c0, patch_get_size);
+kmCall(0x80030874, patch_get_size);
+kmCall(0x80030c50, patch_get_size);
+kmCall(0x8003101c, patch_get_size);
+
 
 // handle bigger mcb1 size
 kmCallDefCpp(0x80336568, void, ) { cprintf("mcb sz over\n"); }
