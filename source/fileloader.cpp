@@ -528,6 +528,8 @@ asm void patch_get_size() {
     stw r31, 0x8(r1)
     
     bl shdFileLoadSync
+    cmpwi r3, -1
+    beq epilogue
     cmpwi r3, 0
     bgt epilogue
     lis r31, backup_size@ha
@@ -551,6 +553,14 @@ kmCall(0x80030874, patch_get_size);
 kmCall(0x80030c50, patch_get_size);
 kmCall(0x8003101c, patch_get_size);
 
+
+kmWrite32(0x800300A0, 0x60000000);
+kmWrite32(0x8002f8Cc, 0x60000000);
+kmWrite32(0x8002FC30, 0x60000000);
+kmWrite32(0x800304f0, 0x60000000);
+kmWrite32(0x800308A4, 0x60000000);
+kmWrite32(0x80030c80, 0x60000000);
+kmWrite32(0x8003104c, 0x60000000);
 
 // handle bigger mcb1 size
 kmCallDefCpp(0x80336568, void, ) { cprintf("mcb sz over\n"); }
