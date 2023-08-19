@@ -310,6 +310,8 @@ void RandomMode::Update(UtilitySato::CModeSwitch* menuOrganize) {
       started = false;
       menuOrganize->currentValue = 2;
       m_state = INIT;
+      CClubroomMenuTeamOrganize* teamOrganize = (CClubroomMenuTeamOrganize*)menuOrganize;
+      teamOrganize->CreateOrgList(25, 1, false);
       break;
   }
 }

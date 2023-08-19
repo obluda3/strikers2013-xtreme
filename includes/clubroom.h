@@ -83,6 +83,11 @@ class CClubroomMenuTeamCustom {
   stNameWindow m_nameWindow;
 };
 
+class CClubroomMenuTeamOrganize {
+ public:
+  int CreateOrgList(int currentTeam, int direction, bool isCheck);
+};
+
 struct MenuTeam {
   u8 _00[0x19C];
   s32 _19C;
