@@ -371,7 +371,7 @@ void XtremeSettings::Init() {
   Discord::Init();
   u8 flag = *SaveFlag;
   Settings.m_allowOpenings = flag & 1;
-  Settings.m_movePower = flag & 2;
+  Settings.m_movePower = (flag & 2) != 0;
   Settings.m_keyboardType = (flag >> 2) & 3;
   Settings.m_interface = (flag >> 4) & 1;
   OSReport("##Xtreme Settings##- Openings = %s\n- Move Power = %s\n- Keyboard Type = %s\n", FlagToEng(Settings.m_allowOpenings), FlagToEng(Settings.m_movePower), KeyboardType(Settings.m_keyboardType));
