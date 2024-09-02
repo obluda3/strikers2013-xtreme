@@ -83,11 +83,10 @@ fix_end_guardian_shield:
     cmpwi r7, 0
     bnelr
     cmpwi r25, W_GUARDIAN_SHIELD
-    bne test2
+    bnelr
     li r0, 148
     blr
-    test2:
-    blr
+    
 
 
 kmCall 0x800DBE84, fix_skip_mixi_saru
