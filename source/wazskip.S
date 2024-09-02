@@ -87,9 +87,6 @@ fix_end_guardian_shield:
     li r0, 148
     blr
     test2:
-    cmpwi r25, W_GUARDIAN_SHIELD_F
-    bnelr
-    li r0, 283
     blr
 
 
