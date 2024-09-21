@@ -1,5 +1,6 @@
 #include "music.h"
 #include "xtreme.h"
+#include "xtremeSettings.h"
 #include <buttonhelpers.h>
 #include <dvd.h>
 #include <kamek.h>
@@ -115,7 +116,7 @@ int updateCurrentBgm(int argBak) {
 
   s32 openingFirst = playlistInfo.openingFirst;
   u32 bgmMax = playlistInfo.size;
-  maxBgm = openingFirst == -1 ? bgmMax - 1 : Settings.AreOpeningsAllowed() ? bgmMax - 1 : openingFirst;
+  maxBgm = openingFirst == -1 ? bgmMax - 1 : ModSettings->AreOpeningsAllowed() ? bgmMax - 1 : openingFirst;
   OSReport("%d currentBgm\n", currentBgm);
   if (currentBgm < -1)
     currentBgm = maxBgm;

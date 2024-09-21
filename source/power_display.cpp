@@ -1,4 +1,4 @@
-#include "xtreme.h"
+#include "xtremeSettings.h"
 #include "xtutils.h"
 #include <enums.h>
 #include <kamek.h>
@@ -17,7 +17,7 @@ char *IsInteractionWon = (char *)0x807ACE5B;
 int *ShootPower = (int *)0x807AC578;
 char *MoveType = (char *)0x807ACE54;
 int displayMovePower(int argBackup) {
-  if (Settings.IsMovePowerDisplayed()) {
+  if (ModSettings->IsMovePowerDisplayed()) {
     char buffer[100];
     buffer[0] = 0; // idk how to code
     int moveType = *MoveType;

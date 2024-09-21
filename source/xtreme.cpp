@@ -6,155 +6,18 @@
 #include <moves.h>
 #include <players.h>
 #include <shd_debug.h>
+#include <nhttp.h>
+#include <shd_mem.h>
 
 #include "discord.h"
+#include "xtremeSettings.h"
 #include "dolphinios.h"
 #include "keyboard.h"
 #include "music.h"
 #include "xtutils.h"
 
-XtremeSettings Settings;
+Xtreme Mod;
 u8 *SaveFlag = (u8 *)0x805F912E;
-
-int XtremeSettings::GetKeyboardType() { return m_keyboardType; }
-bool XtremeSettings::AreOpeningsAllowed() { return m_allowOpenings; }
-bool XtremeSettings::IsMovePowerDisplayed() { return m_movePower; }
-int XtremeSettings::GetInterface() { return 0;/*m_interface;*/ }
-
-char *FlagToEng(int val) {
-  if (val)
-    return "< ON >";
-  else
-    return "< OFF >";
-}
-
-char *KeyboardType(int val) {
-  if (val == KEY_LTN)
-    return "< Latin >";
-  else if (val == KEY_CRL)
-    return "#x15< Кириллица >";
-  return "< 日本語 >";
-}
-
-void XtremeSettings::MusicLoop(int state, void *arg) {
-  MENU_SETTING::CMenuSetting *menu = (MENU_SETTING::CMenuSetting *)arg;
-  if (state == 2) {
-    updateCurrentBgm(0);
-
-    Settings.Exec();
-    Settings.DrawMenu();
-
-    if (IsButtonPushed_Cancel(0)) {
-      Settings.Save();
-      menu->tasks->Pop(0);
-      menu->tasks->Push(MENU_SETTING::CMenuSetting::MenuSet0Loop, arg);
-      SNDSeSysCANCEL(-1);
-    }
-  }
-}
-
-void XtremeSettings::Save() {
-  u8 flag = 0;
-  flag |= (m_interface << 4);
-  flag |= (m_keyboardType << 2) & 12;
-  flag |= m_allowOpenings;
-  flag |= m_movePower << 1;
-  *SaveFlag = flag;
-  OSReport("##Xtreme Settings##- Openings = %s\n- Move Power = %s\n- Keyboard Type = %s\n", FlagToEng(Settings.m_allowOpenings), FlagToEng(Settings.m_movePower), KeyboardType(Settings.m_keyboardType));
-}
-
-void XtremeSettings::Exec() {
-  s8 pos = m_pos;
-  bool isPadUp = UtilitySato::isPad(0, UtilitySato::PAD_UP, UtilitySato::HELD);
-  bool isPadDown =
-      UtilitySato::isPad(0, UtilitySato::PAD_DOWN, UtilitySato::HELD);
-  bool isPadLeft =
-      UtilitySato::isPad(0, UtilitySato::PAD_LEFT, UtilitySato::HELD);
-  bool isPadRight =
-      UtilitySato::isPad(0, UtilitySato::PAD_RIGHT, UtilitySato::HELD);
-  if (isPadDown) pos++;
-  else if (isPadUp) pos--;
-  if (pos > 2) pos = 0;
-  else if (pos < 0) pos = 2;
-  if (pos != m_pos) {
-    m_pos = pos;
-    SNDSeSysCLICK(-1);
-  } else {
-    if (!m_pos) {
-      s8 openings = m_allowOpenings;
-      if (isPadLeft) openings--;
-      else if (isPadRight) openings++;
-      if (openings < 0) openings = 1;
-      else if (openings > 1) openings = 0;
-
-      if (openings != m_allowOpenings) {
-        m_allowOpenings = openings;
-        SNDSeSysCLICK(-1);
-      }
-    } else if (m_pos == 1) {
-      s8 keyboard = m_keyboardType;
-      if (isPadLeft) keyboard--;
-      else if (isPadRight) keyboard++;
-
-      if (keyboard < 0) keyboard = 2;
-      else if (keyboard > 2) keyboard = 0;
-      if (keyboard != m_keyboardType) {
-        m_keyboardType = keyboard;
-        SwitchKeyboardLayout(keyboard);
-        SNDSeSysCLICK(-1);
-      }
-    }
-    if (m_pos == 2) {
-      s8 values = m_movePower;
-      if (isPadLeft) values--;
-      else if (isPadRight) values++;
-
-      if (values < 0) values = 1;
-      else if (values > 1) values = 0;
-      if (values != m_movePower) {
-        m_movePower = values;
-        SNDSeSysCLICK(-1);
-      }
-    }
-    /*
-    if (m_pos == 3) {
-      s8 values = m_interface;
-      if (isPadLeft) values--;
-      else if (isPadRight) values++;
-
-      if (values < 0) values = 1;
-      else if (values > 1) values = 0;
-      if (values != m_interface) {
-        m_interface = values;
-        SNDSeSysCLICK(-1);
-      }
-    }*/
-  }
-}
-
-void XtremeSettings::DrawMenu() {
-  char message[50];
-  s32 currentBgm = g_CurrentBgm;
-  if (currentBgm > 0)
-    sprintf(message, "#P10#j#I1Music Track %03d", currentBgm);
-  else if (currentBgm == 0)
-    strcpy(message, "#P10#j#I1Default track");
-
-  disp_zen(message, 255, 170, 100);
-
-  // Draw setting options
-  disp_zen("テーマソング", 225, 250, 90);
-  disp_zen("キーボード", 225, 280, 90);
-  disp_zen("威力数値", 225, 310, 90);
-  //disp_zen("Interface", 225, 340, 90);
-  disp_zen(KeyboardType(m_keyboardType), 575, 280, 90);
-  disp_zen(FlagToEng(m_allowOpenings), 575, 250, 90);
-  disp_zen(FlagToEng(m_movePower), 575, 310, 90);
-  //disp_zen(FlagToEng(m_interface), 575, 340, 90);
-
-  s32 y = 250 + 30 * m_pos;
-  disp_zen("#j#=->", 155, y, 90);
-}
 
 static bool outdated_dolphin = false;
 static int call_cnt = 0;
@@ -172,7 +35,7 @@ void OutdatedDolphinVersion() {
   }
 }
 
-void CheckForDolphin() {
+void Xtreme::CheckForDolphin() {
   if (Dolphin::IsOpen()) {
     char *versionName = Dolphin::GetVersion();
     int version;
@@ -316,9 +179,9 @@ bool s_is_text_done = false;
 
 char NewMoveNames[6][50];
 
-bool XtremeSettings::IsWiimmfi() { return true; }
+bool Xtreme::IsWiimmfi() { return true; }
 
-void PerformTextEdits() {
+void Xtreme::PerformTextEdits() {
   char **maintext = *((char ***)0x805131C0);
   maintext[1675] = "ザナーク　×　クララジェーン";
   maintext[587] = "Change Xtreme's additional settings";
@@ -363,57 +226,94 @@ void PerformTextEdits() {
   s_is_text_done = true;
 }
 
-void XtremeSettings::Init() {
+void Xtreme::PatchOnlineServer() {
+  URL_Patch* server = 0;
+  char* domain = 0;
+  if (IsWiimmfi()) {
+    server = wiimmfi_server;
+    domain = "wiimmfi.de";
+  }
+  else {
+    server = so_server;
+    domain = "inazumafrance.fr";
+  }
+  for (int i = 0; i < sizeof(domain_urls) / 4; i++) strcpy((char*)domain_urls[i], domain);
+  for (int i = 0; i < sizeof(update_urls) / 4; i++) {
+    char url[64];
+    sprintf(url, new_update_urls[i], domain);
+    strcpy((char*)update_urls[i], url);
+  }
+  for (int i = 0; i < sizeof(so_server) / sizeof(URL_Patch); i++) {
+    URL_Patch* cur = &server[i];
+    strcpy((char*)cur->address, cur->text);
+  }
+  s_is_online_done = true;
+}
+
+void* nhttp_alloc(u32 size, int align) {
+  return MEMAlloc(size, align, 3, 31);
+}
+
+void nhttp_free(void* block) {
+  return MEMFree(block);
+}
+
+void requestCallback(NHTTPError error, NHTTPResponseHandle responseHandle, void* test) {
+    if (error != NHTTP_ERROR_NONE) {
+      OSReport("error request\n.");
+    }
+    else {
+      char *responseBody;
+      int responseBodyLength = NHTTPGetBodyAll(responseHandle, &responseBody);
+      if (responseBodyLength < 0) {
+        OSReport("error response\n");
+      }
+      OSReport(responseBody);
+      OSReport("\n");
+    }
+    NHTTPDestroyResponse(responseHandle);
+    NHTTPCleanupAsync(0);
+}
+char responseBuffer[4096];
+
+void Xtreme::CheckForUpdates() {
+  if (NHTTPStartup(nhttp_alloc, nhttp_free, 17) != NHTTP_ERROR_NONE) {
+    OSReport("Cannot load the NHTTP library.\n");
+    return;
+  }
+  OSReport("NHTTP Library loaded succesfully.\n");
+  NHTTPRequestHandle requestHandle = NHTTPCreateRequest("https://httpbin.org/get", NHTTP_REQUEST_METHOD_GET, responseBuffer, 1024, requestCallback, 0);
+  int requestId = NHTTPSendRequestAsync(requestHandle);
+} 
+
+void Xtreme::Init() {
   OSReport("Initializing /dev/dolphin driver... ");
   Dolphin::Init();
   OSReport("\n");
   OSReport("Initializing Discord Rich Presence...\n");
   Discord::Init();
   u8 flag = *SaveFlag;
-  Settings.m_allowOpenings = flag & 1;
-  Settings.m_movePower = (flag & 2) != 0;
-  Settings.m_keyboardType = (flag >> 2) & 3;
-  Settings.m_interface = (flag >> 4) & 1;
-  OSReport("##Xtreme Settings##- Openings = %s\n- Move Power = %s\n- Keyboard Type = %s\n", FlagToEng(Settings.m_allowOpenings), FlagToEng(Settings.m_movePower), KeyboardType(Settings.m_keyboardType));
-  SwitchKeyboardLayout(Settings.m_keyboardType);
-  // Init text edits
-  if (!s_is_text_done) {
-    PerformTextEdits();
-  }
+  ModSettings = new XtremeSettings(flag & 1, (flag & 2) != 0, (flag >> 2) & 3, (flag >> 4) & 1);
+  SwitchKeyboardLayout(ModSettings->GetKeyboardType());
 
-  if (!s_is_online_done) {
-      URL_Patch* server = 0;
-      char* domain = 0;
-      if (IsWiimmfi()) {
-        server = wiimmfi_server;
-        domain = "wiimmfi.de";
-      }
-      else {
-        server = so_server;
-        domain = "inazumafrance.fr";
-      }
-      for (int i = 0; i < sizeof(domain_urls) / 4; i++) strcpy((char*)domain_urls[i], domain);
-      for (int i = 0; i < sizeof(update_urls) / 4; i++) {
-        char url[64];
-        sprintf(url, new_update_urls[i], domain);
-        strcpy((char*)update_urls[i], url);
-      }
-      for (int i = 0; i < sizeof(so_server) / sizeof(URL_Patch); i++) {
-        URL_Patch* cur = &server[i];
-        strcpy((char*)cur->address, cur->text);
-      }
-      s_is_online_done = true;
-  }
+
+  if (!s_is_text_done)
+    PerformTextEdits();
+  if (!s_is_online_done) 
+    PatchOnlineServer();
+
+  
   memcpy((char *)0x80472A3C, security_patchA, 56);
   memcpy((char *)0x80472BD0, security_patchB, 72);
-
+  
   strcpy((char *)0x8050bacc, "X-3-1");
   CheckForDolphin();
+  CheckForUpdates();
 }
   
 
 kmBranch(0x800E5B74, OutdatedDolphinVersion);
-kmBranch(0x800E49A8, XtremeSettings::Init);
+kmBranch(0x800E49A8, Xtreme::Init);
 // bugfixes
 kmWrite32(0x801558B8, 0x480000A0); // supplement bug
 kmWrite32(0x802011dc, 0x48000028); // Wiimote team save

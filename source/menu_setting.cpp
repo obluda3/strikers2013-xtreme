@@ -1,6 +1,6 @@
 #include "helpbar.h"
 #include "music.h"
-#include "xtreme.h"
+#include "xtremeSettings.h"
 #include <kamek.h>
 #include <menu_setting.h>
 #include <menubg.h>
