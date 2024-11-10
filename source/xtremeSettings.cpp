@@ -11,7 +11,7 @@ XtremeSettings* ModSettings;
 int XtremeSettings::GetKeyboardType() { return m_keyboardType; }
 bool XtremeSettings::AreOpeningsAllowed() { return m_allowOpenings; }
 bool XtremeSettings::IsMovePowerDisplayed() { return m_movePower; }
-int XtremeSettings::GetInterface() { return 0;/*m_interface;*/ }
+bool XtremeSettings::IsMixiChargeMode() { return m_mixiMode; }
 
 char *FlagToEng(int val) {
   if (val)
@@ -47,7 +47,7 @@ void XtremeSettings::MusicLoop(int state, void *arg) {
 
 void XtremeSettings::Save() {
   u8 flag = 0;
-  flag |= (m_interface << 4);
+  flag |= (m_mixiMode << 4);
   flag |= (m_keyboardType << 2) & 12;
   flag |= m_allowOpenings;
   flag |= m_movePower << 1;
@@ -65,7 +65,7 @@ void XtremeSettings::Exec() {
       UtilitySato::isPad(0, UtilitySato::PAD_RIGHT, UtilitySato::HELD);
   if (isPadDown) pos++;
   else if (isPadUp) pos--;
-  if (pos > 2) pos = 0;
+  if (pos > 3) pos = 0;
   else if (pos < 0) pos = 2;
   if (pos != m_pos) {
     m_pos = pos;
@@ -107,19 +107,19 @@ void XtremeSettings::Exec() {
         SNDSeSysCLICK(-1);
       }
     }
-    /*
+    
     if (m_pos == 3) {
-      s8 values = m_interface;
+      s8 values = m_mixiMode;
       if (isPadLeft) values--;
       else if (isPadRight) values++;
 
       if (values < 0) values = 1;
       else if (values > 1) values = 0;
-      if (values != m_interface) {
-        m_interface = values;
+      if (values != m_mixiMode) {
+        m_mixiMode = values;
         SNDSeSysCLICK(-1);
       }
-    }*/
+    }
   }
 }
 
@@ -139,11 +139,11 @@ void XtremeSettings::DrawMenu() {
   disp_zen("テーマソング", 225, 250, 90);
   disp_zen("キーボード", 225, 280, 90);
   disp_zen("威力数値", 225, 310, 90);
-  //disp_zen("Interface", 225, 340, 90);
+  disp_zen("Miximax Charge Mode", 225, 340, 90);
   disp_zen(KeyboardType(m_keyboardType), 575, 280, 90);
   disp_zen(FlagToEng(m_allowOpenings), 575, 250, 90);
   disp_zen(FlagToEng(m_movePower), 575, 310, 90);
-  //disp_zen(FlagToEng(m_interface), 575, 340, 90);
+  disp_zen(FlagToEng(m_mixiMode), 575, 340, 90);
 
   s32 y = 250 + 30 * m_pos;
   disp_zen("#j#=->", 155, y, 90);

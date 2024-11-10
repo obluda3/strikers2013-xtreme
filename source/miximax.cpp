@@ -3,6 +3,7 @@
 #include <kamek.h>
 #include <match.h>
 #include <mix.h>
+#include "xtremeSettings.h"
 #include <utilitysato.h>
 
 Miximax g_MiximaxTable[] = {
@@ -119,6 +120,24 @@ bool IsMiximaxMove(int id) {
   return (move->powerUpIndicator >> 2) & 1;
 }
 
+bool CheckMiximaxCharge(Miximax* mixiData, _PWORK* player) {
+  if (!ModSettings->IsMixiChargeMode())
+    return mixiData;
+  if (MI_chkInazmaState(player))
+    return mixiData;
+  return 0;
+}
+
+kmBranchDefAsm(0x8009DF44, 0x8009DF4C) {
+  nofralloc
+  mr r31, r3
+  mr r4, r29
+  bl CheckMiximaxCharge
+  cmpwi r3, 0
+  blr
+}
+
+
 kmBranchDefAsm(0x800DAE0C, 0x800DAE10){
   nofralloc
   check_saru:
@@ -173,6 +192,9 @@ kmBranchDefAsm(0x800BF098, 0x800BF09C){
   end:
   blr
 }
+
+
+
 
 kmWrite32(0x800DDAA4, 0x60000000);
 kmWrite32(0x800dae38, 0x7E238B78);
