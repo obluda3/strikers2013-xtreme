@@ -21,7 +21,6 @@ private:
   static void PerformTextEdits();
   static void CheckForDolphin();
   static void PatchOnlineServer();
-  static void CheckForUpdates();
   // s32 m_xOff;
   // s32 m_yOff;
 };

@@ -258,34 +258,6 @@ void nhttp_free(void* block) {
   return MEMFree(block);
 }
 
-void requestCallback(NHTTPError error, NHTTPResponseHandle responseHandle, void* test) {
-    if (error != NHTTP_ERROR_NONE) {
-      OSReport("error request\n.");
-    }
-    else {
-      char *responseBody;
-      int responseBodyLength = NHTTPGetBodyAll(responseHandle, &responseBody);
-      if (responseBodyLength < 0) {
-        OSReport("error response\n");
-      }
-      OSReport(responseBody);
-      OSReport("\n");
-    }
-    NHTTPDestroyResponse(responseHandle);
-    NHTTPCleanupAsync(0);
-}
-char responseBuffer[4096];
-
-void Xtreme::CheckForUpdates() {
-  if (NHTTPStartup(nhttp_alloc, nhttp_free, 17) != NHTTP_ERROR_NONE) {
-    OSReport("Cannot load the NHTTP library.\n");
-    return;
-  }
-  OSReport("NHTTP Library loaded succesfully.\n");
-  NHTTPRequestHandle requestHandle = NHTTPCreateRequest("https://httpbin.org/get", NHTTP_REQUEST_METHOD_GET, responseBuffer, 1024, requestCallback, 0);
-  int requestId = NHTTPSendRequestAsync(requestHandle);
-} 
-
 void Xtreme::Init() {
   OSReport("Initializing /dev/dolphin driver... ");
   Dolphin::Init();
@@ -308,7 +280,6 @@ void Xtreme::Init() {
   
   strcpy((char *)0x8050bacc, "X-3-1");
   CheckForDolphin();
-  CheckForUpdates();
 }
   
 
