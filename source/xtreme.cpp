@@ -192,6 +192,9 @@ void Xtreme::PerformTextEdits() {
   maintext[531] = "#b83#=けってい #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
   maintext[532] = "#b84#=もどる #b85#=まえのＢＧＭ #b86#=つぎのＢＧＭ";
   maintext[1633] = "ズバ#R抜(ぬ)けた#R瞬発力(しゅんぱつりょく)と#R反射神経(はんしゃしんけい)であらゆるシュートを#R掴(つか)みとる。";
+  maintext[6870] = "真 マッハウィンド";
+  maintext[6871] = "マッハウィンド しん";
+  maintext[6872] = "サイドワインダー #x14Ｖ３";
   for (int i = 0; i < sizeof(text_edits) / sizeof(char *); i++) {
     maintext[i + 5640] = text_edits[i];
   }
@@ -223,6 +226,7 @@ void Xtreme::PerformTextEdits() {
     player->description = textIndex;
     maintext[textIndex] = premixed_descs[i];
   }
+
   s_is_text_done = true;
 }
 
