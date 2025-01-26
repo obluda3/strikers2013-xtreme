@@ -81,6 +81,8 @@ typedef struct {
 } UnlockData;
 
 UnlockData Unlocks[] = {
+	{P_11780SAN_MAN, {P_12189REI }, 0, 0, 0},
+	{P_10443OKAZEYA, {P_12056GAMMA }, 0, 0, 0},
     {P_11717ISHIDO, { P_0010GOUENJI, P_0010GOUENJI_2nd, P_0010GOUENJI_IJ, P_10308KUROSAKI, P_10321SENGUJI, P_10441KIBAYAMA }, 0, 0, 0},
     {P_11760AFURO, { P_0190AFURO, P_0190AFURO_WORLD, P_10229KISHIBE, P_10230SOSUKE, P_10233YOSHIHIKO }, 0, 0, 0},
     {P_12013FUEI, { P_12011FUEI, P_10008MATSUKAZE_TNM }, 0, 0, 0},
@@ -93,7 +95,7 @@ UnlockData Unlocks[] = {
 };
 u16 ChronoStorm[] = {
     P_12804SHINDO, P_12805KIRINO,  P_12806AMEMIYA, P_12807SHINSUKE, P_12816SZANAKU,
-    P_12808TOBU,   P_12809FUEI,    P_12810NISHIKI, P_12811TSURUGI, P_12812KINAKO, 
+    P_12808TOBU,   P_12809FUEI,    P_12810NISHIKI, P_12811TSURUGI, P_12812KINAKO, P_10444RINNO, 
 };
 
 int unlockSecretPlayers(register int *clubroomMenuScout) {
@@ -117,7 +119,7 @@ int unlockSecretPlayers(register int *clubroomMenuScout) {
           }
 
           if (recruitedPlayer == P_12813TEMMA) {
-            for (int k = 0; k < 10; k++)
+            for (int k = 0; k < sizeof(ChronoStorm)/sizeof(u16); k++)
               Savedata_SetPlayerFlag(ChronoStorm[k], UNLOCKED, 1);
           }
 

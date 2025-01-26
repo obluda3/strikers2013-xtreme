@@ -121,9 +121,14 @@ char *premixed_descs[] = {
     "ザナークと#R曹操(そうそう)がミキシマックスした#R姿(すがた)。まさに#R最強最悪(さいきょうさいあく)の#R組(く)み#R合(あ)わせだといえる。",
     "ザナークが#R台風(たいふう)とミキシマックスした#R姿(すがた)。#R自称(じしょう)『スーパーザナーク』とのことだ。",
     "#R戦(たたか)いを#R憎(にく)む#R心(こころ)がフランの#R姿(すがた)を#R変(か)える。その#R姿(すがた)はまさに#R黒(くろ)い#R魔女(まじょ)のようだ…。",
-    "ＳＡＲＵの#R遺伝子(いでんし)に#R眠(ねむ)る#R力(ちから)が#R目覚(めざ)めたくましい#R大猿(おおざる)のような#R姿(すがた)になった。"};
+    "ＳＡＲＵの#R遺伝子(いでんし)に#R眠(ねむ)る#R力(ちから)が#R目覚(めざ)めたくましい#R大猿(おおざる)のような#R姿(すがた)になった。",
+	"白竜と孔明がミキシマックスした姿。未来をも見通し敵を突く正確無比のMF。",
+	"パーフェクト・カスケイドのキャプテン。その正体はサカマキが作ったアンドロイド。",
+	"ザナークに強制ミキシマックスされた姿。身も心も洗脳され従順になってしまった。"};
+	
+	
 
-int premixed_list[] = { P_12013FUEI, P_12802TSURUGI, P_12803TEMMA, P_12804SHINDO, P_12805KIRINO, P_12806AMEMIYA, P_12807SHINSUKE, P_12808TOBU, P_12809FUEI, P_12810NISHIKI, P_12811TSURUGI, P_12812KINAKO, P_12813TEMMA, P_12815ZANAKU, P_12816SZANAKU, P_12502YOBI, P_12817SARU };
+int premixed_list[] = { P_12013FUEI, P_12802TSURUGI, P_12803TEMMA, P_12804SHINDO, P_12805KIRINO, P_12806AMEMIYA, P_12807SHINSUKE, P_12808TOBU, P_12809FUEI, P_12810NISHIKI, P_12811TSURUGI, P_12812KINAKO, P_12813TEMMA, P_12815ZANAKU, P_12816SZANAKU, P_12502YOBI, P_12817SARU, P_10444RINNO, P_11780SAN_MAN, P_10443OKAZEYA };
 
 struct URL_Patch {
   u32 address;

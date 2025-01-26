@@ -17,6 +17,7 @@ static BanMove BanList[] = {{P_12803TEMMA, W_PEGASUS_BREAK, false},
                             {P_12013FUEI, W_OUJA_NO_KIBA, false},
                             {P_12809FUEI, W_KODAI_NO_KIBA, false},
                             {P_12813TEMMA, W_WONDER_TRAP_ARMED, false},
+							              {P_10444RINNO, W_SPRINT_WARP, false},
                             {-1, -1}};
 
 static BanMove WhiteListMix[] = {
