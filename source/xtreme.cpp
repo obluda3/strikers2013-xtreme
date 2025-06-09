@@ -12,6 +12,7 @@
 #include "discord.h"
 #include "xtremeSettings.h"
 #include "dolphinios.h"
+#include "partners.h"
 #include "keyboard.h"
 #include "music.h"
 #include "xtutils.h"
@@ -283,12 +284,13 @@ void Xtreme::Init() {
   if (!s_is_online_done) 
     PatchOnlineServer();
 
-  
   memcpy((char *)0x80472A3C, security_patchA, 56);
   memcpy((char *)0x80472BD0, security_patchB, 72);
   
   strcpy((char *)0x8050bacc, "X-3-1");
   CheckForDolphin();
+
+  create_new_waza_defs();
 }
   
 
