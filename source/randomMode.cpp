@@ -62,13 +62,13 @@ bool RandomMode::IsPlayerBanned(int player) {
     return true;
   else if (player >= P_2473NATSUMI_MAN && player <= P_KAKUMAO)
     return true;
-  else if (player == P_10446MUTO)
+  else if (player == P_10442HIKITA)
     return true;
   else if (player >= P_10036AOI_MAN && player <= P_10290AMEMIYA_ARMD)
     return true;
-  else if (player == P_12150ZANAKU_EVL || player == P_0001ENDO_TUT)
+  else if (player == P_0001ENDO_TUT)
     return true;
-  else if (player >= P_11780SAN_MAN && player <= P_12055BETA_A)
+  else if (player > P_11780SAN_MAN && player <= P_12055BETA_A)
     return true;
   else if (player > P_12502YOBI)
     return true;
