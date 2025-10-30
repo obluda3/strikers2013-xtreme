@@ -290,7 +290,6 @@ void Xtreme::Init() {
   strcpy((char *)0x8050bacc, "X-3-1");
   CheckForDolphin();
 
-  create_new_waza_defs();
 }
   
 
